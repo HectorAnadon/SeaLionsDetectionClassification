@@ -2,6 +2,7 @@
 from PIL import Image
 import matplotlib.pyplot as plt
 import os
+import pdb
 
 #RETURNS THE IMAGE SIZE IN EACH RESOLUTION
 def sizeInfo(image,resolutions):
@@ -35,11 +36,14 @@ def changeResolution(image,x0,y0,h,v,resolution_lvl):
 
     #DEFINE RESOLUTION
     if resolution_lvl == 1:
-        quality=1
+        quality = 1
     elif resolution_lvl == 2:
         quality = 0.5
     else:
         quality = 0.1
+
+    #CROP OUT
+    image = image.crop((x0,y0,x0+h,y0+v))
 
     #CHANGE RESOLUTION
     size_x,size_y = image.size
@@ -49,8 +53,6 @@ def changeResolution(image,x0,y0,h,v,resolution_lvl):
     #RESIZE
     image = image.resize((size_x, size_y))
 
-    #CROP OUT
-    image = image.crop((x0,y0,x0+h,y0+v))
 
     return  image
 
@@ -65,6 +67,6 @@ image = Image.open(file_names[0])
 a = sizeInfo(image,resolutions = [1,0.5,0.1])
 print(a)
 
-image = changeResolution(image,2000,2000,1000,1000,1)
+image = changeResolution(image,2000,2000,1000,1000,3)
 plt.imshow(image)
 plt.show()
