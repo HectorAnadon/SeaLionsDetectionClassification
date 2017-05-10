@@ -39,12 +39,30 @@ def calibration_net_2(input_img, N=45):
         activity_regularizer=None, kernel_constraint=None, bias_constraint=None)(dense1)
 	return Model(inputs=input_img, outputs=dense2)
 
+def calibration_net_3(input_img, N=45):
+	conv2d_1 = Conv2D(64, (5, 5), input_shape=input_img.shape, strides=1, padding='same', dilation_rate=1, 
+        activation='relu', use_bias=True, kernel_initializer='glorot_uniform', 
+        bias_initializer='zeros', kernel_regularizer=None, bias_regularizer=None, 
+        activity_regularizer=None, kernel_constraint=None, bias_constraint=None) (input_img)
+	max_pooling2d = MaxPooling2D(pool_size=(3, 3), strides=2, padding='valid')(conv2d_1)
+	conv2d_2 = Conv2D(64, (5, 5), strides=1, padding='same', dilation_rate=1, 
+        activation='relu', use_bias=True, kernel_initializer='glorot_uniform', 
+        bias_initializer='zeros', kernel_regularizer=None, bias_regularizer=None, 
+        activity_regularizer=None, kernel_constraint=None, bias_constraint=None) (max_pooling2d)
+	flatten = Flatten()(conv2d_2)
+	dense1 = Dense(256, activation='relu', use_bias=True, kernel_initializer='glorot_uniform', 
+        bias_initializer='zeros', kernel_regularizer=None, bias_regularizer=None, 
+        activity_regularizer=None, kernel_constraint=None, bias_constraint=None)(flatten)
+	dense2 = Dense(N, activation='relu', use_bias=True, kernel_initializer='glorot_uniform', 
+        bias_initializer='zeros', kernel_regularizer=None, bias_regularizer=None, 
+        activity_regularizer=None, kernel_constraint=None, bias_constraint=None)(dense1)
+	return Model(inputs=input_img, outputs=dense2)
+
 
 """Testing"""
 if __name__ == "__main__":
 	input_size = 25
 	input_img = Input(shape=(input_size, input_size, 3))
-
 	print("\nnet_1\n")
 	m_1 = calibration_net_1(input_img)
 	print (m_1.summary())
@@ -54,3 +72,9 @@ if __name__ == "__main__":
 	print ("\nnet_2\n")
 	m_2 = calibration_net_2(input_img)
 	print (m_2.summary())
+
+	input_size = 100
+	input_img = Input(shape=(input_size, input_size, 3))
+	print ("\nnet_3\n")
+	m_3 = calibration_net_3(input_img)
+	print (m_3.summary())
