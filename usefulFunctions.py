@@ -27,7 +27,7 @@ def sizeInfo(image,resolutions):
 
     return sizes
 
-#1.CROP OUT AND MODIFY RESOLUTION OF AN IMAGE + 2.RETURN LABEL - NO SEA LION (0) / SEA LION (1))
+#1.CROP OUT AND MODIFY RESOLUTION OF AN IMAGE + 2.RETURN LABEL - NO SEA LION [0,1] / SEA LION [1,0])
 def changeResolution(path,image_name,x0,y0,h,v,resolution_lvl):
 
     # image_name
