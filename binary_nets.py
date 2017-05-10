@@ -20,10 +20,13 @@ def build_net_1(input_img):
         activity_regularizer=None, kernel_constraint=None, bias_constraint=None) (input_img)
     max_pooling2d = MaxPooling2D(pool_size=(3, 3), strides=2, padding='valid')(conv2d)
     flatten = Flatten()(max_pooling2d)
-    dense = Dense(2, activation='relu', use_bias=True, kernel_initializer='glorot_uniform', 
+    dense1 = Dense(16, activation='relu', use_bias=True, kernel_initializer='glorot_uniform', 
         bias_initializer='zeros', kernel_regularizer=None, bias_regularizer=None, 
         activity_regularizer=None, kernel_constraint=None, bias_constraint=None)(flatten)
-    model = Model(inputs=input_img, outputs=dense)
+    dense2 = Dense(2, activation='relu', use_bias=True, kernel_initializer='glorot_uniform', 
+        bias_initializer='zeros', kernel_regularizer=None, bias_regularizer=None, 
+        activity_regularizer=None, kernel_constraint=None, bias_constraint=None)(dense1)
+    model = Model(inputs=input_img, outputs=dense2)
 
     return flatten, model    
 
@@ -44,10 +47,13 @@ def build_net_2(input_img):
     flatten_1, _ = build_net_1(input_img_1)
     # Concatenate
     flatten_merged = concatenate([flatten_2, flatten_1])
-    dense = Dense(2, activation='relu', use_bias=True, kernel_initializer='glorot_uniform', 
+    dense1 = Dense(128, activation='relu', use_bias=True, kernel_initializer='glorot_uniform', 
         bias_initializer='zeros', kernel_regularizer=None, bias_regularizer=None, 
         activity_regularizer=None, kernel_constraint=None, bias_constraint=None)(flatten_merged)
-    model = Model(inputs = [input_img, input_img_1] , outputs = dense)
+    dense2 = Dense(2, activation='relu', use_bias=True, kernel_initializer='glorot_uniform', 
+        bias_initializer='zeros', kernel_regularizer=None, bias_regularizer=None, 
+        activity_regularizer=None, kernel_constraint=None, bias_constraint=None)(dense1)
+    model = Model(inputs = [input_img, input_img_1] , outputs = dense2)
 
     return flatten_merged, model
 
@@ -59,14 +65,14 @@ def build_net_2(input_img):
 input_size = 25
 input_img = Input(shape=(input_size, input_size, 3))
 
-print "\nnet_1\n"
+print("\nnet_1\n")
 _, m_1 = build_net_1(input_img)
-print m_1.summary()
+print (m_1.summary())
 
 input_size = 50
 input_img = Input(shape=(input_size, input_size, 3))
-print "\nnet_2\n"
+print ("\nnet_2\n")
 _, m_2 = build_net_2(input_img)
-print m_2.summary()
+print (m_2.summary())
 
 
