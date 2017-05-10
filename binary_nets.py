@@ -61,18 +61,16 @@ def build_net_2(input_img):
 
 
 """Testing"""
+if __name__ == "__main__":
+    input_size = 25
+    input_img = Input(shape=(input_size, input_size, 3))
 
-input_size = 25
-input_img = Input(shape=(input_size, input_size, 3))
+    print("\nnet_1\n")
+    _, m_1 = build_net_1(input_img)
+    print (m_1.summary())
 
-print("\nnet_1\n")
-_, m_1 = build_net_1(input_img)
-print (m_1.summary())
-
-input_size = 50
-input_img = Input(shape=(input_size, input_size, 3))
-print ("\nnet_2\n")
-_, m_2 = build_net_2(input_img)
-print (m_2.summary())
-
-
+    input_size = 50
+    input_img = Input(shape=(input_size, input_size, 3))
+    print ("\nnet_2\n")
+    _, m_2 = build_net_2(input_img)
+    print (m_2.summary())
