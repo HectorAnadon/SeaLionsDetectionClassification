@@ -49,13 +49,14 @@ def changeResolution(path,image_name,x0,y0,h,v,resolution_lvl):
 
     #CHECK IF THERE IS A SEA LION IN THE IMAGE
     coordinates = extractCoordinates(path,image_name)
-    label = [0,1]
+    pdb.set_trace()
+    label = 0
     classes = ["adult_males", "subadult_males", "adult_females", "juveniles", "pups"]
     for lion_class in classes:
         for lion in range(len(coordinates[lion_class][image_name])):
             if coordinates[lion_class][image_name][lion][0] > x0 and coordinates[lion_class][image_name][lion][0] < (x0 + h)\
                 and coordinates[lion_class][image_name][lion][1] > y0 and coordinates[lion_class][image_name][lion][1] < (y0 + v):
-                label = [1,0]
+                label = 1
 
     #CROP OUT
     image = image.crop((x0,y0,x0+h,y0+v))
@@ -146,7 +147,7 @@ image = Image.open(file_names[0])
 a = sizeInfo(image,resolutions = [1,0.5,0.25])
 print(a)
 
-image,label = changeResolution("/Users/albertbou/SeaLionsDetectionClassification/Data/",file_names[0],2250,2250,100,100,3)
+image,label = changeResolution("/Users/albertbou/SeaLionsDetectionClassification/Data/",file_names[0],2250,2250,100,100,1)
 print(label)
 plt.imshow(image)
 plt.show()
