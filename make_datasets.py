@@ -119,64 +119,63 @@ def create_training_dataset():
     f.close()
 
 
-def get_shifted_windows(image, x, y, resolution_lvl):
+def get_shifted_windows(path, image_name, x, y, resolution_lvl):
 
     # Offset vectors
     x_n = np.array([-6, -4, -2, 0, 2, 4, 6])
     y_n = np.array([-6, -4, -2, 0, 2, 4, 6])
 
+    windows = []
+    labels = []
     num_transf = x_n.size * y_n.size
-    
+
+    window_size = getImageSize(resolution_lvl)
+
+    transf = 0
     for delta_x in x_n:
         for delta_y in y_n:
-            window_size = getImageSize(resolution_lvl)
-            cropAndChangeResolution(path, image_name, x+delta_x, y+delta_y, window_size, resolution_lvl)
+            window, _ = cropAndChangeResolution(path, image_name, x+delta_x, y+delta_y, window_size, resolution_lvl)
+            windows.append(np.array(window))
+            label = np.zeros(num_transf, 'uint8')
+            label[transf] = 1
+            labels.append(label)
+            transf += 1
+    return  np.stack(positive_samples), np.stack(labels)
 
 
 
-    
 
-
-def get_callib_data():
+def get_callib_data(path, radius, resolution_lvl):
     file_names = os.listdir(path + "Train/")
     positive_samples = []
     corners = []
     labels = []
 
-    for image_name in file_names:
-    # Ignore OSX files
-    if image_name != ".DS_Store":
-        image = Image.open(path + "Train/" + image_name)
-        #CHECK IF THERE IS A SEA LION IN THE IMAGE
-        coordinates = extractCoordinates(path, image_name)
-        classes = enumerate(["adult_males", "subadult_males", "adult_females", "juveniles", "pups"])
-        for class_index, class_name in classes:
-            for lion in range(len(coordinates[class_name][image_name])):
-                # Only consider sea lions within radius pixels from the edge
-                # TODO consider edge cases
-                x = coordinates[class_name][image_name][lion][0]
-                y = coordinates[class_name][image_name][lion][1]
-                if x > radius and x < (image.size[0] - radius) and y > radius and y < (image.size[1] - radius):
-                    top_x = x - radius
-                    top_y = y - radius
-                    data, labels = get_shifted_windows(image, top_x, top_y)
-                    # CROP OUT
-                    window = image.crop((x - radius, y - radius, x + radius, y + radius))
-                    # CHANGE RESOLUTION
-                    window = changeResolution(window, resolution_lvl)
-                    # Append
-                    positive_samples.append(np.array(window))
-                    corners.append(np.array([x - radius, y - radius]))
-                    binary_labels.append([1,0])
-                    multiclass =  np.zeros(5, 'uint8')
-                    multiclass[class_index] = 1
-                    multiclass_labels.append(multiclass)
+    for image_name in file_names[1:3]:
+        # Ignore OSX files
+        if image_name != ".DS_Store":
+            print "Processing ", image_name
+            image = Image.open(path + "Train/" + image_name)
+            #CHECK IF THERE IS A SEA LION IN THE IMAGE
+            coordinates = extractCoordinates(path, image_name)
+            classes = enumerate(["adult_males", "subadult_males", "adult_females", "juveniles", "pups"])
+            for class_index, class_name in classes:
+                for lion in range(len(coordinates[class_name][image_name])):
+                    # Only consider sea lions within radius pixels from the edge
+                    # TODO consider edge cases
+                    x = coordinates[class_name][image_name][lion][0]
+                    y = coordinates[class_name][image_name][lion][1]
+                    if x > radius and x < (image.size[0] - radius) and y > radius and y < (image.size[1] - radius):
+                        top_x = x - radius
+                        top_y = y - radius
+                        data, label = get_shifted_windows(path, image_name, top_x, top_y, resolution_lvl)
+                        print "\t ", len(data), "shifted windows"
+                        positive_samples.append(data)
+                        labels.append(label)
     # Concatenate
-    positive_samples = np.float64(np.stack(positive_samples))
-    corners = np.uint16(np.stack(corners))
-    binary_labels = np.uint8(np.array(binary_labels))
-    multiclass_labels = np.uint8(np.stack(multiclass_labels))
-    return positive_samples, corners, binary_labels, multiclass_labels
+    positive_samples = np.stack(positive_samples)
+    labels = np.stack(labels)
+    return positive_samples, labels
 
 
 
@@ -195,10 +194,12 @@ def get_callib_data():
 #####################
 
 if __name__ == '__main__':
-    get_positive_samples(PATH, ORIGINAL_WINDOW_DIM / 2, 1)
-    print "checkpoint"
-    get_negative_samples(PATH, ORIGINAL_WINDOW_DIM / 2, 1)
-    print "checkpoint2"
+    # get_positive_samples(PATH, ORIGINAL_WINDOW_DIM / 2, 1)
+    # print "checkpoint"
+    # get_negative_samples(PATH, ORIGINAL_WINDOW_DIM / 2, 1)
+    # print "checkpoint2"
+    positive_samples, labels = get_callib_data(PATH, ORIGINAL_WINDOW_DIM / 2, 1)
+
 
 # def create_training_dataset():
 #     import h5py
