@@ -69,7 +69,8 @@ def get_negative_samples(path, radius, resolution_lvl):
                 # Upper left corner coordinates
                 x = np.random.uniform(0, image.size[0] - 2 * radius)
                 y = np.random.uniform(0, image.size[1] - 2 * radius)
-                window, label = cropAndChangeResolution(path, image_name, x, y, radius * 2, resolution_lvl)
+                window = cropAndChangeResolution(path, image_name, x, y, radius * 2, resolution_lvl)
+                label = getLabel(path, image_name, x, y, radius * 2)
                 # Append negative samples 
                 if label == [0, 1]:
                     negative_samples.append(np.array(window))
@@ -87,7 +88,7 @@ def unison_shuffled_copies(a, b, c, d=None):
     assert len(a) == len(b) and len(b) == len(c)
     if d != None:
         assert len(a) == len(d)
-    p = numpy.random.permutation(len(a))
+    p = np.random.permutation(len(a))
     if d == None:
         return a[p], b[p], c[p]
     else:
@@ -134,7 +135,7 @@ def get_shifted_windows(path, image_name, x, y, resolution_lvl):
     transf = 0
     for delta_x in x_n:
         for delta_y in y_n:
-            window, _ = cropAndChangeResolution(path, image_name, x+delta_x, y+delta_y, window_size, resolution_lvl)
+            window = cropAndChangeResolution(path, image_name, x+delta_x, y+delta_y, window_size, resolution_lvl)
             windows.append(np.array(window))
             label = np.zeros(num_transf, 'uint8')
             label[transf] = 1

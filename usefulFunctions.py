@@ -50,7 +50,17 @@ def changeResolution(image, resolution_lvl):
     image = image.resize((size_x, size_y)) 
     return image
 
-
+def getLabel(path,image_name,x0,y0,s):
+    image = Image.open(path + "Train/" + image_name)
+    coordinates = extractCoordinates(path,image_name)
+    label = [0,1]
+    classes = ["adult_males", "subadult_males", "adult_females", "juveniles", "pups"]
+    for lion_class in classes:
+        for lion in range(len(coordinates[lion_class][image_name])):
+            if coordinates[lion_class][image_name][lion][0] > x0 and coordinates[lion_class][image_name][lion][0] < (x0 + s)\
+            and coordinates[lion_class][image_name][lion][1] > y0 and coordinates[lion_class][image_name][lion][1] < (y0 + s):
+                label = [1,0]
+    return label
 
 #1.CROP OUT AND MODIFY RESOLUTION OF AN IMAGE + 2.RETURN LABEL - NO SEA LION [0,1] / SEA LION [1,0])
 def cropAndChangeResolution(path,image_name,x0,y0,s,resolution_lvl):
@@ -63,23 +73,13 @@ def cropAndChangeResolution(path,image_name,x0,y0,s,resolution_lvl):
 
     image = Image.open(path +"Train/"+ image_name)
 
-    #CHECK IF THERE IS A SEA LION IN THE IMAGE
-    coordinates = extractCoordinates(path,image_name)
-    label = [0,1]
-    classes = ["adult_males", "subadult_males", "adult_females", "juveniles", "pups"]
-    for lion_class in classes:
-        for lion in range(len(coordinates[lion_class][image_name])):
-            if coordinates[lion_class][image_name][lion][0] > x0 and coordinates[lion_class][image_name][lion][0] < (x0 + s)\
-                and coordinates[lion_class][image_name][lion][1] > y0 and coordinates[lion_class][image_name][lion][1] < (y0 + s):
-                label = [1,0]
-
     #CROP OUT
     image = image.crop((x0,y0,x0+s,y0+s))
 
     #CHANGE RESOLUTION
     changeResolution(image, resolution_lvl)
 
-    return  image,label
+    return  image
 
 #EXTRACT SEA LION COORDINATES
 def extractCoordinates(path, image_name):
@@ -157,7 +157,8 @@ if __name__ == '__main__':
     a = sizeInfo(image,resolutions = [1,0.5,0.25])
     print(a)
 
-    image,label = cropAndChangeResolution("Data/",file_names[1],2250,2250,100,3)
+    image = cropAndChangeResolution("Data/",file_names[1],2250,2250,100,3)
+    label = getLabel("Data/",file_names[1],2250,2250,100);
     print(label)
     plt.imshow(image)
     plt.show()
