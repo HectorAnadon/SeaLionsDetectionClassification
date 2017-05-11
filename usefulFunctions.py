@@ -139,14 +139,14 @@ def extractCoordinates(path, image_name):
 #      EXAMPLE      #
 #####################
 
-os.chdir("/Users/albertbou/SeaLionsDetectionClassification/Data/Train/")
-file_names = os.listdir("/Users/albertbou/SeaLionsDetectionClassification/Data/Train/")
-image = Image.open(file_names[0])
+
+file_names = os.listdir("Data/Train/")
+image = Image.open("Data/Train/" + file_names[0])
 
 a = sizeInfo(image,resolutions = [1,0.5,0.25])
 print(a)
 
-image,label = changeResolution("/Users/albertbou/SeaLionsDetectionClassification/Data/",file_names[0],2250,2250,100,100,3)
+image,label = changeResolution("Data/",file_names[0],2250,2250,100,100,3)
 print(label)
 plt.imshow(image)
 plt.show()

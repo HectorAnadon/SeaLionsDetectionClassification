@@ -20,12 +20,15 @@ def build_net_1(input_img):
         activity_regularizer=None, kernel_constraint=None, bias_constraint=None) (input_img)
     max_pooling2d = MaxPooling2D(pool_size=(3, 3), strides=2, padding='valid')(conv2d)
     flatten = Flatten()(max_pooling2d)
-    dense = Dense(2, activation='relu', use_bias=True, kernel_initializer='glorot_uniform', 
+    dense = Dense(16, activation='relu', use_bias=True, kernel_initializer='glorot_uniform', 
         bias_initializer='zeros', kernel_regularizer=None, bias_regularizer=None, 
         activity_regularizer=None, kernel_constraint=None, bias_constraint=None)(flatten)
-    model = Model(inputs=input_img, outputs=dense)
+    output = Dense(2, activation='relu', use_bias=True, kernel_initializer='glorot_uniform', 
+        bias_initializer='zeros', kernel_regularizer=None, bias_regularizer=None, 
+        activity_regularizer=None, kernel_constraint=None, bias_constraint=None)(dense)
+    model = Model(inputs=input_img, outputs=output)
 
-    return flatten, model    
+    return dense, model    
 
 def build_net_2(input_img):
     """Build the second convolutional network (e.g. 50-net)
@@ -39,34 +42,69 @@ def build_net_2(input_img):
         activity_regularizer=None, kernel_constraint=None, bias_constraint=None) (input_img)
     max_pooling2d = MaxPooling2D(pool_size=(3, 3), strides=2, padding='valid')(conv2d)
     flatten_2 = Flatten()(max_pooling2d)
+    dense = Dense(128, activation='relu', use_bias=True, kernel_initializer='glorot_uniform', 
+        bias_initializer='zeros', kernel_regularizer=None, bias_regularizer=None, 
+        activity_regularizer=None, kernel_constraint=None, bias_constraint=None)(flatten_2)
     # First net
     input_img_1 = Input(shape=(25, 25, 3)) # TODO change this to proper image
-    flatten_1, _ = build_net_1(input_img_1)
+    network_1, _ = build_net_1(input_img_1)
     # Concatenate
-    flatten_merged = concatenate([flatten_2, flatten_1])
-    dense = Dense(2, activation='relu', use_bias=True, kernel_initializer='glorot_uniform', 
+    merged = concatenate([dense, network_1])
+    output = Dense(2, activation='relu', use_bias=True, kernel_initializer='glorot_uniform', 
         bias_initializer='zeros', kernel_regularizer=None, bias_regularizer=None, 
-        activity_regularizer=None, kernel_constraint=None, bias_constraint=None)(flatten_merged)
-    model = Model(inputs = [input_img, input_img_1] , outputs = dense)
+        activity_regularizer=None, kernel_constraint=None, bias_constraint=None)(dense)
+    model = Model(inputs = [input_img, input_img_1] , outputs = output)
 
-    return flatten_merged, model
+    return merged, model
 
+def build_net_3(input_img):
+    """Build the second convolutional network (e.g. 50-net)
+
+    input_img - Input() tensor
+    """
+    # Second net
+    conv2d_1 = Conv2D(64, (5, 5), input_shape=input_img.shape, strides=1, padding='same', dilation_rate=1, 
+        activation='relu', use_bias=True, kernel_initializer='glorot_uniform', 
+        bias_initializer='zeros', kernel_regularizer=None, bias_regularizer=None, 
+        activity_regularizer=None, kernel_constraint=None, bias_constraint=None) (input_img)
+    max_pooling2d_1 = MaxPooling2D(pool_size=(3, 3), strides=2, padding='valid')(conv2d_1)
+    conv2d_2 = Conv2D(64, (5, 5), strides=1, padding='same', dilation_rate=1, 
+        activation='relu', use_bias=True, kernel_initializer='glorot_uniform', 
+        bias_initializer='zeros', kernel_regularizer=None, bias_regularizer=None, 
+        activity_regularizer=None, kernel_constraint=None, bias_constraint=None) (max_pooling2d_1)
+    max_pooling2d_2 = MaxPooling2D(pool_size=(3, 3), strides=2, padding='valid')(conv2d_2)
+    flatten_3 = Flatten()(max_pooling2d_2)
+    dense = Dense(256, activation='relu', use_bias=True, kernel_initializer='glorot_uniform', 
+        bias_initializer='zeros', kernel_regularizer=None, bias_regularizer=None, 
+        activity_regularizer=None, kernel_constraint=None, bias_constraint=None)(flatten_3)
+    # Second net
+    input_img_2 = Input(shape=(50, 50, 3)) # TODO change this to proper image
+    network_2, _ = build_net_2(input_img_2)
+    # Concatenate
+    flatten_merged = concatenate([dense, network_2])
+    output = Dense(2, activation='relu', use_bias=True, kernel_initializer='glorot_uniform', 
+        bias_initializer='zeros', kernel_regularizer=None, bias_regularizer=None, 
+        activity_regularizer=None, kernel_constraint=None, bias_constraint=None)(dense)
+    return Model(inputs = [input_img, input_img_2] , outputs = output)
 
 
 
 """Testing"""
+if __name__ == "__main__":
+    input_size = 25
+    input_img = Input(shape=(input_size, input_size, 3))
+    print("\nnet_1\n")
+    _, m_1 = build_net_1(input_img)
+    print (m_1.summary())
 
-input_size = 25
-input_img = Input(shape=(input_size, input_size, 3))
+    input_size = 50
+    input_img = Input(shape=(input_size, input_size, 3))
+    print ("\nnet_2\n")
+    _, m_2 = build_net_2(input_img)
+    print (m_2.summary())
 
-print "\nnet_1\n"
-_, m_1 = build_net_1(input_img)
-print m_1.summary()
-
-input_size = 50
-input_img = Input(shape=(input_size, input_size, 3))
-print "\nnet_2\n"
-_, m_2 = build_net_2(input_img)
-print m_2.summary()
-
-
+    input_size = 100
+    input_img = Input(shape=(input_size, input_size, 3))
+    print ("\nnet_3\n")
+    m_3 = build_net_3(input_img)
+    print (m_3.summary())
