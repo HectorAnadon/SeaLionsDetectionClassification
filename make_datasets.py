@@ -140,7 +140,7 @@ def get_shifted_windows(path, image_name, x, y, resolution_lvl):
             label[transf] = 1
             labels.append(label)
             transf += 1
-    return  np.stack(positive_samples), np.stack(labels)
+    return  np.stack(windows), np.stack(labels)
 
 
 
