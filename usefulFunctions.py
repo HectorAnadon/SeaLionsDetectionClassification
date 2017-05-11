@@ -27,8 +27,28 @@ def sizeInfo(image,resolutions):
 
     return sizes
 
+
+
+def changeResolution(image, resolution_lvl):
+    #DEFINE RESOLUTION
+    if resolution_lvl == 1:
+        quality = 1
+    elif resolution_lvl == 2:
+        quality = 0.5
+    else:
+        quality = 0.25   
+    #CHANGE RESOLUTION
+    size_x,size_y = image.size
+    size_x = int(round(size_x*quality))
+    size_y = int(round(size_y*quality))
+    #RESIZE
+    image = image.resize((size_x, size_y)) 
+    return image
+
+
+
 #1.CROP OUT AND MODIFY RESOLUTION OF AN IMAGE + 2.RETURN LABEL - NO SEA LION [0,1] / SEA LION [1,0])
-def changeResolution(path,image_name,x0,y0,h,v,resolution_lvl):
+def cropAndChangeResolution(path,image_name,x0,y0,h,v,resolution_lvl):
 
     # image_name
     # x0 = TOP LEFT CORNER IN X AXIS
@@ -38,14 +58,6 @@ def changeResolution(path,image_name,x0,y0,h,v,resolution_lvl):
     # resolution_lvl = SPECIFY RESOLUTION AMONG ALL POSSIBILITIES
 
     image = Image.open(path +"Train/"+ image_name)
-
-    #DEFINE RESOLUTION
-    if resolution_lvl == 1:
-        quality = 1
-    elif resolution_lvl == 2:
-        quality = 0.5
-    else:
-        quality = 0.25
 
     #CHECK IF THERE IS A SEA LION IN THE IMAGE
     coordinates = extractCoordinates(path,image_name)
@@ -61,12 +73,7 @@ def changeResolution(path,image_name,x0,y0,h,v,resolution_lvl):
     image = image.crop((x0,y0,x0+h,y0+v))
 
     #CHANGE RESOLUTION
-    size_x,size_y = image.size
-    size_x = int(round(size_x*quality))
-    size_y = int(round(size_y*quality))
-
-    #RESIZE
-    image = image.resize((size_x, size_y))
+    changeResolution(image, resolution_lvl)
 
     return  image,label
 
@@ -141,12 +148,12 @@ def extractCoordinates(path, image_name):
 
 
 file_names = os.listdir("Data/Train/")
-image = Image.open("Data/Train/" + file_names[0])
+image = Image.open("Data/Train/" + file_names[1])
 
 a = sizeInfo(image,resolutions = [1,0.5,0.25])
 print(a)
 
-image,label = changeResolution("Data/",file_names[0],2250,2250,100,100,3)
+image,label = cropAndChangeResolution("Data/",file_names[1],2250,2250,100,100,3)
 print(label)
 plt.imshow(image)
 plt.show()
