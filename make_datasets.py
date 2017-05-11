@@ -1,4 +1,4 @@
-#from keras.utils.io_utils import HDF5Matrix
+from keras.utils.io_utils import HDF5Matrix
 from PIL import Image
 import numpy as np
 import os
@@ -6,7 +6,7 @@ import os
 from usefulFunctions import *
 
 
-PATH = "/Users/nyuad/Documents/workspace/deeplearn/SeaLionsDetectionClassification/Data/"
+PATH = "Data/"
 ORIGINAL_WINDOW_DIM = 100
 NUM_NEG_SAMPLES = 130 # Number of negative samples per image
 
@@ -146,11 +146,25 @@ def create_training_dataset():
     f.close()
 
 
-def sliding_windows_test():
-    # Check image sizes
-    # Make numpy array for each individual image
-    # Concatenate numpy arrays
-    pass
+
+def get_shifted_windows(image):
+
+    # Dimensional scale vector
+    s_n = np.array([0.83, 0.91, 1.00, 1.10, 1.21])
+    # Offset vectors
+    x_n = np.array([-0.17, 0.00, 0.17])
+    y_n = np.array([-0.17, 0.00, 0.17])
+
+
+
+
+
+
+# def sliding_windows_test():
+#     # Check image sizes
+#     # Make numpy array for each individual image
+#     # Concatenate numpy arrays
+#     pass
 
 
 
