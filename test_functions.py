@@ -44,6 +44,11 @@ def sliding_window_net_1(image, padding=10, window_size=100):
 
 	return np.stack(windows)
 
+def getWindow(path, x, y, resolution_lvl=1, W=100, H=100):
+	image = Image.open(path)
+	image = image.crop((x,y,x+W,y+H))
+	return changeResolution(image, 3)
+
 
 
 """Testing"""
@@ -54,6 +59,8 @@ if __name__ == "__main__":
 	windows = sliding_window_net_1(image)
 	print(windows.shape)
 	plt.imshow(windows[0])
+	plt.show()
+	plt.imshow(getWindow("Data/Train/" + file_names[0], 0, 0, 3))
 	plt.show()
 	plt.imshow(windows[79542])
 	plt.show()
