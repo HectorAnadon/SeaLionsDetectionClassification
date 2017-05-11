@@ -146,14 +146,14 @@ def extractCoordinates(path, image_name):
 #      EXAMPLE      #
 #####################
 
+if __name__ == '__main__':
+    file_names = os.listdir("Data/Train/")
+    image = Image.open("Data/Train/" + file_names[1])
 
-file_names = os.listdir("Data/Train/")
-image = Image.open("Data/Train/" + file_names[1])
+    a = sizeInfo(image,resolutions = [1,0.5,0.25])
+    print(a)
 
-a = sizeInfo(image,resolutions = [1,0.5,0.25])
-print(a)
-
-image,label = cropAndChangeResolution("Data/",file_names[1],2250,2250,100,100,3)
-print(label)
-plt.imshow(image)
-plt.show()
+    image,label = cropAndChangeResolution("Data/",file_names[1],2250,2250,100,100,3)
+    print(label)
+    plt.imshow(image)
+    plt.show()

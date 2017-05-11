@@ -14,23 +14,13 @@ def get_positive_samples(path, radius, resolution_lvl):
     """Get an array of positive samples (windows containing lions), their upper left corner 
     coordinates and their labels (both in binary and multiclass one-hot representation)
     """
-    # TODO error handling (radius and resolution level need to match) 
-
-    #DEFINE RESOLUTION
-    if resolution_lvl == 1:
-        quality = 1
-    elif resolution_lvl == 2:
-        quality = 0.5
-    else:
-        quality = 0.25
-
     file_names = os.listdir(path + "Train/")
     positive_samples = []
     corners = []
     binary_labels = []
     multiclass_labels = []
 
-    for image_name in file_names[1:3]:
+    for image_name in file_names:
         # Ignore OSX files
         if image_name != ".DS_Store":
             image = Image.open(path + "Train/" + image_name)
@@ -47,11 +37,7 @@ def get_positive_samples(path, radius, resolution_lvl):
                         # CROP OUT
                         window = image.crop((x - radius, y - radius, x + radius, y + radius))
                         # CHANGE RESOLUTION
-                        size_x, size_y = window.size
-                        size_x = int(round(size_x * quality))
-                        size_y = int(round(size_y * quality))
-                        # RESIZE
-                        window = window.resize((size_x, size_y))
+                        window = changeResolution(window, resolution_lvl)
                         # Append
                         positive_samples.append(np.array(window))
                         corners.append(np.array([x - radius, y - radius]))
@@ -64,10 +50,6 @@ def get_positive_samples(path, radius, resolution_lvl):
     corners = np.uint16(np.stack(corners))
     binary_labels = np.uint8(np.array(binary_labels))
     multiclass_labels = np.uint8(np.stack(multiclass_labels))
-    print positive_samples.shape 
-    print corners.shape
-    print binary_labels.shape
-    print multiclass_labels.shape
     return positive_samples, corners, binary_labels, multiclass_labels
 
 
@@ -75,16 +57,6 @@ def get_negative_samples(path, radius, resolution_lvl):
     """Get an array of negative samples (windows without lions), their upper left corner 
     coordinates and their labels (only binary format - NO SEA LION [0,1] / SEA LION [1,0])
     """
-    # TODO error handling (radius and resolution level need to match) 
-
-    #DEFINE RESOLUTION
-    if resolution_lvl == 1:
-        quality = 1
-    elif resolution_lvl == 2:
-        quality = 0.5
-    else:
-        quality = 0.25
-
     file_names = os.listdir(path + "Train/")
     negative_samples = []
     corners = []
@@ -97,7 +69,7 @@ def get_negative_samples(path, radius, resolution_lvl):
                 # Upper left corner coordinates
                 x = np.random.uniform(0, image.size[0] - 2 * radius)
                 y = np.random.uniform(0, image.size[1] - 2 * radius)
-                window, label = changeResolution(path, image_name, x, y, radius * 2, radius * 2, resolution_lvl)
+                window, label = cropAndChangeResolution(path, image_name, x, y, radius * 2, radius * 2, resolution_lvl)
                 # Append negative samples 
                 if label == [0, 1]:
                     negative_samples.append(np.array(window))
@@ -123,6 +95,7 @@ def unison_shuffled_copies(a, b, c, d=None):
 
 
 def create_training_dataset():
+    # TODO
     import h5py
     # Shuffle positive
     positive_samples, corners, binary_labels, multiclass_labels = \
@@ -174,7 +147,9 @@ def get_shifted_windows(image):
 
 if __name__ == '__main__':
     get_positive_samples(PATH, ORIGINAL_WINDOW_DIM / 2, 1)
+    print "checkpoint"
     get_negative_samples(PATH, ORIGINAL_WINDOW_DIM / 2, 1)
+    print "checkpoint2"
 
 # def create_training_dataset():
 #     import h5py
