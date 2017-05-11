@@ -7,6 +7,10 @@ import cv2
 import skimage.feature
 import pandas as pd
 
+
+ORIGINAL_WINDOW_DIM = 100
+
+
 #RETURNS THE IMAGE SIZE IN EACH RESOLUTION
 def sizeInfo(image,resolutions):
 
@@ -27,20 +31,21 @@ def sizeInfo(image,resolutions):
 
     return sizes
 
-
-
-def changeResolution(image, resolution_lvl):
+def getImageSize(resolution_lvl):
     #DEFINE RESOLUTION
     if resolution_lvl == 1:
         quality = 1
     elif resolution_lvl == 2:
         quality = 0.5
     else:
-        quality = 0.25   
+        quality = 0.25 
+    return int(round(ORIGINAL_WINDOW_DIM * quality))
+
+def changeResolution(image, resolution_lvl):
     #CHANGE RESOLUTION
     size_x,size_y = image.size
-    size_x = int(round(size_x*quality))
-    size_y = int(round(size_y*quality))
+    size_x = getImageSize(resolution_lvl)
+    size_y = getImageSize(resolution_lvl)
     #RESIZE
     image = image.resize((size_x, size_y)) 
     return image
