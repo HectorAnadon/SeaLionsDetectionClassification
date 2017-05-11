@@ -69,7 +69,7 @@ def get_negative_samples(path, radius, resolution_lvl):
                 # Upper left corner coordinates
                 x = np.random.uniform(0, image.size[0] - 2 * radius)
                 y = np.random.uniform(0, image.size[1] - 2 * radius)
-                window, label = cropAndChangeResolution(path, image_name, x, y, radius * 2, radius * 2, resolution_lvl)
+                window, label = cropAndChangeResolution(path, image_name, x, y, radius * 2, resolution_lvl)
                 # Append negative samples 
                 if label == [0, 1]:
                     negative_samples.append(np.array(window))
@@ -119,15 +119,64 @@ def create_training_dataset():
     f.close()
 
 
+def get_shifted_windows(image, x, y, resolution_lvl):
 
-def get_shifted_windows(image):
-
-    # Dimensional scale vector
-    s_n = np.array([0.83, 0.91, 1.00, 1.10, 1.21])
     # Offset vectors
-    x_n = np.array([-0.17, 0.00, 0.17])
-    y_n = np.array([-0.17, 0.00, 0.17])
+    x_n = np.array([-6, -4, -2, 0, 2, 4, 6])
+    y_n = np.array([-6, -4, -2, 0, 2, 4, 6])
 
+    num_transf = x_n.size * y_n.size
+    
+    for delta_x in x_n:
+        for delta_y in y_n:
+            window_size = getImageSize(resolution_lvl)
+            cropAndChangeResolution(path, image_name, x+delta_x, y+delta_y, window_size, resolution_lvl)
+
+
+
+    
+
+
+def get_callib_data():
+    file_names = os.listdir(path + "Train/")
+    positive_samples = []
+    corners = []
+    labels = []
+
+    for image_name in file_names:
+    # Ignore OSX files
+    if image_name != ".DS_Store":
+        image = Image.open(path + "Train/" + image_name)
+        #CHECK IF THERE IS A SEA LION IN THE IMAGE
+        coordinates = extractCoordinates(path, image_name)
+        classes = enumerate(["adult_males", "subadult_males", "adult_females", "juveniles", "pups"])
+        for class_index, class_name in classes:
+            for lion in range(len(coordinates[class_name][image_name])):
+                # Only consider sea lions within radius pixels from the edge
+                # TODO consider edge cases
+                x = coordinates[class_name][image_name][lion][0]
+                y = coordinates[class_name][image_name][lion][1]
+                if x > radius and x < (image.size[0] - radius) and y > radius and y < (image.size[1] - radius):
+                    top_x = x - radius
+                    top_y = y - radius
+                    data, labels = get_shifted_windows(image, top_x, top_y)
+                    # CROP OUT
+                    window = image.crop((x - radius, y - radius, x + radius, y + radius))
+                    # CHANGE RESOLUTION
+                    window = changeResolution(window, resolution_lvl)
+                    # Append
+                    positive_samples.append(np.array(window))
+                    corners.append(np.array([x - radius, y - radius]))
+                    binary_labels.append([1,0])
+                    multiclass =  np.zeros(5, 'uint8')
+                    multiclass[class_index] = 1
+                    multiclass_labels.append(multiclass)
+    # Concatenate
+    positive_samples = np.float64(np.stack(positive_samples))
+    corners = np.uint16(np.stack(corners))
+    binary_labels = np.uint8(np.array(binary_labels))
+    multiclass_labels = np.uint8(np.stack(multiclass_labels))
+    return positive_samples, corners, binary_labels, multiclass_labels
 
 
 

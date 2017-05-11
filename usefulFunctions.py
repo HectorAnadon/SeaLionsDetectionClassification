@@ -53,13 +53,12 @@ def changeResolution(image, resolution_lvl):
 
 
 #1.CROP OUT AND MODIFY RESOLUTION OF AN IMAGE + 2.RETURN LABEL - NO SEA LION [0,1] / SEA LION [1,0])
-def cropAndChangeResolution(path,image_name,x0,y0,h,v,resolution_lvl):
+def cropAndChangeResolution(path,image_name,x0,y0,s,resolution_lvl):
 
     # image_name
     # x0 = TOP LEFT CORNER IN X AXIS
     # y0 = TOP LEFT CORNER IN Y AXIS
-    # h = NUMBER OF PIXEL IN X AXIS OF THE CROPPED IMAGE
-    # v = NUMBER OF PIXEL IN Y AXIS OF THE CROPPED IMAGE
+    # s = NUMBER OF PIXEL IN X AND Y AXES OF THE CROPPED IMAGE
     # resolution_lvl = SPECIFY RESOLUTION AMONG ALL POSSIBILITIES
 
     image = Image.open(path +"Train/"+ image_name)
@@ -70,12 +69,12 @@ def cropAndChangeResolution(path,image_name,x0,y0,h,v,resolution_lvl):
     classes = ["adult_males", "subadult_males", "adult_females", "juveniles", "pups"]
     for lion_class in classes:
         for lion in range(len(coordinates[lion_class][image_name])):
-            if coordinates[lion_class][image_name][lion][0] > x0 and coordinates[lion_class][image_name][lion][0] < (x0 + h)\
-                and coordinates[lion_class][image_name][lion][1] > y0 and coordinates[lion_class][image_name][lion][1] < (y0 + v):
+            if coordinates[lion_class][image_name][lion][0] > x0 and coordinates[lion_class][image_name][lion][0] < (x0 + s)\
+                and coordinates[lion_class][image_name][lion][1] > y0 and coordinates[lion_class][image_name][lion][1] < (y0 + s):
                 label = [1,0]
 
     #CROP OUT
-    image = image.crop((x0,y0,x0+h,y0+v))
+    image = image.crop((x0,y0,x0+s,y0+s))
 
     #CHANGE RESOLUTION
     changeResolution(image, resolution_lvl)
@@ -158,7 +157,7 @@ if __name__ == '__main__':
     a = sizeInfo(image,resolutions = [1,0.5,0.25])
     print(a)
 
-    image,label = cropAndChangeResolution("Data/",file_names[1],2250,2250,100,100,3)
+    image,label = cropAndChangeResolution("Data/",file_names[1],2250,2250,100,3)
     print(label)
     plt.imshow(image)
     plt.show()
