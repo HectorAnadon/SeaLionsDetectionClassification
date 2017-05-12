@@ -23,7 +23,7 @@ def build_net_1(input_img):
     dense = Dense(16, activation='relu', use_bias=True, kernel_initializer='glorot_uniform', 
         bias_initializer='zeros', kernel_regularizer=None, bias_regularizer=None, 
         activity_regularizer=None, kernel_constraint=None, bias_constraint=None)(flatten)
-    output = Dense(2, activation='relu', use_bias=True, kernel_initializer='glorot_uniform', 
+    output = Dense(2, activation='softmax', use_bias=True, kernel_initializer='glorot_uniform', 
         bias_initializer='zeros', kernel_regularizer=None, bias_regularizer=None, 
         activity_regularizer=None, kernel_constraint=None, bias_constraint=None)(dense)
     model = Model(inputs=input_img, outputs=output)
