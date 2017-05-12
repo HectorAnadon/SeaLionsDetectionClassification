@@ -6,6 +6,7 @@ import pdb
 import cv2
 import skimage.feature
 import pandas as pd
+import time
 
 
 ORIGINAL_WINDOW_DIM = 100
@@ -41,13 +42,20 @@ def getImageSize(resolution_lvl):
         quality = 0.25 
     return int(round(ORIGINAL_WINDOW_DIM * quality))
 
+def get_resolution_level(net):
+    if net == 1:
+        resolution_lvl = 3
+    elif net == 2:
+        resolution_lvl = 2
+    else:
+        resolution_lvl = 1
+    return resolution_lvl
+
 def changeResolution(image, resolution_lvl):
-    #CHANGE RESOLUTION
-    size_x,size_y = image.size
-    size_x = getImageSize(resolution_lvl)
-    size_y = getImageSize(resolution_lvl)
-    #RESIZE
-    image = image.resize((size_x, size_y)) 
+    # Get new window size
+    new_size = getImageSize(resolution_lvl)
+    # Resize window
+    image = image.resize((new_size, new_size)) 
     return image
 
 def getLabel(path,image_name,x0,y0,s):
@@ -77,7 +85,7 @@ def cropAndChangeResolution(path,image_name,x0,y0,s,resolution_lvl):
     image = image.crop((x0,y0,x0+s,y0+s))
 
     #CHANGE RESOLUTION
-    changeResolution(image, resolution_lvl)
+    image = changeResolution(image, resolution_lvl)
 
     return  image
 
@@ -151,6 +159,7 @@ def extractCoordinates(path, image_name):
 #####################
 
 if __name__ == '__main__':
+
     file_names = os.listdir("Data/Train/")
     image = Image.open("Data/Train/" + file_names[1])
 

@@ -2,18 +2,21 @@ from keras.utils.io_utils import HDF5Matrix
 from PIL import Image
 import numpy as np
 import os
+import time
+
 
 from usefulFunctions import *
 
 
 PATH = "Data/"
-ORIGINAL_WINDOW_DIM = 100
+WINDOW_SIZE = 100
 NUM_NEG_SAMPLES = 130 # Number of negative samples per image
 
-def get_positive_samples(path, radius, resolution_lvl):
+def get_positive_samples(path, radius, net):
     """Get an array of positive samples (windows containing lions), their upper left corner 
     coordinates and their labels (both in binary and multiclass one-hot representation)
     """
+    resolution_lvl = get_resolution_level(net)
     file_names = os.listdir(path + "Train/")
     positive_samples = []
     corners = []
@@ -23,6 +26,7 @@ def get_positive_samples(path, radius, resolution_lvl):
     for image_name in file_names:
         # Ignore OSX files
         if image_name != ".DS_Store":
+            print "Processing ", image_name
             image = Image.open(path + "Train/" + image_name)
             #CHECK IF THERE IS A SEA LION IN THE IMAGE
             coordinates = extractCoordinates(path, image_name)
@@ -34,10 +38,8 @@ def get_positive_samples(path, radius, resolution_lvl):
                     x = coordinates[class_name][image_name][lion][0]
                     y = coordinates[class_name][image_name][lion][1]
                     if x > radius and x < (image.size[0] - radius) and y > radius and y < (image.size[1] - radius):
-                        # CROP OUT
-                        window = image.crop((x - radius, y - radius, x + radius, y + radius))
-                        # CHANGE RESOLUTION
-                        window = changeResolution(window, resolution_lvl)
+                        # Crop window of chosen resolution level
+                        window = cropAndChangeResolution(path, image_name, x - radius, y - radius, radius * 2, resolution_lvl)
                         # Append
                         positive_samples.append(np.array(window))
                         corners.append(np.array([x - radius, y - radius]))
@@ -53,10 +55,11 @@ def get_positive_samples(path, radius, resolution_lvl):
     return positive_samples, corners, binary_labels, multiclass_labels
 
 
-def get_negative_samples(path, radius, resolution_lvl):
+def get_negative_samples(path, radius, net):
     """Get an array of negative samples (windows without lions), their upper left corner 
     coordinates and their labels (only binary format - NO SEA LION [0,1] / SEA LION [1,0])
     """
+    resolution_lvl = get_resolution_level(net)
     file_names = os.listdir(path + "Train/")
     negative_samples = []
     corners = []
@@ -64,8 +67,9 @@ def get_negative_samples(path, radius, resolution_lvl):
 
     for image_name in file_names:
         if image_name != ".DS_Store":
+            print "Processing ", image_name
+            image = Image.open(path + "Train/" + image_name)
             for it in range(NUM_NEG_SAMPLES):
-                image = Image.open(path + "Train/" + image_name)
                 # Upper left corner coordinates
                 x = np.random.uniform(0, image.size[0] - 2 * radius)
                 y = np.random.uniform(0, image.size[1] - 2 * radius)
@@ -86,36 +90,45 @@ def get_negative_samples(path, radius, resolution_lvl):
 
 def unison_shuffled_copies(a, b, c, d=None):
     assert len(a) == len(b) and len(b) == len(c)
+    p = np.random.permutation(len(a))
     if d != None:
         assert len(a) == len(d)
-    p = np.random.permutation(len(a))
-    if d == None:
-        return a[p], b[p], c[p]
-    else:
         return a[p], b[p], c[p], d[p]
+    else:
+        return a[p], b[p], c[p]
 
 
-def create_training_dataset():
-    # TODO
+
+def create_net_dataset(path, window_size, net):
     import h5py
-    # Shuffle positive
-    positive_samples, corners, binary_labels, multiclass_labels = \
-        get_positive_samples(PATH, ORIGINAL_WINDOW_DIM/2, 1)
-    positive_samples, corners, binary_labels, multiclass_labels = \
-        unison_shuffled_copies(positive_samples, corners, binary_labels, multiclass_labels)
-    # Shuffle negative
-    negative_samples, corners, labels = get_negative_samples(PATH, ORIGINAL_WINDOW_DIM / 2, 1)
+    res_lvl = get_resolution_level(net)
+    radius = round(window_size / 2)
+    # Get positive samples
+    pos_samples, pos_corners, pos_labels, _ = get_positive_samples(path, radius, net)
+    print pos_samples.shape 
+    print pos_corners.shape
+    print pos_labels.shape
+    # Get negative samples
+    neg_samples, neg_corners, neg_labels = get_negative_samples(path, radius, net)
+    print neg_samples.shape 
+    print neg_corners.shape
+    print neg_labels.shape
     # Concatenate positive and negative
-
-    X = np.random.randn(200,10).astype('float32')
-
-    y = np.random.randint(0, 2, size=(200,1))
-    f = h5py.File('train_small.h5', 'w')
-    # Creating dataset to store features
-    X_dset = f.create_dataset('my_data', (200,10), dtype='f')
+    X = np.concatenate((pos_samples, neg_samples))
+    corners = np.concatenate((pos_corners, neg_corners))
+    y = np.concatenate((pos_labels, neg_labels))
+    # Shuffle data
+    X, corners, y = unison_shuffled_copies(X, corners, y)
+    # Save to disk
+    f = h5py.File('data_net'+str(net)+'_small.h5', 'w')
+    # Create dataset to store images
+    X_dset = f.create_dataset('data', X.shape, dtype='f')
     X_dset[:] = X
-    # Creating dataset to store labels
-    y_dset = f.create_dataset('my_labels', (200,1), dtype='i')
+    # Create dataset to store corners
+    corners_dset = f.create_dataset('corners', corners.shape, dtype='i')
+    corners_dset[:] = corners
+    # Create dataset to store labels
+    y_dset = f.create_dataset('labels', y.shape, dtype='i')
     y_dset[:] = y
     f.close()
 
@@ -144,9 +157,7 @@ def get_shifted_windows(path, image_name, x, y, resolution_lvl):
     return  np.stack(windows), np.stack(labels)
 
 
-
-
-def get_callib_data(path, radius, resolution_lvl):
+def get_callib_samples(path, radius, resolution_lvl):
     file_names = os.listdir(path + "Train/")
     positive_samples = []
     corners = []
@@ -190,16 +201,35 @@ def get_callib_data(path, radius, resolution_lvl):
 
 
 
-#####################
-#      EXAMPLE      #
-#####################
 
+"""Testing"""
 if __name__ == '__main__':
-    # get_positive_samples(PATH, ORIGINAL_WINDOW_DIM / 2, 1)
-    # print "checkpoint"
-    # get_negative_samples(PATH, ORIGINAL_WINDOW_DIM / 2, 1)
+
+    # pos_samples, pos_corners, pos_labels, _ = get_positive_samples(PATH, WINDOW_SIZE / 2, 1)
+    # print pos_samples.shape 
+    # print pos_corners.shape
+    # print pos_labels.shape
+
+    # neg_samples, neg_corners, neg_labels = get_negative_samples(PATH, WINDOW_SIZE / 2, 1)
+    # print neg_samples.shape 
+    # print neg_corners.shape
+    # print neg_labels.shape
+
+    create_net_dataset(PATH, WINDOW_SIZE / 2, 1)
+    # # Instantiate HDF5Matrix for the training set
+    X_train = HDF5Matrix('data_net1_small.h5', 'data', start=0, end=1000)
+    y_train = HDF5Matrix('data_net1_small.h5', 'labels', start=0, end=1000)
+    print X_train.shape
+    print y_train.shape
+
+    # Zero center
+
+    # Likewise for the test set
+    # X_test = HDF5Matrix('data_net1_small.h5', 'data', start=1000, end=1200)
+    # y_test = HDF5Matrix('data_net1_small.h5', 'labels', start=1000, end=1200)
+
     # print "checkpoint2"
-    positive_samples, labels = get_callib_data(PATH, ORIGINAL_WINDOW_DIM / 2, 1)
+    # positive_samples, labels = get_callib_data(PATH, WINDOW_SIZE / 2, 1)
 
 
 # def create_training_dataset():
