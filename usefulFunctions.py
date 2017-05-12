@@ -58,9 +58,7 @@ def changeResolution(image, resolution_lvl):
     image = image.resize((new_size, new_size)) 
     return image
 
-def getLabel(path,image_name,x0,y0,s):
-    image = Image.open(path + "Train/" + image_name)
-    coordinates = extractCoordinates(path,image_name)
+def getLabel(image_name, coordinates, x0, y0, s):
     label = [0,1]
     classes = ["adult_males", "subadult_males", "adult_females", "juveniles", "pups"]
     for lion_class in classes:
@@ -167,7 +165,8 @@ if __name__ == '__main__':
     print(a)
 
     image = cropAndChangeResolution("Data/",file_names[1],2250,2250,100,3)
-    label = getLabel("Data/",file_names[1],2250,2250,100);
+    coordinates = extractCoordinates("Data/", file_names[1])
+    label = getLabel(file_names[1], coordinates, 2250, 2250, 100);
     print(label)
     plt.imshow(image)
     plt.show()

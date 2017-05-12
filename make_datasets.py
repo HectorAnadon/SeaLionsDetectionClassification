@@ -23,7 +23,7 @@ def get_positive_samples(path, radius, net):
     binary_labels = []
     multiclass_labels = []
 
-    for image_name in file_names:
+    for image_name in file_names[1:3]:
         # Ignore OSX files
         if image_name != ".DS_Store":
             print "Processing ", image_name
@@ -69,12 +69,13 @@ def get_negative_samples(path, radius, net):
         if image_name != ".DS_Store":
             print "Processing ", image_name
             image = Image.open(path + "Train/" + image_name)
-            for it in range(NUM_NEG_SAMPLES):
+            coordinates = extractCoordinates(path, image_name)
+            for it in range(15):
                 # Upper left corner coordinates
                 x = np.random.uniform(0, image.size[0] - 2 * radius)
                 y = np.random.uniform(0, image.size[1] - 2 * radius)
                 window = cropAndChangeResolution(path, image_name, x, y, radius * 2, resolution_lvl)
-                label = getLabel(path, image_name, x, y, radius * 2)
+                label = getLabel(image_name, coordinates, x, y, radius * 2)
                 # Append negative samples 
                 if label == [0, 1]:
                     negative_samples.append(np.array(window))
@@ -217,8 +218,8 @@ if __name__ == '__main__':
 
     create_net_dataset(PATH, WINDOW_SIZE / 2, 1)
     # # Instantiate HDF5Matrix for the training set
-    X_train = HDF5Matrix('data_net1_small.h5', 'data', start=0, end=1000)
-    y_train = HDF5Matrix('data_net1_small.h5', 'labels', start=0, end=1000)
+    X_train = HDF5Matrix('data_net1_small.h5', 'data', start=0, end=100)
+    y_train = HDF5Matrix('data_net1_small.h5', 'labels', start=0, end=100)
     print X_train.shape
     print y_train.shape
 
