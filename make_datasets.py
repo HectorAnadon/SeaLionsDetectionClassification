@@ -135,8 +135,9 @@ def create_net_dataset(path, window_size, net):
 def get_shifted_windows(path, image_name, x, y, resolution_lvl):
 
     # Offset vectors
-    x_n = np.array([-6, -4, -2, 0, 2, 4, 6])
-    y_n = np.array([-6, -4, -2, 0, 2, 4, 6])
+    x_n = np.array([-4, -2, 0, 2, 4])
+    y_n = np.array([-4, -2, 0, 2, 4])
+    corners = []
 
     windows = []
     labels = []
@@ -149,11 +150,12 @@ def get_shifted_windows(path, image_name, x, y, resolution_lvl):
         for delta_y in y_n:
             window = cropAndChangeResolution(path, image_name, x+delta_x, y+delta_y, window_size, resolution_lvl)
             windows.append(np.array(window))
+            corners.append(np.array([x+delta_x, y+delta_y]))
             label = np.zeros(num_transf, 'uint8')
             label[transf] = 1
             labels.append(label)
             transf += 1
-    return  np.stack(windows), np.stack(labels)
+    return  np.stack(windows), np.stack(labels), np.uint16(np.stack(corners))
 
 
 def get_callib_samples(path, radius, net):
@@ -180,14 +182,16 @@ def get_callib_samples(path, radius, net):
                     if x > radius and x < (image.size[0] - radius) and y > radius and y < (image.size[1] - radius):
                         top_x = x - radius
                         top_y = y - radius
-                        data, label = get_shifted_windows(path, image_name, top_x, top_y, resolution_lvl)
+                        data, label, corner = get_shifted_windows(path, image_name, top_x, top_y, resolution_lvl)
                         print "\t ", len(data), "shifted windows"
                         positive_samples.append(data)
                         labels.append(label)
+                        corners.append(corner)
     # Concatenate
     positive_samples = np.stack(positive_samples)
     labels = np.stack(labels)
-    return positive_samples, labels
+    corners = np.uint16(np.stack(corners))
+    return positive_samples, labels, corners
 
 
 
@@ -195,7 +199,7 @@ def create_callib_dataset(path, window_size, net):
     import h5py
     radius = round(window_size / 2)
     # Get positive samples
-    X, corners, y = get_callib_samples(path, radius, net)
+    X, y, corners = get_callib_samples(path, radius, net)
     print X.shape 
     print corners.shape
     print y.shape
@@ -229,12 +233,14 @@ if __name__ == '__main__':
     # print neg_corners.shape
     # print neg_labels.shape
 
-    create_net_dataset(PATH, WINDOW_SIZE / 2, 1)
+    #create_net_dataset(PATH, WINDOW_SIZE / 2, 1)
     # # Instantiate HDF5Matrix for the training set
-    X_train = HDF5Matrix('data_net1_small.h5', 'data', start=0, end=100)
-    y_train = HDF5Matrix('data_net1_small.h5', 'labels', start=0, end=100)
-    print X_train.shape
-    print y_train.shape
+    #X_train = HDF5Matrix('data_net1_small.h5', 'data', start=0, end=100)
+    #y_train = HDF5Matrix('data_net1_small.h5', 'labels', start=0, end=100)
+    #print X_train.shape
+    #print y_train.shape
+
+    create_callib_dataset(PATH, WINDOW_SIZE, 1)
 
     # Zero center
 
@@ -284,4 +290,3 @@ if __name__ == '__main__':
 # model.fit(X_train, y_train, batch_size=32, shuffle='batch')
 
 # model.evaluate(X_test, y_test, batch_size=32)
-
