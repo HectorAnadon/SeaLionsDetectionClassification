@@ -99,7 +99,6 @@ def unison_shuffled_copies(a, b, c, d=None):
         return a[p], b[p], c[p]
 
 
-
 def create_net_dataset(path, window_size, net):
     import h5py
     radius = round(window_size / 2)

@@ -164,9 +164,9 @@ if __name__ == '__main__':
     a = sizeInfo(image,resolutions = [1,0.5,0.25])
     print(a)
 
-    image = cropAndChangeResolution("Data/",file_names[1],2250,2250,100,3)
+    image = cropAndChangeResolution("Data/",file_names[1],0,0,3328,1)
     coordinates = extractCoordinates("Data/", file_names[1])
-    label = getLabel(file_names[1], coordinates, 2250, 2250, 100);
+    label = getLabel(file_names[1], coordinates, 0, 0, 1000);
     print(label)
     plt.imshow(image)
     plt.show()

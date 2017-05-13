@@ -2,9 +2,7 @@ import pdb
 from keras.utils.io_utils import HDF5Matrix
 from PIL import Image
 import matplotlib.pyplot as plt
-
-
-from binary_nets import * 
+from binary_nets import *
 
 def train_net1():
 
@@ -13,6 +11,7 @@ def train_net1():
 	y_train = HDF5Matrix('data_net1_small.h5', 'labels', start=0, end=250)
 	print X_train.shape
 	print y_train.shape
+	pdb.set_trace()
 
 	#pdb.set_trace()
 
