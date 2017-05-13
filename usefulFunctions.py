@@ -152,6 +152,13 @@ def extractCoordinates(path, image_name):
 
     return  coordinates_df
 
+# Returns a window given the path, x and y
+def getWindow(path, x, y, resolution_lvl=1, size=100):
+	image = Image.open(path)
+	image = image.crop((x,y,x+size,y+size))
+	return changeResolution(image, resolution_lvl)
+
+
 #####################
 #      EXAMPLE      #
 #####################

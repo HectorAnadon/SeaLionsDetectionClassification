@@ -1,5 +1,5 @@
 import numpy as np
-from usefulFunctions import changeResolution
+from usefulFunctions import changeResolution, getWindow
 import os
 from PIL import Image
 import matplotlib.pyplot as plt
@@ -43,11 +43,6 @@ def sliding_window_net_1(image, padding=10, window_size=100):
 						break
 
 	return np.stack(windows)
-
-def getWindow(path, x, y, resolution_lvl=1, W=100, H=100):
-	image = Image.open(path)
-	image = image.crop((x,y,x+W,y+H))
-	return changeResolution(image, 3)
 
 
 
