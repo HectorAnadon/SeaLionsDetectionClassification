@@ -39,7 +39,7 @@ def get_positive_samples(path, radius, net):
                     y = coordinates[class_name][image_name][lion][1]
                     if x > radius and x < (image.size[0] - radius) and y > radius and y < (image.size[1] - radius):
                         # Crop window of chosen resolution level
-                        window = cropAndChangeResolution(path, image_name, x - radius, y - radius, radius * 2, resolution_lvl)
+                        window = cropAndChangeResolution(image, image_name, x - radius, y - radius, radius * 2, resolution_lvl)
                         # Append
                         positive_samples.append(np.array(window))
                         corners.append(np.array([x - radius, y - radius]))
@@ -74,7 +74,7 @@ def get_negative_samples(path, radius, net):
                 # Upper left corner coordinates
                 x = np.random.uniform(0, image.size[0] - 2 * radius)
                 y = np.random.uniform(0, image.size[1] - 2 * radius)
-                window = cropAndChangeResolution(path, image_name, x, y, radius * 2, resolution_lvl)
+                window = cropAndChangeResolution(image, image_name, x, y, radius * 2, resolution_lvl)
                 label = getLabel(image_name, coordinates, x, y, radius * 2)
                 # Append negative samples 
                 if label == [0, 1]:
@@ -134,11 +134,11 @@ def create_net_dataset(path, window_size, net):
     f.close()
 
 
-def get_shifted_windows(path, image_name, x, y, resolution_lvl):
+def get_shifted_windows(image, image_name, x, y, resolution_lvl):
 
     # Offset vectors
-    x_n = np.array([-4, -2, 0, 2, 4])
-    y_n = np.array([-4, -2, 0, 2, 4])
+    x_n = np.array([-6, -4, -2, 0, 2, 4, 6])
+    y_n = np.array([-6, -4, -2, 0, 2, 4, 6])
     corners = []
 
     windows = []
@@ -150,7 +150,7 @@ def get_shifted_windows(path, image_name, x, y, resolution_lvl):
     transf = 0
     for delta_x in x_n:
         for delta_y in y_n:
-            window = cropAndChangeResolution(path, image_name, x+delta_x, y+delta_y, window_size, resolution_lvl)
+            window = cropAndChangeResolution(image, image_name, x+delta_x, y+delta_y, window_size, resolution_lvl)
             windows.append(np.array(window))
             corners.append(np.array([x+delta_x, y+delta_y]))
             label = np.zeros(num_transf, 'uint8')
@@ -167,7 +167,7 @@ def get_callib_samples(path, radius, net):
     corners = []
     labels = []
 
-    for image_name in file_names[8:9]:
+    for image_name in file_names[1:8]:
         # Ignore OSX files
         if image_name != ".DS_Store":
             print "Processing ", image_name
@@ -184,12 +184,10 @@ def get_callib_samples(path, radius, net):
                     if x > radius and x < (image.size[0] - radius) and y > radius and y < (image.size[1] - radius):
                         top_x = x - radius
                         top_y = y - radius
-                        data, label, corner = get_shifted_windows(path, image_name, top_x, top_y, resolution_lvl)
-                        print "\t ", len(data), "shifted windows"
+                        data, label, corner = get_shifted_windows(image, image_name, top_x, top_y, resolution_lvl)
                         positive_samples.append(data)
                         labels.append(label)
                         corners.append(corner)
-                        pdb.set_trace()
     # Concatenate
     positive_samples = np.concatenate(positive_samples)
     labels = np.concatenate(labels)
@@ -243,7 +241,7 @@ if __name__ == '__main__':
     #print X_train.shape
     #print y_train.shape
 
-    create_callib_dataset(PATH, WINDOW_SIZE, 1)
+    create_callib_dataset(PATH, WINDOW_SIZE, 3)
 
     # Zero center
 
