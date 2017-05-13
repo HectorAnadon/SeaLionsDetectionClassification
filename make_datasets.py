@@ -102,7 +102,6 @@ def unison_shuffled_copies(a, b, c, d=None):
 
 def create_net_dataset(path, window_size, net):
     import h5py
-    res_lvl = get_resolution_level(net)
     radius = round(window_size / 2)
     # Get positive samples
     pos_samples, pos_corners, pos_labels, _ = get_positive_samples(path, radius, net)
@@ -158,7 +157,8 @@ def get_shifted_windows(path, image_name, x, y, resolution_lvl):
     return  np.stack(windows), np.stack(labels)
 
 
-def get_callib_samples(path, radius, resolution_lvl):
+def get_callib_samples(path, radius, net):
+    resolution_lvl = get_resolution_level(net)
     file_names = os.listdir(path + "Train/")
     positive_samples = []
     corners = []
@@ -192,14 +192,28 @@ def get_callib_samples(path, radius, resolution_lvl):
 
 
 
-
-
-# def sliding_windows_test():
-#     # Check image sizes
-#     # Make numpy array for each individual image
-#     # Concatenate numpy arrays
-#     pass
-
+def create_callib_dataset(path, window_size, net):
+    import h5py
+    radius = round(window_size / 2)
+    # Get positive samples
+    X, corners, y = get_callib_samples(path, radius, net)
+    print X.shape 
+    print corners.shape
+    print y.shape
+    # Shuffle data
+    X, corners, y = unison_shuffled_copies(X, corners, y)
+    # Save to disk
+    f = h5py.File('data_callib'+str(net)+'_small.h5', 'w')
+    # Create dataset to store images
+    X_dset = f.create_dataset('data', X.shape, dtype='f')
+    X_dset[:] = X
+    # Create dataset to store corners
+    corners_dset = f.create_dataset('corners', corners.shape, dtype='i')
+    corners_dset[:] = corners
+    # Create dataset to store labels
+    y_dset = f.create_dataset('labels', y.shape, dtype='i')
+    y_dset[:] = y
+    f.close()
 
 
 

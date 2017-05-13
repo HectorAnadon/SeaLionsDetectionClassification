@@ -1,5 +1,8 @@
+import pdb
 from keras.utils.io_utils import HDF5Matrix
 from PIL import Image
+import matplotlib.pyplot as plt
+
 
 from binary_nets import * 
 
@@ -11,12 +14,15 @@ def train_net1():
 	print X_train.shape
 	print y_train.shape
 
-	# Check some data
-	for idx in range(5):
-		print X_train[idx].shape
-		img = Image.fromarray(X_train[idx], 'RGB')
-		img.show()
-		print y_train[idx]
+	#pdb.set_trace()
+
+	# # Check some data
+	# for idx in range(5):
+	# 	print type(X_train[idx]), X_train[idx].shape
+	# 	#img = Image.fromarray(X_train[idx], 'RGB')
+	# 	plt.imshow(X_train[idx])
+	# 	plt.show()
+	# 	print y_train[idx]
 
 	# Instante HDF5Matrix for the test set
 	X_test = HDF5Matrix('data_net1_small.h5', 'data', start=250, end=300)
@@ -32,7 +38,7 @@ def train_net1():
 
 	layer, model = build_net_1(Input(shape=(25, 25, 3)))
 
-	model.compile(loss='categorical_crossentropy', optimizer='Nadam', metrics=['accuracy'])
+	model.compile(loss='categorical_crossentropy', optimizer='Adam', metrics=['accuracy'])
 
 	print model.summary()
 	# Note: you have to use shuffle='batch' or False with HDF5Matrix
