@@ -189,7 +189,6 @@ def get_callib_samples(path, radius, net):
                         positive_samples.append(data)
                         labels.append(label)
                         corners.append(corner)
-                        pdb.set_trace()
     # Concatenate
     positive_samples = np.concatenate(positive_samples)
     labels = np.concatenate(labels)
