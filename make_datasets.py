@@ -167,7 +167,7 @@ def get_callib_samples(path, radius, net):
     corners = []
     labels = []
 
-    for image_name in file_names[1:3]:
+    for image_name in file_names[8:9]:
         # Ignore OSX files
         if image_name != ".DS_Store":
             print "Processing ", image_name
@@ -189,10 +189,11 @@ def get_callib_samples(path, radius, net):
                         positive_samples.append(data)
                         labels.append(label)
                         corners.append(corner)
+                        pdb.set_trace()
     # Concatenate
-    positive_samples = np.stack(positive_samples)
-    labels = np.stack(labels)
-    corners = np.uint16(np.stack(corners))
+    positive_samples = np.concatenate(positive_samples)
+    labels = np.concatenate(labels)
+    corners = np.uint16(np.concatenate(corners))
     return positive_samples, labels, corners
 
 
