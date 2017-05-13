@@ -118,6 +118,8 @@ def create_net_dataset(path, window_size, net):
     y = np.concatenate((pos_labels, neg_labels))
     # Shuffle data
     X, corners, y = unison_shuffled_copies(X, corners, y)
+    # Normalize data
+    X /= 255.0
     # Save to disk
     f = h5py.File('data_net'+str(net)+'_small.h5', 'w')
     # Create dataset to store images
