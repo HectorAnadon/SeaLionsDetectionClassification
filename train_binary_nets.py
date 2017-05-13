@@ -1,4 +1,5 @@
 import pdb
+import sys
 from keras.utils.io_utils import HDF5Matrix
 from keras.callbacks import ModelCheckpoint
 from PIL import Image
@@ -35,7 +36,10 @@ def train_net1():
 
 	model.compile(loss='categorical_crossentropy', optimizer='Adam', metrics=['accuracy'])
 
- 	checkpointer = ModelCheckpoint(filepath="weights.hdf5", verbose=1, save_best_only=True)
+	# THIS IS NOT WORKING ATM (COMMENT OUT callbacks in model.fit to make it run)
+ 	#checkpointer = ModelCheckpoint(filepath="weights.hdf5", verbose=1, save_best_only=True)
+ 	checkpointer = ModelCheckpoint(filepath='weights.{epoch:02d}-{val_loss:.2f}.hdf5', monitor='val_loss', verbose=0, save_best_only=False, 
+ 		save_weights_only=False, mode='auto', period=1)
 
 	print model.summary()
 	# Note: you have to use shuffle='batch' or False with HDF5Matrix
@@ -52,8 +56,26 @@ def train_net1():
 	model.evaluate(X_test, y_test, batch_size=32)
 
 
-train_net1()
+def train_net2():
+	pass
 
-# NOTE
-# I changed activation for last layer to softmax so i can run it with current data 
-# (must be softmax for our one hot representation or sigmoid if we used single values)
+def train_net3():
+	pass
+
+
+if __name__ == '__main__':
+    try:
+        arg1 = sys.argv[1]
+    except IndexError:
+        print("Command line argument missing. Usage: train_net.py <net number>")
+        sys.exit(1)
+    if arg1 == '1':
+    	train_net1()
+    elif arg1 == '2':
+    	train_net2()
+    elif arg1 == '3':
+    	train_net3()
+    else:
+    	print("Wrong command line argument. Must be a value between 1-3.")
+
+
