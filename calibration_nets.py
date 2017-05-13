@@ -18,7 +18,7 @@ def calibration_net_1(input_img, N=45):
 	dense1 = Dense(128, activation='relu', use_bias=True, kernel_initializer='glorot_uniform', 
         bias_initializer='zeros', kernel_regularizer=None, bias_regularizer=None, 
         activity_regularizer=None, kernel_constraint=None, bias_constraint=None)(flatten)
-	dense2 = Dense(N, activation='relu', use_bias=True, kernel_initializer='glorot_uniform', 
+	dense2 = Dense(N, activation='softmax', use_bias=True, kernel_initializer='glorot_uniform',
         bias_initializer='zeros', kernel_regularizer=None, bias_regularizer=None, 
         activity_regularizer=None, kernel_constraint=None, bias_constraint=None)(dense1)
 	return Model(inputs=input_img, outputs=dense2)
@@ -34,7 +34,7 @@ def calibration_net_2(input_img, N=45):
 	dense1 = Dense(64, activation='relu', use_bias=True, kernel_initializer='glorot_uniform', 
         bias_initializer='zeros', kernel_regularizer=None, bias_regularizer=None, 
         activity_regularizer=None, kernel_constraint=None, bias_constraint=None)(flatten)
-	dense2 = Dense(N, activation='relu', use_bias=True, kernel_initializer='glorot_uniform', 
+	dense2 = Dense(N, activation='softmax', use_bias=True, kernel_initializer='glorot_uniform',
         bias_initializer='zeros', kernel_regularizer=None, bias_regularizer=None, 
         activity_regularizer=None, kernel_constraint=None, bias_constraint=None)(dense1)
 	return Model(inputs=input_img, outputs=dense2)
@@ -53,7 +53,7 @@ def calibration_net_3(input_img, N=45):
 	dense1 = Dense(256, activation='relu', use_bias=True, kernel_initializer='glorot_uniform', 
         bias_initializer='zeros', kernel_regularizer=None, bias_regularizer=None, 
         activity_regularizer=None, kernel_constraint=None, bias_constraint=None)(flatten)
-	dense2 = Dense(N, activation='relu', use_bias=True, kernel_initializer='glorot_uniform', 
+	dense2 = Dense(N, activation='softmax', use_bias=True, kernel_initializer='glorot_uniform',
         bias_initializer='zeros', kernel_regularizer=None, bias_regularizer=None, 
         activity_regularizer=None, kernel_constraint=None, bias_constraint=None)(dense1)
 	return Model(inputs=input_img, outputs=dense2)
