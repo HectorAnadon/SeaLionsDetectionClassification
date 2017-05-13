@@ -191,7 +191,7 @@ def get_callib_samples(path, radius, net):
     # Concatenate
     positive_samples = np.float64(np.concatenate(positive_samples))
     labels = np.uint8(np.concatenate(labels))
-    corners = np.uint16(np.concatenate(corners)))
+    corners = np.uint16(np.concatenate(corners))
     return positive_samples, labels, corners
 
 
