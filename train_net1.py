@@ -1,24 +1,38 @@
 from keras.utils.io_utils import HDF5Matrix
+from PIL import Image
 
 from binary_nets import * 
 
 def train_net1():
 
 	# Instante HDF5Matrix for the training set
-	X_train = HDF5Matrix('data_net1_small.h5', 'data', start=0, end=300)
-	y_train = HDF5Matrix('data_net1_small.h5', 'labels', start=0, end=300)
+	X_train = HDF5Matrix('data_net1_small.h5', 'data', start=0, end=250)
+	y_train = HDF5Matrix('data_net1_small.h5', 'labels', start=0, end=250)
 	print X_train.shape
 	print y_train.shape
 
+	# Check some data
+	for idx in range(5):
+		print X_train[idx].shape
+		img = Image.fromarray(X_train[idx], 'RGB')
+		img.show()
+		print y_train[idx]
+
 	# Instante HDF5Matrix for the test set
-	X_test = HDF5Matrix('data_net1_small.h5', 'data', start=300, end=350)
-	y_test = HDF5Matrix('data_net1_small.h5', 'labels', start=300, end=350)
+	X_test = HDF5Matrix('data_net1_small.h5', 'data', start=250, end=300)
+	y_test = HDF5Matrix('data_net1_small.h5', 'labels', start=250, end=300)
 	print X_test.shape
 	print y_test.shape
 
+	# Zero center
+	means = np.mean(X_train, axis = 0)
+	X_train -= means
+	X_test -= means
+
+
 	layer, model = build_net_1(Input(shape=(25, 25, 3)))
 
-	model.compile(loss='categorical_crossentropy', optimizer='sgd', metrics=['accuracy'])
+	model.compile(loss='categorical_crossentropy', optimizer='Nadam', metrics=['accuracy'])
 
 	print model.summary()
 	# Note: you have to use shuffle='batch' or False with HDF5Matrix
@@ -26,7 +40,7 @@ def train_net1():
 
 	model.fit(X_train, y_train,
 	          batch_size=32,
-	          epochs=100,
+	          epochs=30,
 	          verbose=1,
 	          validation_data=(X_test, y_test),
 	          shuffle='batch')
