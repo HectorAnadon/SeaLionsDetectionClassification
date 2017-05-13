@@ -137,8 +137,8 @@ def create_net_dataset(path, window_size, net):
 def get_shifted_windows(image, image_name, x, y, resolution_lvl):
 
     # Offset vectors
-    x_n = np.array([-6, -4, -2, 0, 2, 4, 6])
-    y_n = np.array([-6, -4, -2, 0, 2, 4, 6])
+    x_n = np.array([-20, -10, 0, 10, 20])
+    y_n = np.array([-20, -10, 0, 10, 20])
     corners = []
 
     windows = []
@@ -189,9 +189,9 @@ def get_callib_samples(path, radius, net):
                         labels.append(label)
                         corners.append(corner)
     # Concatenate
-    positive_samples = np.concatenate(positive_samples)
-    labels = np.concatenate(labels)
-    corners = np.uint16(np.concatenate(corners))
+    positive_samples = np.float64(np.concatenate(positive_samples))
+    labels = np.uint8(np.concatenate(labels))
+    corners = np.uint16(np.concatenate(corners)))
     return positive_samples, labels, corners
 
 
@@ -206,6 +206,8 @@ def create_callib_dataset(path, window_size, net):
     print y.shape
     # Shuffle data
     X, corners, y = unison_shuffled_copies(X, corners, y)
+    #Normalize
+    X /= 255.0
     # Save to disk
     f = h5py.File('data_callib'+str(net)+'_small.h5', 'w')
     # Create dataset to store images
