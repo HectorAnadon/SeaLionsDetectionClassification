@@ -46,11 +46,12 @@ def build_net_2(input_img):
         bias_initializer='zeros', kernel_regularizer=None, bias_regularizer=None, 
         activity_regularizer=None, kernel_constraint=None, bias_constraint=None)(flatten_2)
     # First net
-    input_img_1 = Input(shape=(25, 25, 3)) # TODO change this to proper image
+    size = input_img.get_shape().as_list()[1]
+    input_img_1 = Input(shape=(size / 2, size / 2, 3)) 
     network_1, _ = build_net_1(input_img_1)
     # Concatenate
     merged = concatenate([dense, network_1])
-    output = Dense(2, activation='relu', use_bias=True, kernel_initializer='glorot_uniform', 
+    output = Dense(2, activation='softmax', use_bias=True, kernel_initializer='glorot_uniform', 
         bias_initializer='zeros', kernel_regularizer=None, bias_regularizer=None, 
         activity_regularizer=None, kernel_constraint=None, bias_constraint=None)(dense)
     model = Model(inputs = [input_img, input_img_1] , outputs = output)
@@ -58,7 +59,7 @@ def build_net_2(input_img):
     return merged, model
 
 def build_net_3(input_img):
-    """Build the second convolutional network (e.g. 50-net)
+    """Build the second convolutional network (e.g. 100-net)
 
     input_img - Input() tensor
     """
@@ -78,11 +79,12 @@ def build_net_3(input_img):
         bias_initializer='zeros', kernel_regularizer=None, bias_regularizer=None, 
         activity_regularizer=None, kernel_constraint=None, bias_constraint=None)(flatten_3)
     # Second net
-    input_img_2 = Input(shape=(50, 50, 3)) # TODO change this to proper image
+    size = input_img.get_shape().as_list()[1]
+    input_img_2 = Input(shape=(size / 2, size / 2, 3)) 
     network_2, _ = build_net_2(input_img_2)
     # Concatenate
     flatten_merged = concatenate([dense, network_2])
-    output = Dense(2, activation='relu', use_bias=True, kernel_initializer='glorot_uniform', 
+    output = Dense(2, activation='softmax', use_bias=True, kernel_initializer='glorot_uniform', 
         bias_initializer='zeros', kernel_regularizer=None, bias_regularizer=None, 
         activity_regularizer=None, kernel_constraint=None, bias_constraint=None)(dense)
     return Model(inputs = [input_img, input_img_2] , outputs = output)

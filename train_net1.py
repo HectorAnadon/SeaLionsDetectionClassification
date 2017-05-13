@@ -1,5 +1,6 @@
 import pdb
 from keras.utils.io_utils import HDF5Matrix
+from keras.callbacks import ModelCheckpoint
 from PIL import Image
 import matplotlib.pyplot as plt
 from binary_nets import *
@@ -11,15 +12,12 @@ def train_net1():
 	y_train = HDF5Matrix('data_net3_small.h5', 'labels', start=0, end=250)
 	print X_train.shape
 	print y_train.shape
-	pdb.set_trace()
 
-	#pdb.set_trace()
-
-	# Check some data
-	for idx in range(50):
-		print y_train[idx]
-		plt.imshow(X_train[idx])
-		plt.show()
+	# # Check some data
+	# for idx in range(50):
+	# 	print y_train[idx]
+	# 	plt.imshow(X_train[idx])
+	# 	plt.show()
 
 	# Instante HDF5Matrix for the test set
 	X_test = HDF5Matrix('data_net3_small.h5', 'data', start=250, end=300)
@@ -37,6 +35,8 @@ def train_net1():
 
 	model.compile(loss='categorical_crossentropy', optimizer='Adam', metrics=['accuracy'])
 
+ 	checkpointer = ModelCheckpoint(filepath="weights.hdf5", verbose=1, save_best_only=True)
+
 	print model.summary()
 	# Note: you have to use shuffle='batch' or False with HDF5Matrix
 	#model.fit(X_train, y_train, batch_size=32, shuffle='batch')
@@ -44,9 +44,10 @@ def train_net1():
 	model.fit(X_train, y_train,
 	          batch_size=32,
 	          epochs=30,
-	          verbose=1,
 	          validation_data=(X_test, y_test),
-	          shuffle='batch')
+	          shuffle='batch',
+	          verbose=2, 
+	        	callbacks=[checkpointer])
 
 	model.evaluate(X_test, y_test, batch_size=32)
 
