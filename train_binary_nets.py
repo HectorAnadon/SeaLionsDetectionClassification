@@ -10,14 +10,14 @@ from global_variables import *
 
 def train_net1():
 	X_data = HDF5Matrix('Datasets/data_net1_small.h5', 'data')
-    y_data = HDF5Matrix('Datasets/data_net1_small.h5', 'labels')
+	y_data = HDF5Matrix('Datasets/data_net1_small.h5', 'labels')
 
 	num_images = y_data.shape[0]
-    train_split = TRAIN_SPLIT
-    X_train = X_data[0:int(round(train_split*num_images))]
-    y_train = y_data[0:int(round(train_split*num_images))]
-    X_test = X_data[int(round(train_split*num_images))+1:-1]
-    y_test = y_data[int(round(train_split*num_images))+1:-1]
+	train_split = TRAIN_SPLIT
+	X_train = X_data[0:int(round(train_split*num_images))]
+	y_train = y_data[0:int(round(train_split*num_images))]
+	X_test = X_data[int(round(train_split*num_images))+1:-1]
+	y_test = y_data[int(round(train_split*num_images))+1:-1]
 
 	# Zero center
 	means = np.mean(X_train, axis = 0)

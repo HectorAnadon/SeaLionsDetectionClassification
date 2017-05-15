@@ -1,4 +1,6 @@
 import numpy as np
+from global_variables import *
+from global_variables import *
 # np.random.seed(1337)  # for reproducibility
 
 from keras.models import Sequential, Model
@@ -11,7 +13,7 @@ from keras.utils import np_utils
 
 def calibration_net_1(input_img, N):
 	conv2d = Conv2D(16, (3, 3), input_shape=input_img.shape, strides=1, padding='same', dilation_rate=1, 
-        activation='relu', use_bias=True, kernel_initializer='glorot_uniform', 
+        activation='relu', use_bias=True, kernel_initializer='glorot_uniform',
         bias_initializer='zeros', kernel_regularizer=regularizers.l2(REGULARIZATION_CALIBRATION_1), bias_regularizer=None, 
         activity_regularizer=None, kernel_constraint=None, bias_constraint=None) (input_img)
 	max_pooling2d = MaxPooling2D(pool_size=(3, 3), strides=2, padding='valid')(conv2d)

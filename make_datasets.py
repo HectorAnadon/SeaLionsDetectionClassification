@@ -24,7 +24,7 @@ def get_positive_samples(path, radius, net):
 
     for image_name in file_names:
         # Ignore OSX files
-        if image_name != ".DS_Store" or image_name != "train.csv":
+        if image_name != ".DS_Store" and image_name != "train.csv":
             print("Processing ", image_name)
             image = Image.open(path + "Train/" + image_name)
             #CHECK IF THERE IS A SEA LION IN THE IMAGE
@@ -58,7 +58,7 @@ def get_positive_samples(path, radius, net):
     # Normalize data
     positive_samples /= 255.0
     # Save to disk
-    f = h5py.File('data_positive_net'+str(net)+'_small.h5', 'w')
+    f = h5py.File('Datasets/data_positive_net'+str(net)+'_small.h5', 'w')
     # Create dataset to store images
     X_dset = f.create_dataset('data', positive_samples.shape, dtype='f')
     X_dset[:] = positive_samples
@@ -78,7 +78,6 @@ def get_positive_samples(path, radius, net):
     f.close()
     return positive_samples.shape, binary_labels.shape
 
-
 def get_negative_samples(path, radius, net):
     """Get an array of negative samples (windows without lions), their upper left corner 
     coordinates and their labels (only binary format - NO SEA LION [0,1] / SEA LION [1,0])
@@ -90,7 +89,7 @@ def get_negative_samples(path, radius, net):
     labels = []
 
     for image_name in file_names:
-        if image_name != ".DS_Store" or image_name != "train.csv":
+        if image_name != ".DS_Store" and image_name != "train.csv":
             print("Processing ", image_name)
             image = Image.open(path + "Train/" + image_name)
             coordinates = extractCoordinates(path, image_name)
@@ -112,7 +111,7 @@ def get_negative_samples(path, radius, net):
     # Normalize data
     negative_samples /= 255.0
     # Save to disk
-    f = h5py.File('data_negative_net'+str(net)+'_small.h5', 'w')
+    f = h5py.File('Datasets/data_negative_net'+str(net)+'_small.h5', 'w')
     # Create dataset to store images
     X_dset = f.create_dataset('data', negative_samples.shape, dtype='f')
     X_dset[:] = negative_samples
@@ -127,7 +126,6 @@ def get_negative_samples(path, radius, net):
     f.close()
     return negative_samples.shape, labels.shape
 
-
 def unison_shuffled_copies(a, b, c=None, d=None):
     assert len(a) == len(b)
     p = np.random.permutation(len(a))
@@ -140,7 +138,6 @@ def unison_shuffled_copies(a, b, c=None, d=None):
             return a[p], b[p], c[p]
     else:
         return a[p], b[p]
-
 
 def create_net_dataset(path, window_size, net):
     """Combine positive and negative samples into one dataset.
@@ -173,7 +170,6 @@ def create_net_dataset(path, window_size, net):
     f.close()
     return X.shape, y.shape
 
-
 def get_shifted_windows(image, image_name, x, y, resolution_lvl):
 
     # Offset vectors
@@ -198,7 +194,6 @@ def get_shifted_windows(image, image_name, x, y, resolution_lvl):
             labels.append(label)
             transf += 1
     return  np.stack(windows), np.stack(labels), np.uint16(np.stack(corners))
-
 
 def get_callib_samples(path, radius, net):
     resolution_lvl = get_resolution_level(net)
@@ -234,8 +229,6 @@ def get_callib_samples(path, radius, net):
     corners = np.uint16(np.concatenate(corners))
     return positive_samples, labels, corners
 
-
-
 def create_callib_dataset(path, window_size, net):
     import h5py
     radius = round(window_size / 2)
@@ -269,11 +262,11 @@ if __name__ == '__main__':
     #print "POS", get_positive_samples(PATH, ORIGINAL_WINDOW_DIM / 2, 1)
     #print "NEG", get_negative_samples(PATH, ORIGINAL_WINDOW_DIM / 2, 1)
 
-    # print("COMBINED\n", create_net_dataset(PATH, ORIGINAL_WINDOW_DIM / 2, 1))
+    #print("COMBINED\n", create_net_dataset(PATH, ORIGINAL_WINDOW_DIM / 2, 1))
     
-    # # Instantiate HDF5Matrix for the training set
-    #X_train = HDF5Matrix('data_net1_small.h5', 'data', start=0, end=100)
-    #y_train = HDF5Matrix('data_net1_small.h5', 'labels', start=0, end=100)
+    # Instantiate HDF5Matrix for the training set
+    #X_train = HDF5Matrix('Datasets/data_net1_small.h5', 'data', start=0, end=100)
+    #y_train = HDF5Matrix('Datasets/data_net1_small.h5', 'labels', start=0, end=100)
     #print X_train.shape
     #print y_train.shape
 
