@@ -6,25 +6,26 @@ from keras.layers import Input
 from keras.layers.core import Dense, Dropout, Activation, Flatten
 from keras.layers.convolutional import Conv2D, MaxPooling2D
 from keras.layers.merge import concatenate
+from keras import regularizers
 from keras.utils import np_utils
 
-def calibration_net_1(input_img, N=45):
+def calibration_net_1(input_img, N):
 	conv2d = Conv2D(16, (3, 3), input_shape=input_img.shape, strides=1, padding='same', dilation_rate=1, 
         activation='relu', use_bias=True, kernel_initializer='glorot_uniform', 
-        bias_initializer='zeros', kernel_regularizer=None, bias_regularizer=None, 
+        bias_initializer='zeros', kernel_regularizer=regularizers.l2(0.001), bias_regularizer=None, 
         activity_regularizer=None, kernel_constraint=None, bias_constraint=None) (input_img)
 	max_pooling2d = MaxPooling2D(pool_size=(3, 3), strides=2, padding='valid')(conv2d)
 	flatten = Flatten()(max_pooling2d)
 	dense1 = Dense(128, activation='relu', use_bias=True, kernel_initializer='glorot_uniform', 
-        bias_initializer='zeros', kernel_regularizer=None, bias_regularizer=None, 
+        bias_initializer='zeros', kernel_regularizer=regularizers.l2(0.001), bias_regularizer=None, 
         activity_regularizer=None, kernel_constraint=None, bias_constraint=None)(flatten)
 	dense2 = Dense(N, activation='softmax', use_bias=True, kernel_initializer='glorot_uniform',
-        bias_initializer='zeros', kernel_regularizer=None, bias_regularizer=None, 
+        bias_initializer='zeros', kernel_regularizer=regularizers.l2(0.001), bias_regularizer=None, 
         activity_regularizer=None, kernel_constraint=None, bias_constraint=None)(dense1)
 	return Model(inputs=input_img, outputs=dense2)
 
 
-def calibration_net_2(input_img, N=45):
+def calibration_net_2(input_img, N):
 	conv2d = Conv2D(32, (5, 5), input_shape=input_img.shape, strides=1, padding='same', dilation_rate=1, 
         activation='relu', use_bias=True, kernel_initializer='glorot_uniform', 
         bias_initializer='zeros', kernel_regularizer=None, bias_regularizer=None, 
@@ -39,7 +40,7 @@ def calibration_net_2(input_img, N=45):
         activity_regularizer=None, kernel_constraint=None, bias_constraint=None)(dense1)
 	return Model(inputs=input_img, outputs=dense2)
 
-def calibration_net_3(input_img, N=45):
+def calibration_net_3(input_img, N):
 	conv2d_1 = Conv2D(64, (5, 5), input_shape=input_img.shape, strides=1, padding='same', dilation_rate=1, 
         activation='relu', use_bias=True, kernel_initializer='glorot_uniform', 
         bias_initializer='zeros', kernel_regularizer=None, bias_regularizer=None, 

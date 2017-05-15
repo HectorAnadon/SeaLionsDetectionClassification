@@ -29,7 +29,7 @@ def train_net1():
 	model.compile(loss='categorical_crossentropy', optimizer='Adam', metrics=['accuracy'])
 
  	# Checkpoint (for saving the weights)
-	filepath = 'weights_net1_best.hdf5'
+	filepath = 'Weights/weights_binary_net1.hdf5'
 	checkpoint = ModelCheckpoint(filepath, monitor='val_acc', verbose=1, save_best_only=True, 
 			save_weights_only=True, mode='max')
 	callbacks_list = [checkpoint]

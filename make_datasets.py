@@ -25,8 +25,8 @@ def get_positive_samples(path, radius, net):
 
     for image_name in file_names[1:3]:
         # Ignore OSX files
-        if image_name != ".DS_Store":
-            print "Processing ", image_name
+        if image_name != ".DS_Store" or image_name != "train.csv":
+            print("Processing ", image_name)
             image = Image.open(path + "Train/" + image_name)
             #CHECK IF THERE IS A SEA LION IN THE IMAGE
             coordinates = extractCoordinates(path, image_name)
@@ -66,8 +66,8 @@ def get_negative_samples(path, radius, net):
     labels = []
 
     for image_name in file_names:
-        if image_name != ".DS_Store":
-            print "Processing ", image_name
+        if image_name != ".DS_Store" or image_name != "train.csv":
+            print("Processing ", image_name)
             image = Image.open(path + "Train/" + image_name)
             coordinates = extractCoordinates(path, image_name)
             for it in range(15):
@@ -104,14 +104,14 @@ def create_net_dataset(path, window_size, net):
     radius = round(window_size / 2)
     # Get positive samples
     pos_samples, pos_corners, pos_labels, _ = get_positive_samples(path, radius, net)
-    print pos_samples.shape 
-    print pos_corners.shape
-    print pos_labels.shape
+    print(pos_samples.shape)
+    print (pos_corners.shape)
+    print (pos_labels.shape)
     # Get negative samples
     neg_samples, neg_corners, neg_labels = get_negative_samples(path, radius, net)
-    print neg_samples.shape 
-    print neg_corners.shape
-    print neg_labels.shape
+    print (neg_samples.shape )
+    print (neg_corners.shape)
+    print (neg_labels.shape)
     # Concatenate positive and negative
     X = np.concatenate((pos_samples, neg_samples))
     corners = np.concatenate((pos_corners, neg_corners))
@@ -121,7 +121,7 @@ def create_net_dataset(path, window_size, net):
     # Normalize data
     X /= 255.0
     # Save to disk
-    f = h5py.File('data_net'+str(net)+'_small.h5', 'w')
+    f = h5py.File('Datasets/data_net'+str(net)+'_small.h5', 'w')
     # Create dataset to store images
     X_dset = f.create_dataset('data', X.shape, dtype='f')
     X_dset[:] = X
@@ -137,8 +137,8 @@ def create_net_dataset(path, window_size, net):
 def get_shifted_windows(image, image_name, x, y, resolution_lvl):
 
     # Offset vectors
-    x_n = np.array([-20, -10, 0, 10, 20])
-    y_n = np.array([-20, -10, 0, 10, 20])
+    x_n = np.array([-30, 0, 30])
+    y_n = np.array([-30, 0, 30])
     corners = []
 
     windows = []
@@ -167,10 +167,10 @@ def get_callib_samples(path, radius, net):
     corners = []
     labels = []
 
-    for image_name in file_names[1:8]:
+    for image_name in file_names:
         # Ignore OSX files
-        if image_name != ".DS_Store":
-            print "Processing ", image_name
+        if image_name != ".DS_Store" and image_name != "train.csv":
+            print ("Processing ", image_name)
             image = Image.open(path + "Train/" + image_name)
             #CHECK IF THERE IS A SEA LION IN THE IMAGE
             coordinates = extractCoordinates(path, image_name)
@@ -201,15 +201,15 @@ def create_callib_dataset(path, window_size, net):
     radius = round(window_size / 2)
     # Get positive samples
     X, y, corners = get_callib_samples(path, radius, net)
-    print X.shape 
-    print corners.shape
-    print y.shape
+    print (X.shape )
+    print (corners.shape)
+    print (y.shape)
     # Shuffle data
     X, corners, y = unison_shuffled_copies(X, corners, y)
     #Normalize
     X /= 255.0
     # Save to disk
-    f = h5py.File('data_callib'+str(net)+'_small.h5', 'w')
+    f = h5py.File('Datasets/data_callib'+str(net)+'_small.h5', 'w')
     # Create dataset to store images
     X_dset = f.create_dataset('data', X.shape, dtype='f')
     X_dset[:] = X
@@ -243,7 +243,7 @@ if __name__ == '__main__':
     #print X_train.shape
     #print y_train.shape
 
-    create_callib_dataset(PATH, WINDOW_SIZE, 3)
+    create_callib_dataset(PATH, WINDOW_SIZE, 1)
 
     # Zero center
 
