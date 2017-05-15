@@ -1,8 +1,10 @@
 from keras.utils.io_utils import HDF5Matrix
+import matplotlib.pyplot as plt
 from PIL import Image
 import numpy as np
 import os
 import time
+import h5py
 
 
 from usefulFunctions import *
@@ -19,7 +21,7 @@ def get_positive_samples(path, radius, net):
     resolution_lvl = get_resolution_level(net)
     file_names = os.listdir(path + "Train/")
     positive_samples = []
-    corners = []
+    # corners = []
     binary_labels = []
     multiclass_labels = []
 
@@ -42,17 +44,42 @@ def get_positive_samples(path, radius, net):
                         window = cropAndChangeResolution(image, image_name, x - radius, y - radius, radius * 2, resolution_lvl)
                         # Append
                         positive_samples.append(np.array(window))
-                        corners.append(np.array([x - radius, y - radius]))
-                        binary_labels.append([1,0])
-                        multiclass =  np.zeros(5, 'uint8')
-                        multiclass[class_index] = 1
-                        multiclass_labels.append(multiclass)
+                        # corners.append(np.array([x - radius, y - radius]))
+                        if (net <= 3):
+                            binary_labels.append([1,0])
+                        else:
+                            multiclass =  np.zeros(5, 'uint8')
+                            multiclass[class_index] = 1
+                            multiclass_labels.append(multiclass)
     # Concatenate
     positive_samples = np.float64(np.stack(positive_samples))
-    corners = np.uint16(np.stack(corners))
-    binary_labels = np.uint8(np.array(binary_labels))
-    multiclass_labels = np.uint8(np.stack(multiclass_labels))
-    return positive_samples, corners, binary_labels, multiclass_labels
+    #corners = np.uint16(np.stack(corners))
+    if (net <= 3):
+        binary_labels = np.uint8(np.array(binary_labels))
+    else:
+        multiclass_labels = np.uint8(np.stack(multiclass_labels))
+    # Normalize data
+    positive_samples /= 255.0
+    # Save to disk
+    f = h5py.File('data_positive_net'+str(net)+'_small.h5', 'w')
+    # Create dataset to store images
+    X_dset = f.create_dataset('data', positive_samples.shape, dtype='f')
+    X_dset[:] = positive_samples
+    print(X_dset.shape)
+    # Create dataset to store corners
+    # corners_dset = f.create_dataset('corners', corners.shape, dtype='i')
+    # corners_dset[:] = corners
+    # Create dataset to store labels
+    if (net <= 3):
+        y_dset = f.create_dataset('labels', binary_labels.shape, dtype='i')
+        y_dset[:] = binary_labels
+        print (y_dset.shape)
+    else:
+        y_dset = f.create_dataset('labels', multiclass_labels.shape, dtype='i')
+        y_dset[:] = multiclass_labels  
+        print (y_dset.shape)
+    f.close()
+    return positive_samples.shape, binary_labels.shape
 
 
 def get_negative_samples(path, radius, net):
@@ -79,59 +106,75 @@ def get_negative_samples(path, radius, net):
                 # Append negative samples 
                 if label == [0, 1]:
                     negative_samples.append(np.array(window))
-                    corners.append(np.array([x, y]))
+                    # corners.append(np.array([x, y]))
                     labels.append(label)
     # Concatenate
     negative_samples = np.float64(np.stack(negative_samples))
-    corners = np.uint16(np.stack(corners))
+    # corners = np.uint16(np.stack(corners))
     labels = np.uint8(np.array(labels))
+    # Normalize data
+    negative_samples /= 255.0
+    # Save to disk
+    f = h5py.File('data_negative_net'+str(net)+'_small.h5', 'w')
+    # Create dataset to store images
+    X_dset = f.create_dataset('data', negative_samples.shape, dtype='f')
+    X_dset[:] = negative_samples
+    print (X_dset.shape)
+    # Create dataset to store corners
+    # corners_dset = f.create_dataset('corners', corners.shape, dtype='i')
+    # corners_dset[:] = corners
+    # Create dataset to store labels
+    y_dset = f.create_dataset('labels', labels.shape, dtype='i')
+    y_dset[:] = labels
+    print (y_dset.shape)
+    f.close()
+    return negative_samples.shape, labels.shape
 
-    return negative_samples, corners, labels
 
-
-def unison_shuffled_copies(a, b, c, d=None):
-    assert len(a) == len(b) and len(b) == len(c)
+def unison_shuffled_copies(a, b, c=None, d=None):
+    assert len(a) == len(b)
     p = np.random.permutation(len(a))
-    if d != None:
-        assert len(a) == len(d)
-        return a[p], b[p], c[p], d[p]
+    if c != None:
+        assert len(a) == len(c)
+        if d != None:
+            assert len(a) == len(d)
+            return a[p], b[p], c[p], d[p]
+        else:
+            return a[p], b[p], c[p]
     else:
-        return a[p], b[p], c[p]
+        return a[p], b[p]
 
 
 def create_net_dataset(path, window_size, net):
-    import h5py
+    """Combine positive and negative samples into one dataset.
+    """
     radius = round(window_size / 2)
-    # Get positive samples
-    pos_samples, pos_corners, pos_labels, _ = get_positive_samples(path, radius, net)
-    print(pos_samples.shape)
-    print (pos_corners.shape)
-    print (pos_labels.shape)
-    # Get negative samples
-    neg_samples, neg_corners, neg_labels = get_negative_samples(path, radius, net)
-    print (neg_samples.shape )
-    print (neg_corners.shape)
-    print (neg_labels.shape)
+    # Load positive samples
+    pos_samples = HDF5Matrix('data_positive_net'+str(net)+'_small.h5', 'data')
+    pos_labels = HDF5Matrix('data_positive_net'+str(net)+'_small.h5', 'labels')
+    # Load negative samples
+    neg_samples = HDF5Matrix('data_negative_net'+str(net)+'_small.h5', 'data')
+    neg_labels = HDF5Matrix('data_negative_net'+str(net)+'_small.h5', 'labels')
+    # Check normalization
+    assert np.amax(pos_samples) <= 1 and np.amax(neg_samples) <= 1
     # Concatenate positive and negative
     X = np.concatenate((pos_samples, neg_samples))
-    corners = np.concatenate((pos_corners, neg_corners))
     y = np.concatenate((pos_labels, neg_labels))
     # Shuffle data
-    X, corners, y = unison_shuffled_copies(X, corners, y)
-    # Normalize data
-    X /= 255.0
+    X, y = unison_shuffled_copies(X, y)
     # Save to disk
     f = h5py.File('Datasets/data_net'+str(net)+'_small.h5', 'w')
     # Create dataset to store images
     X_dset = f.create_dataset('data', X.shape, dtype='f')
     X_dset[:] = X
     # Create dataset to store corners
-    corners_dset = f.create_dataset('corners', corners.shape, dtype='i')
-    corners_dset[:] = corners
+    # corners_dset = f.create_dataset('corners', corners.shape, dtype='i')
+    # corners_dset[:] = corners
     # Create dataset to store labels
     y_dset = f.create_dataset('labels', y.shape, dtype='i')
     y_dset[:] = y
     f.close()
+    return X.shape, y.shape
 
 
 def get_shifted_windows(image, image_name, x, y, resolution_lvl):
@@ -226,70 +269,15 @@ def create_callib_dataset(path, window_size, net):
 """Testing"""
 if __name__ == '__main__':
 
-    # pos_samples, pos_corners, pos_labels, _ = get_positive_samples(PATH, WINDOW_SIZE / 2, 1)
-    # print pos_samples.shape 
-    # print pos_corners.shape
-    # print pos_labels.shape
+    #print "POS", get_positive_samples(PATH, WINDOW_SIZE / 2, 1)
+    #print "NEG", get_negative_samples(PATH, WINDOW_SIZE / 2, 1)
 
-    # neg_samples, neg_corners, neg_labels = get_negative_samples(PATH, WINDOW_SIZE / 2, 1)
-    # print neg_samples.shape 
-    # print neg_corners.shape
-    # print neg_labels.shape
-
-    #create_net_dataset(PATH, WINDOW_SIZE / 2, 1)
+    print("COMBINED\n", create_net_dataset(PATH, WINDOW_SIZE / 2, 1))
+    
     # # Instantiate HDF5Matrix for the training set
     #X_train = HDF5Matrix('data_net1_small.h5', 'data', start=0, end=100)
     #y_train = HDF5Matrix('data_net1_small.h5', 'labels', start=0, end=100)
     #print X_train.shape
     #print y_train.shape
 
-    create_callib_dataset(PATH, WINDOW_SIZE, 1)
-
-    # Zero center
-
-    # Likewise for the test set
-    # X_test = HDF5Matrix('data_net1_small.h5', 'data', start=1000, end=1200)
-    # y_test = HDF5Matrix('data_net1_small.h5', 'labels', start=1000, end=1200)
-
-    # print "checkpoint2"
-    # positive_samples, labels = get_callib_data(PATH, WINDOW_SIZE / 2, 1)
-
-
-# def create_training_dataset():
-#     import h5py
-#     X = np.random.randn(200,10).astype('float32')
-
-#     y = np.random.randint(0, 2, size=(200,1))
-#     f = h5py.File('train_small.h5', 'w')
-#     # Creating dataset to store features
-#     X_dset = f.create_dataset('my_data', (200,10), dtype='f')
-#     X_dset[:] = X
-#     # Creating dataset to store labels
-#     y_dset = f.create_dataset('my_labels', (200,1), dtype='i')
-#     y_dset[:] = y
-#     f.close()
-
-# create_dataset()
-
-# # Instantiating HDF5Matrix for the training set, which is a slice of the first 150 elements
-# X_train = HDF5Matrix('test.h5', 'my_data', start=0, end=150)
-# y_train = HDF5Matrix('test.h5', 'my_labels', start=0, end=150)
-
-# # Likewise for the test set
-# X_test = HDF5Matrix('test.h5', 'my_data', start=150, end=200)
-# y_test = HDF5Matrix('test.h5', 'my_labels', start=150, end=200)
-
-# # HDF5Matrix behave more or less like Numpy matrices with regards to indexing
-# print(y_train[10])
-# # But they do not support negative indices, so don't try print(X_train[-1])
-
-# model = Sequential()
-# model.add(Dense(64, input_shape=(10,), activation='relu'))
-# model.add(Dense(1, activation='sigmoid'))
-
-# model.compile(loss='binary_crossentropy', optimizer='sgd')
-
-# # Note: you have to use shuffle='batch' or False with HDF5Matrix
-# model.fit(X_train, y_train, batch_size=32, shuffle='batch')
-
-# model.evaluate(X_test, y_test, batch_size=32)
+    # create_callib_dataset(PATH, WINDOW_SIZE, 1)
