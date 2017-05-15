@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 
 def sliding_window_net_1(image, padding=10, window_size=100):
 	windows = []
+	corners = []
 	size_x,size_y = image.size
 	x = 0
 	y = 0
@@ -15,6 +16,7 @@ def sliding_window_net_1(image, padding=10, window_size=100):
 		#crop image
 		window = image.crop((x,y,x+window_size,y+window_size))
 		#change resolution
+		corners.append(np.array([x,y]))
 		windows.append(changeResolution(window, 3))
 		#update window
 		x += padding
@@ -42,7 +44,7 @@ def sliding_window_net_1(image, padding=10, window_size=100):
 					else:
 						break
 
-	return np.stack(windows)
+	return np.stack(windows), np.stack(corners)
 
 
 
@@ -51,13 +53,18 @@ if __name__ == "__main__":
 	file_names = os.listdir("Data/Train/")
 	image = Image.open("Data/Train/" + file_names[0])
 	print(file_names[0])
-	windows = sliding_window_net_1(image)
+	size_x,size_y = image.size
+	print(size_x, size_y)
+	windows, corners = sliding_window_net_1(image)
 	print(windows.shape)
+	print(corners[0])
 	plt.imshow(windows[0])
 	plt.show()
 	plt.imshow(getWindow("Data/Train/" + file_names[0], 0, 0, 3))
 	plt.show()
+	print(corners[79542])
 	plt.imshow(windows[79542])
 	plt.show()
+	print(corners[159083])
 	plt.imshow(windows[159083])
 	plt.show()
