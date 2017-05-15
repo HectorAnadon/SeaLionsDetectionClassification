@@ -7,9 +7,9 @@ import cv2
 import skimage.feature
 import pandas as pd
 import time
+from global_variables import *
 
 
-ORIGINAL_WINDOW_DIM = 100
 
 
 #RETURNS THE IMAGE SIZE IN EACH RESOLUTION

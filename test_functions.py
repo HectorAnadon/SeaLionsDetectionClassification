@@ -3,8 +3,9 @@ from usefulFunctions import changeResolution, getWindow
 import os
 from PIL import Image
 import matplotlib.pyplot as plt
+from global_variables import *
 
-def sliding_window_net_1(image, padding=10, window_size=100):
+def sliding_window_net_1(image, padding=PADDING_SLIDING_WINDOW, window_size=ORIGINAL_WINDOW_DIM):
 	windows = []
 	corners = []
 	size_x,size_y = image.size
