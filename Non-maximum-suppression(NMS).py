@@ -4,7 +4,7 @@
 import numpy as np
 import pdb
 
-def non_max_suppression_slow(images,corners,overlapThresh,size): #COMMON VALUES FOR "overlapThresh" ARE BETWEEN 0.3 AND 0.5
+def non_max_suppression_slow(corners,overlapThresh,size): #COMMON VALUES FOR "overlapThresh" ARE BETWEEN 0.3 AND 0.5
 
     # IF THERE ARE NO BOXES, RETURN EMPY LIST
     if len(images) == 0:
@@ -64,9 +64,8 @@ def non_max_suppression_slow(images,corners,overlapThresh,size): #COMMON VALUES 
         # DELETE ALL INDEXES IN THE LIST THAT ARE IN THE
         # SUPPRESSION LIST
         idxs = np.delete(idxs, suppress)
-
         # RETURN ONLY THE BOUNDING BOXES THAT WERE PICKED
-    return images[pick,:,:,:]
+    return corners[pick,:]
 
 
 ###################
@@ -75,4 +74,5 @@ def non_max_suppression_slow(images,corners,overlapThresh,size): #COMMON VALUES 
 
 images = np.random.randn(20,100,100,3)
 corners = np.random.randn(20,2)
-picked_images = non_max_suppression_slow(images,corners,0.3,100)
+picked_corners = non_max_suppression_slow(corners,0.3,100)
+print(picked_corners)
