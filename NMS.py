@@ -1,13 +1,12 @@
-
-
 # IMPORT PACKAGES
 import numpy as np
 import pdb
+from global_variables import *
 
-def non_max_suppression_slow(corners,overlapThresh,size): #COMMON VALUES FOR "overlapThresh" ARE BETWEEN 0.3 AND 0.5
+def non_max_suppression_slow(corners,overlapThresh): #COMMON VALUES FOR "overlapThresh" ARE BETWEEN 0.3 AND 0.5
 
     # IF THERE ARE NO BOXES, RETURN EMPY LIST
-    if len(images) == 0:
+    if corners.shape[0] == 0:
         return []
 
     # INITIALIZE THE LIST OF PICKED INDEXES
@@ -16,8 +15,8 @@ def non_max_suppression_slow(corners,overlapThresh,size): #COMMON VALUES FOR "ov
     # GRAB THE COORDINATES OF THE BOUNDING BOXES
     x1 = corners[:, 0]
     y1 = corners[:, 1]
-    x2 = corners[:, 0] + size
-    y2 = corners[:, 1] + size
+    x2 = corners[:, 0] + ORIGINAL_WINDOW_DIM
+    y2 = corners[:, 1] + ORIGINAL_WINDOW_DIM
 
     # COMPUTE THE AREA OF THE BOUNDING BOXES AND SORT THE BOUNDING
     # BOXES BY THE BOTTON-RIGHT Y-COORDINATE OF THE BOUNDING BOX
@@ -36,7 +35,7 @@ def non_max_suppression_slow(corners,overlapThresh,size): #COMMON VALUES FOR "ov
         suppress = [last]
 
         # LOOP OVER ALL INDEXES IN THE LIST
-        for pos in xrange(0, last):
+        for pos in range(0, last):
             # GRAB THE CURRENT INDEX
             j = idxs[pos]
 

@@ -24,9 +24,11 @@ def train_net1():
 	X_train -= means
 	X_test -= means
 
+	np.save('Datasets/means_net1.npy',means)
+
 	# Create model
 	layer, model = build_net_1(Input(shape=(X_train.shape[1], X_train.shape[2], 3)))
-	print model.summary()
+	print (model.summary())
 
 	# Compile model
 	model.compile(loss='categorical_crossentropy', optimizer='Adam', metrics=['accuracy'])

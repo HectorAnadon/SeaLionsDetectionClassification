@@ -12,5 +12,7 @@ CLASSES = ["adult_males", "subadult_males", "adult_females", "juveniles", "pups"
 
 REGULARIZATION_CALIBRATION_1 = 0.001
 
-NUM_NEG_SAMPLES = 15 # Number of negative samples per image
+NUM_NEG_SAMPLES = 15 # Number of negative samples per image TODO: SET THIS
 PATH = "Data/"
+
+OVERLAPPING_THRES = 0.3

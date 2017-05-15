@@ -15,7 +15,7 @@ def predict_net1(X_test, corners_test):
 	layer, model = build_net_1(Input(shape=(X_test.shape[1], X_test.shape[2], 3)))
 
 	# Load weights
-	model.load_weights('Weights/weights_net1_best.hdf5')
+	model.load_weights('Weights/weights_binary_net1.hdf5')
 
 	# Compile model
 	model.compile(loss='categorical_crossentropy', optimizer='Adam', metrics=['accuracy'])
