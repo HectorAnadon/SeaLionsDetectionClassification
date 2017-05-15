@@ -8,7 +8,6 @@ from sklearn import model_selection as ms
 from global_variables import *
 
 def train_calibr_net1():
-    N = 9
     X_data = HDF5Matrix('Datasets/data_callib1_small.h5', 'data')
     y_data = HDF5Matrix('Datasets/data_callib1_small.h5', 'labels')
     print (X_data.shape)
@@ -16,7 +15,7 @@ def train_calibr_net1():
     
 
     num_images = y_data.shape[0]
-    train_split = 0.9
+    train_split = TRAIN_SPLIT
     X_train = X_data[0:int(round(train_split*num_images))]
     y_train = y_data[0:int(round(train_split*num_images))]
     X_test = X_data[int(round(train_split*num_images))+1:-1]
@@ -26,7 +25,7 @@ def train_calibr_net1():
     X_train -= means
     X_test -= means
 
-    model = calibration_net_1(Input(shape=(25, 25, 3)), N_CALIBRATION_TRANSFORMATIONS)
+    model = calibration_net_1(Input(shape=(INPUT_SIZE_NET_1, INPUT_SIZE_NET_1, 3)), N_CALIBRATION_TRANSFORMATIONS)
 
     model.compile(loss='categorical_crossentropy', optimizer='Adam', metrics=['accuracy'])
 

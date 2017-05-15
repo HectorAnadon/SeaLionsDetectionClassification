@@ -44,7 +44,10 @@ def sliding_window_net_1(image, padding=10, window_size=100):
 					else:
 						break
 
-	return np.stack(windows), np.stack(corners)
+	#Normalize
+	windows = np.stack(windows) / 255.0
+
+	return windows, np.stack(corners)
 
 
 
@@ -57,6 +60,7 @@ if __name__ == "__main__":
 	print(size_x, size_y)
 	windows, corners = sliding_window_net_1(image)
 	print(windows.shape)
+	print(windows[0])
 	print(corners[0])
 	plt.imshow(windows[0])
 	plt.show()
