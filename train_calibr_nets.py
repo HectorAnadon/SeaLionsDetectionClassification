@@ -5,11 +5,12 @@ from PIL import Image
 import matplotlib.pyplot as plt
 from calibration_nets import *
 from sklearn import model_selection as ms
+from global_variables import *
 
 def train_calibr_net1():
     N = 9
-    X_data = HDF5Matrix('data_callib1_small.h5', 'data')
-    y_data = HDF5Matrix('data_callib1_small.h5', 'labels')
+    X_data = HDF5Matrix('Datasets/data_callib1_small.h5', 'data')
+    y_data = HDF5Matrix('Datasets/data_callib1_small.h5', 'labels')
     print (X_data.shape)
     print (y_data.shape)
     
@@ -25,7 +26,7 @@ def train_calibr_net1():
     X_train -= means
     X_test -= means
 
-    model = calibration_net_1(Input(shape=(25, 25, 3)),N)
+    model = calibration_net_1(Input(shape=(25, 25, 3)), N_CALIBRATION_TRANSFORMATIONS)
 
     model.compile(loss='categorical_crossentropy', optimizer='Adam', metrics=['accuracy'])
 
@@ -33,7 +34,7 @@ def train_calibr_net1():
     # Note: you have to use shuffle='batch' or False with HDF5Matrix
     #model.fit(X_train, y_train, batch_size=32, shuffle='batch')
 
-    filepath = 'weights_calibration_net1.hdf5'
+    filepath = 'Weights/weights_calibration_net1.hdf5'
     checkpoint = ModelCheckpoint(filepath, monitor='val_acc', verbose=1, save_best_only=True, 
             save_weights_only=True, mode='max')
     callbacks_list = [checkpoint]

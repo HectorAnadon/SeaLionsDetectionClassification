@@ -9,12 +9,12 @@ from binary_nets import *
 
 def train_net1():
 	# Instante HDF5Matrix for the training set
-	X_train = HDF5Matrix('data_net1_small.h5', 'data', start=0, end=250)
-	y_train = HDF5Matrix('data_net1_small.h5', 'labels', start=0, end=250)
+	X_train = HDF5Matrix('Datasets/data_net1_small.h5', 'data', start=0, end=250)
+	y_train = HDF5Matrix('Datasets/data_net1_small.h5', 'labels', start=0, end=250)
 
 	# Instante HDF5Matrix for the test set
-	X_test = HDF5Matrix('data_net1_small.h5', 'data', start=250, end=300)
-	y_test = HDF5Matrix('data_net1_small.h5', 'labels', start=250, end=300)
+	X_test = HDF5Matrix('Datasets/data_net1_small.h5', 'data', start=250, end=300)
+	y_test = HDF5Matrix('Datasets/data_net1_small.h5', 'labels', start=250, end=300)
 
 	# Zero center
 	means = np.mean(X_train, axis = 0)
