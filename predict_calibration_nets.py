@@ -5,7 +5,7 @@ import numpy as np
 
 def predict_calib_net1(X_test):
 
-    means = HDF5Matrix('./Dataset/means_calib1.h5', 'mean')
+    means = np.load('Datasets/means_calib1.npy')
     X_test -= means
 
     # Create model
@@ -20,13 +20,13 @@ def predict_calib_net1(X_test):
 
     return labels
 
-def predict_calib_net2(X_test, N = 9):
+def predict_calib_net2(X_test):
 
-    means = HDF5Matrix('./Dataset/means_calib2.h5', 'mean')
+    means = np.load('Datasets/means_calib2.npy')
     X_test -= means
 
     # Create model
-    model = calibration_net_2(Input(shape=(X_test.shape[1], X_test.shape[2], 3)),N)
+    model = calibration_net_2(Input(shape=(X_test.shape[1], X_test.shape[2], 3)),N_CALIBRATION_TRANSFORMATIONS)
 
     # Load model
     model.load_weights('./Weights/weights_calibration_net2.hdf5')
@@ -37,13 +37,13 @@ def predict_calib_net2(X_test, N = 9):
 
     return labels
 
-def predict_calib_net2(X_test, N = 9):
+def predict_calib_net2(X_test):
 
-    means = HDF5Matrix('./Dataset/means_calib3.h5', 'mean')
+    means = np.load('Datasets/means_calib3.npy')
     X_test -= means
 
     # Create model
-    model = calibration_net_3(Input(shape=(X_test.shape[1], X_test.shape[2], 3)),N)
+    model = calibration_net_3(Input(shape=(X_test.shape[1], X_test.shape[2], 3)),N_CALIBRATION_TRANSFORMATIONS)
 
     # Load model
     model.load_weights('./Weights/weights_calibration_net3.hdf5')

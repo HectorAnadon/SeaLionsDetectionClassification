@@ -12,7 +12,6 @@ def train_calibr_net1():
     y_data = HDF5Matrix('Datasets/data_callib1_small.h5', 'labels')
     print (X_data.shape)
     print (y_data.shape)
-    
 
     num_images = y_data.shape[0]
     train_split = TRAIN_SPLIT
@@ -24,6 +23,8 @@ def train_calibr_net1():
     means = np.mean(X_train, axis = 0)
     X_train -= means
     X_test -= means
+
+    np.save('Datasets/means_calib1.npy',means)
 
     model = calibration_net_1(Input(shape=(X_train.shape[1], X_train.shape[2], 3)), N_CALIBRATION_TRANSFORMATIONS)
 
