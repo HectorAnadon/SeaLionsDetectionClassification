@@ -48,4 +48,5 @@ def train_calibr_net1():
 
     model.evaluate(X_test, y_test, batch_size=32)
 
-train_calibr_net1()
+if __name__ == '__main__':
+    train_calibr_net1()

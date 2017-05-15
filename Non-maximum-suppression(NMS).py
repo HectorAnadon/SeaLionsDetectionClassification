@@ -71,8 +71,8 @@ def non_max_suppression_slow(corners,overlapThresh,size): #COMMON VALUES FOR "ov
 ###################
 #       TEST      #
 ###################
-
-images = np.random.randn(20,100,100,3)
-corners = np.random.randn(20,2)
-picked_corners = non_max_suppression_slow(corners,0.3,100)
-print(picked_corners)
+if __name__ == '__main__':
+    images = np.random.randn(20,100,100,3)
+    corners = np.random.randn(20,2)
+    picked_corners = non_max_suppression_slow(corners,0.3,100)
+    print(picked_corners)

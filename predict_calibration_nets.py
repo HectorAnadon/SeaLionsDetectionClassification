@@ -56,6 +56,6 @@ def predict_calib_net2(X_test, N = 9):
 ##################
 #       RUN      #
 ##################
-
-samples = np.random.randn(20,25,25,3)
-pred = predict_calib_net1(samples, N = 9)
+if __name__ == '__main__':
+    samples = np.random.randn(20,25,25,3)
+    pred = predict_calib_net1(samples, N = 9)

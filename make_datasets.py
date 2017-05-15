@@ -8,11 +8,8 @@ import h5py
 
 
 from usefulFunctions import *
+from global_variables import *
 
-
-PATH = "Data/"
-WINDOW_SIZE = 100
-NUM_NEG_SAMPLES = 130 # Number of negative samples per image
 
 def get_positive_samples(path, radius, net):
     """Get an array of positive samples (windows containing lions), their upper left corner 
@@ -25,14 +22,14 @@ def get_positive_samples(path, radius, net):
     binary_labels = []
     multiclass_labels = []
 
-    for image_name in file_names[1:3]:
+    for image_name in file_names:
         # Ignore OSX files
         if image_name != ".DS_Store" or image_name != "train.csv":
             print("Processing ", image_name)
             image = Image.open(path + "Train/" + image_name)
             #CHECK IF THERE IS A SEA LION IN THE IMAGE
             coordinates = extractCoordinates(path, image_name)
-            classes = enumerate(["adult_males", "subadult_males", "adult_females", "juveniles", "pups"])
+            classes = enumerate(CLASSES)
             for class_index, class_name in classes:
                 for lion in range(len(coordinates[class_name][image_name])):
                     # Only consider sea lions within radius pixels from the edge
@@ -97,7 +94,7 @@ def get_negative_samples(path, radius, net):
             print("Processing ", image_name)
             image = Image.open(path + "Train/" + image_name)
             coordinates = extractCoordinates(path, image_name)
-            for it in range(15):
+            for it in range(NUM_NEG_SAMPLES):
                 # Upper left corner coordinates
                 x = np.random.uniform(0, image.size[0] - 2 * radius)
                 y = np.random.uniform(0, image.size[1] - 2 * radius)
@@ -180,8 +177,8 @@ def create_net_dataset(path, window_size, net):
 def get_shifted_windows(image, image_name, x, y, resolution_lvl):
 
     # Offset vectors
-    x_n = np.array([-30, 0, 30])
-    y_n = np.array([-30, 0, 30])
+    x_n = np.array(X_N)
+    y_n = np.array(Y_N)
     corners = []
 
     windows = []
@@ -217,7 +214,7 @@ def get_callib_samples(path, radius, net):
             image = Image.open(path + "Train/" + image_name)
             #CHECK IF THERE IS A SEA LION IN THE IMAGE
             coordinates = extractCoordinates(path, image_name)
-            classes = enumerate(["adult_males", "subadult_males", "adult_females", "juveniles", "pups"])
+            classes = enumerate(CLASSES)
             for class_index, class_name in classes:
                 for lion in range(len(coordinates[class_name][image_name])):
                     # Only consider sea lions within radius pixels from the edge
@@ -269,10 +266,10 @@ def create_callib_dataset(path, window_size, net):
 """Testing"""
 if __name__ == '__main__':
 
-    #print "POS", get_positive_samples(PATH, WINDOW_SIZE / 2, 1)
-    #print "NEG", get_negative_samples(PATH, WINDOW_SIZE / 2, 1)
+    #print "POS", get_positive_samples(PATH, ORIGINAL_WINDOW_DIM / 2, 1)
+    #print "NEG", get_negative_samples(PATH, ORIGINAL_WINDOW_DIM / 2, 1)
 
-    # print("COMBINED\n", create_net_dataset(PATH, WINDOW_SIZE / 2, 1))
+    # print("COMBINED\n", create_net_dataset(PATH, ORIGINAL_WINDOW_DIM / 2, 1))
     
     # # Instantiate HDF5Matrix for the training set
     #X_train = HDF5Matrix('data_net1_small.h5', 'data', start=0, end=100)
@@ -280,4 +277,4 @@ if __name__ == '__main__':
     #print X_train.shape
     #print y_train.shape
 
-    create_callib_dataset(PATH, WINDOW_SIZE, 1)
+    create_callib_dataset(PATH, ORIGINAL_WINDOW_DIM, 1)

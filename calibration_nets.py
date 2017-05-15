@@ -1,5 +1,5 @@
 import numpy as np
-np.random.seed(1337)  # for reproducibility
+# np.random.seed(1337)  # for reproducibility
 
 from keras.models import Sequential, Model
 from keras.layers import Input
@@ -12,15 +12,15 @@ from keras.utils import np_utils
 def calibration_net_1(input_img, N):
 	conv2d = Conv2D(16, (3, 3), input_shape=input_img.shape, strides=1, padding='same', dilation_rate=1, 
         activation='relu', use_bias=True, kernel_initializer='glorot_uniform', 
-        bias_initializer='zeros', kernel_regularizer=regularizers.l2(0.001), bias_regularizer=None, 
+        bias_initializer='zeros', kernel_regularizer=regularizers.l2(REGULARIZATION_CALIBRATION_1), bias_regularizer=None, 
         activity_regularizer=None, kernel_constraint=None, bias_constraint=None) (input_img)
 	max_pooling2d = MaxPooling2D(pool_size=(3, 3), strides=2, padding='valid')(conv2d)
 	flatten = Flatten()(max_pooling2d)
 	dense1 = Dense(128, activation='relu', use_bias=True, kernel_initializer='glorot_uniform', 
-        bias_initializer='zeros', kernel_regularizer=regularizers.l2(0.001), bias_regularizer=None, 
+        bias_initializer='zeros', kernel_regularizer=regularizers.l2(REGULARIZATION_CALIBRATION_1), bias_regularizer=None, 
         activity_regularizer=None, kernel_constraint=None, bias_constraint=None)(flatten)
 	dense2 = Dense(N, activation='softmax', use_bias=True, kernel_initializer='glorot_uniform',
-        bias_initializer='zeros', kernel_regularizer=regularizers.l2(0.001), bias_regularizer=None, 
+        bias_initializer='zeros', kernel_regularizer=regularizers.l2(REGULARIZATION_CALIBRATION_1), bias_regularizer=None, 
         activity_regularizer=None, kernel_constraint=None, bias_constraint=None)(dense1)
 	return Model(inputs=input_img, outputs=dense2)
 

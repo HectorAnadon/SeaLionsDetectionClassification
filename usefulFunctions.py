@@ -60,7 +60,7 @@ def changeResolution(image, resolution_lvl):
 
 def getLabel(image_name, coordinates, x0, y0, s):
     label = [0,1]
-    classes = ["adult_males", "subadult_males", "adult_females", "juveniles", "pups"]
+    classes = CLASSES
     for lion_class in classes:
         for lion in range(len(coordinates[lion_class][image_name])):
             if coordinates[lion_class][image_name][lion][0] > x0 and coordinates[lion_class][image_name][lion][0] < (x0 + s)\
@@ -77,7 +77,7 @@ def cropAndChangeResolution(image,image_name,x0,y0,s,resolution_lvl):
 def extractCoordinates(path, image_name):
 
     #DATAFRAME TO STORE THE RESULTS
-    classes = ["adult_males", "subadult_males", "adult_females", "juveniles", "pups"]
+    classes = CLASSES
     coordinates_df = pd.DataFrame(index=list([image_name]), columns=classes)
 
     # READ TRAIN AND DOTTED IMAGES
@@ -139,9 +139,9 @@ def extractCoordinates(path, image_name):
     return  coordinates_df
 
 # Returns a window given the path, x and y
-def getWindow(path, x, y, resolution_lvl=1, size=100):
+def getWindow(path, x, y, resolution_lvl=1):
 	image = Image.open(path)
-	image = image.crop((x,y,x+size,y+size))
+	image = image.crop((x,y,x+ORIGINAL_WINDOW_DIM,y+ORIGINAL_WINDOW_DIM))
 	return changeResolution(image, resolution_lvl)
 
 

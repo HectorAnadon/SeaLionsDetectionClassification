@@ -1,5 +1,5 @@
 import numpy as np
-np.random.seed(1337)  # for reproducibility
+# np.random.seed(1337)  # for reproducibility
 
 from keras.models import Sequential, Model
 from keras.layers import Input
