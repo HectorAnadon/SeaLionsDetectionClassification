@@ -1,5 +1,5 @@
 import numpy as np
-from usefulFunctions import changeResolution, getWindow
+from usefulFunctions import cropAndChangeResolution, getWindow
 import os
 from PIL import Image
 import matplotlib.pyplot as plt
@@ -12,13 +12,16 @@ def sliding_window_net_1(image, padding=PADDING_SLIDING_WINDOW, window_size=ORIG
 	x = 0
 	y = 0
 
-	while (y+window_size <= size_y):
+	debug = 0
 
-		#crop image
-		window = image.crop((x,y,x+window_size,y+window_size))
-		#change resolution
+	while (y+window_size <= size_y and debug < 100):
+
+
+		window = cropAndChangeResolution(image, 'image_name', x, y, window_size, 3)
+		windows.append(np.array(window))
+
 		corners.append(np.array([x,y]))
-		windows.append(changeResolution(window, 3))
+		
 		#update window
 		x += padding
 		if (x+window_size > size_x):
@@ -44,11 +47,9 @@ def sliding_window_net_1(image, padding=PADDING_SLIDING_WINDOW, window_size=ORIG
 						y = size_y-window_size
 					else:
 						break
+		debug += 1
 
-	#Normalize
-	windows = np.stack(windows) / 255.0
-
-	return windows, np.stack(corners)
+	return np.stack(windows) /255.0, np.stack(corners)
 
 
 

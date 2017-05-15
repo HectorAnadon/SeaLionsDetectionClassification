@@ -5,7 +5,7 @@ from keras.utils.io_utils import HDF5Matrix
 from binary_nets import *
 
 
-def predict_net1(X_test):
+def predict_net1(X_test, corners_test):
 	# Load training data mean 
 	# means = HDF5Matrix('means_net1.h5', 'data')
 	# Zero center
@@ -15,7 +15,7 @@ def predict_net1(X_test):
 	layer, model = build_net_1(Input(shape=(X_test.shape[1], X_test.shape[2], 3)))
 
 	# Load weights
-	model.load_weights('weights_net1_best.hdf5')
+	model.load_weights('Weights/weights_net1_best.hdf5')
 
 	# Compile model
 	model.compile(loss='categorical_crossentropy', optimizer='Adam', metrics=['accuracy'])
@@ -29,8 +29,7 @@ def predict_net1(X_test):
 	idx = np.reshape(idx, (idx.shape[0],))
 
 	# Return only windows containing sealions
-	X_test = np.array(X_test)
-	return X_test[idx]
+	return X_test[idx], corners_test[idx]
 
 
 
@@ -48,7 +47,7 @@ if __name__ == '__main__':
 
 	X_train = HDF5Matrix('data_net1_small.h5', 'data', start=0, end=250)
 	output = predict_net1(X_train)
-	print output.shape
+	print (output.shape)
 	for i in range(output.shape[0]):
 		img = output[i,:,:,:]
 		plt.imshow(img)
