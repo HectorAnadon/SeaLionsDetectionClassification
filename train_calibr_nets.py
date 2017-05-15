@@ -25,7 +25,7 @@ def train_calibr_net1():
     X_train -= means
     X_test -= means
 
-    model = calibration_net_1(Input(shape=(INPUT_SIZE_NET_1, INPUT_SIZE_NET_1, 3)), N_CALIBRATION_TRANSFORMATIONS)
+    model = calibration_net_1(Input(shape=(X_train.shape[1], X_train.shape[2], 3)), N_CALIBRATION_TRANSFORMATIONS)
 
     model.compile(loss='categorical_crossentropy', optimizer='Adam', metrics=['accuracy'])
 
