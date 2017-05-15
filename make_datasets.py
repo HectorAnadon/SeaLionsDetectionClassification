@@ -150,11 +150,11 @@ def create_net_dataset(path, window_size, net):
     """
     radius = round(window_size / 2)
     # Load positive samples
-    pos_samples = HDF5Matrix('data_positive_net'+str(net)+'_small.h5', 'data')
-    pos_labels = HDF5Matrix('data_positive_net'+str(net)+'_small.h5', 'labels')
+    pos_samples = HDF5Matrix('Datasets/data_positive_net'+str(net)+'_small.h5', 'data')
+    pos_labels = HDF5Matrix('Datasets/data_positive_net'+str(net)+'_small.h5', 'labels')
     # Load negative samples
-    neg_samples = HDF5Matrix('data_negative_net'+str(net)+'_small.h5', 'data')
-    neg_labels = HDF5Matrix('data_negative_net'+str(net)+'_small.h5', 'labels')
+    neg_samples = HDF5Matrix('Datasets/data_negative_net'+str(net)+'_small.h5', 'data')
+    neg_labels = HDF5Matrix('Datasets/data_negative_net'+str(net)+'_small.h5', 'labels')
     # Check normalization
     assert np.amax(pos_samples) <= 1 and np.amax(neg_samples) <= 1
     # Concatenate positive and negative
@@ -272,7 +272,7 @@ if __name__ == '__main__':
     #print "POS", get_positive_samples(PATH, WINDOW_SIZE / 2, 1)
     #print "NEG", get_negative_samples(PATH, WINDOW_SIZE / 2, 1)
 
-    print("COMBINED\n", create_net_dataset(PATH, WINDOW_SIZE / 2, 1))
+    # print("COMBINED\n", create_net_dataset(PATH, WINDOW_SIZE / 2, 1))
     
     # # Instantiate HDF5Matrix for the training set
     #X_train = HDF5Matrix('data_net1_small.h5', 'data', start=0, end=100)
@@ -280,4 +280,4 @@ if __name__ == '__main__':
     #print X_train.shape
     #print y_train.shape
 
-    # create_callib_dataset(PATH, WINDOW_SIZE, 1)
+    create_callib_dataset(PATH, WINDOW_SIZE, 1)
