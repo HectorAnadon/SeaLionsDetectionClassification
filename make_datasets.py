@@ -229,7 +229,7 @@ def get_shifted_windows(image, image_name, x, y, resolution_lvl):
             transf += 1
     return  np.stack(windows), np.stack(labels), np.uint16(np.stack(corners))
 
-def get_callib_samples(path, radius, net):
+def get_calib_samples(path, radius, net):
     resolution_lvl = get_resolution_level(net)
     file_names = os.listdir(path + "Train/")
     positive_samples = []
@@ -262,17 +262,17 @@ def get_callib_samples(path, radius, net):
     corners = np.uint16(np.concatenate(corners))
     return positive_samples, labels, corners
 
-def create_callib_dataset(path, window_size, net):
+def create_calib_dataset(path, window_size, net):
     import h5py
     radius = round(window_size / 2)
     # Get positive samples
-    X, y, corners = get_callib_samples(path, radius, net)
+    X, y, corners = get_calib_samples(path, radius, net)
     # Shuffle data
     X, corners, y = unison_shuffled_copies(X, corners, y)
     #Normalize
     X /= 255.0
     # Save to disk
-    f = h5py.File('Datasets/data_callib'+str(net)+'_small.h5', 'w')
+    f = h5py.File('Datasets/data_calib'+str(net)+'_small.h5', 'w')
     # Create dataset to store images
     X_dset = f.create_dataset('data', X.shape, dtype='f')
     X_dset[:] = X
@@ -304,9 +304,9 @@ if __name__ == '__main__':
 
     """Create calibration net datasets"""
 
-    # print("CALIB 1\n", create_callib_dataset(PATH, ORIGINAL_WINDOW_DIM, 1))
-    # print("CALIB 2\n", create_callib_dataset(PATH, ORIGINAL_WINDOW_DIM, 2))
-    # print("CALIB 3\n", create_callib_dataset(PATH, ORIGINAL_WINDOW_DIM, 3))
+    print("CALIB 1\n", create_calib_dataset(PATH, ORIGINAL_WINDOW_DIM, 1))
+    print("CALIB 2\n", create_calib_dataset(PATH, ORIGINAL_WINDOW_DIM, 2))
+    print("CALIB 3\n", create_calib_dataset(PATH, ORIGINAL_WINDOW_DIM, 3))
 
     """Testing"""
 

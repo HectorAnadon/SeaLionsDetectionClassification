@@ -12,7 +12,7 @@ from predict_calibration_nets import *
 
 def test_net_1(image):
 	windows, corners = sliding_window_net_1(image)
-	windows, corners = predict_net1(windows, corners)
+	windows, corners = predict_binary_net1(windows, corners)
 	labels = predict_calib_net1(windows)
 	movsDict = createCalibrationDictionary()
 	corners = calibrate(corners, labels, movsDict)
@@ -25,6 +25,6 @@ def test_net_1(image):
 
 if __name__ == '__main__':
 	file_names = os.listdir("Data/Train/")
-	image = Image.open("Data/Train/" + file_names[0])
-	print(file_names[0])
+	image = Image.open("Data/Train/" + file_names[1])
+	print(file_names[1])
 	test_net_1(image)
