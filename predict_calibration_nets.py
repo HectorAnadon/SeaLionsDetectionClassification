@@ -2,6 +2,7 @@ from keras.utils.io_utils import HDF5Matrix
 from calibration_nets import *
 from global_variables import *
 import numpy as np
+import pdb
 
 def predict_calib_net1(X_test):
 
@@ -16,7 +17,13 @@ def predict_calib_net1(X_test):
 
     # Predict values
     prediction  = model.predict(X_test)
-    labels = np.argmax(prediction, axis = 1)
+    labels = []
+    for i in range(X_test.shape[0]):
+        lab = []
+        for j in range(len(prediction[i,:])):
+            if prediction[i,j] > CALIBRATION_THRESHOLD:
+                lab.append(j)
+        labels.append(lab)
 
     return labels
 
@@ -33,7 +40,13 @@ def predict_calib_net2(X_test):
 
     # Predict values
     prediction  = model.predict(X_test)
-    labels = np.argmax(prediction, axis = 1)
+    labels = []
+    for i in range(X_test.shape[0]):
+        lab = []
+        for j in range(len(prediction[i,:])):
+            if prediction[i,j] > CALIBRATION_THRESHOLD:
+                lab.append(j)
+        labels.append(lab)
 
     return labels
 
@@ -50,7 +63,13 @@ def predict_calib_net2(X_test):
 
     # Predict values
     prediction  = model.predict(X_test)
-    labels = np.argmax(prediction, axis = 1)
+    labels = []
+    for i in range(X_test.shape[0]):
+        lab = []
+        for j in range(len(prediction[i,:])):
+            if prediction[i,j] > CALIBRATION_THRESHOLD:
+                lab.append(j)
+        labels.append(lab)
 
     return labels
 

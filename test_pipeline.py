@@ -22,7 +22,6 @@ def test_net_1(image):
 		plt.show()
 
 
-
 if __name__ == '__main__':
 	file_names = os.listdir("Data/Train/")
 	image = Image.open("Data/Train/" + file_names[1])

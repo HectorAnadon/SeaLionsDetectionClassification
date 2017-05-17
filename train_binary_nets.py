@@ -104,18 +104,26 @@ def train_binary_net3():
 	X_test -= means
 	# Save means (for testing)
 	np.save('Datasets/means_net3.npy', means)
-	# Load data (previous net)
+	# Load data (2nd net)
 	X_data = HDF5Matrix('Datasets/data_net2_small.h5', 'data')
 	y_data = HDF5Matrix('Datasets/data_net2_small.h5', 'labels')
 	# Split into training and validation sets
-	X_train_prev, y_train_prev, X_test_prev, y_test_prev = split_data(X_data, y_data, TRAIN_SPLIT)
+	X_train2, y_train2, X_test2, y_test2 = split_data(X_data, y_data, TRAIN_SPLIT)
 	# Zero center
 	means = np.load('Datasets/means_net2.npy')
-	X_train_prev -= means
-	X_test_prev -= means
-
+	X_train2 -= means
+	X_test2 -= means
+	# Load data (1st net)
+	X_data = HDF5Matrix('Datasets/data_net1_small.h5', 'data')
+	y_data = HDF5Matrix('Datasets/data_net1_small.h5', 'labels')
+	# Split into training and validation sets
+	X_train1, y_train1, X_test1, y_test1 = split_data(X_data, y_data, TRAIN_SPLIT)
+	# Zero center
+	means = np.load('Datasets/means_net1.npy')
+	X_train1 -= means
+	X_test1 -= means
 	# Check the labels are the same
-	assert np.array_equal(y_train, y_train_prev) and np.array_equal(y_test, y_test_prev)
+	assert np.array_equal(y_train, y_train2) and np.array_equal(y_train, y_train1)
 
 	# Create model
 	model = build_net_3(Input(shape=(X_train.shape[1], X_train.shape[2], 3)))
@@ -128,10 +136,10 @@ def train_binary_net3():
 			save_weights_only=True, mode='max')
 	callbacks_list = [checkpoint]
 	# Train model (and save the weights)
-	model.fit([X_train, X_train_prev], y_train,
+	model.fit([X_train, X_train2, X_train1], y_train,
 			batch_size=32,
 			epochs=30,
-			validation_data=([X_test, X_test_prev], y_test),
+			validation_data=([X_test, X_test2, X_test1], y_test),
 			shuffle='batch', # Have to use shuffle='batch' or False with HDF5Matrix
 			verbose=0, 
 			callbacks=callbacks_list)
