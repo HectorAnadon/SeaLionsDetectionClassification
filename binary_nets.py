@@ -82,12 +82,13 @@ def build_net_3(input_img):
     size = input_img.get_shape().as_list()[1]
     input_img_2 = Input(shape=(size / 2, size / 2, 3)) 
     network_2, _ = build_net_2(input_img_2)
+    input_img_1 = Input(shape=(size / 4, size / 4, 3)) 
     # Concatenate
     flatten_merged = concatenate([dense, network_2])
     output = Dense(2, activation='softmax', use_bias=True, kernel_initializer='glorot_uniform', 
         bias_initializer='zeros', kernel_regularizer=None, bias_regularizer=None, 
         activity_regularizer=None, kernel_constraint=None, bias_constraint=None)(flatten_merged)
-    return Model(inputs = [input_img, input_img_2] , outputs = output)
+    return Model(inputs = [input_img, [input_img_2, input_img_1]] , outputs = output)
 
 
 
