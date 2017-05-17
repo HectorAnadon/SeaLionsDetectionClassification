@@ -137,10 +137,10 @@ def train_binary_net3():
 			save_weights_only=True, mode='max')
 	callbacks_list = [checkpoint]
 	# Train model (and save the weights)
-	model.fit([X_train, [X_train2, X_train1]], y_train,
+	model.fit([X_train, X_train2, X_train1], y_train,
 			batch_size=32,
 			epochs=30,
-			validation_data=([X_test, [X_test2, X_test1]], y_test),
+			validation_data=([X_test, X_test2, X_test1], y_test),
 			shuffle='batch', # Have to use shuffle='batch' or False with HDF5Matrix
 			verbose=0, 
 			callbacks=callbacks_list)
