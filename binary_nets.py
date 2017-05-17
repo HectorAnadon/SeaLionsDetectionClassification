@@ -53,7 +53,7 @@ def build_net_2(input_img):
     merged = concatenate([dense, network_1])
     output = Dense(2, activation='softmax', use_bias=True, kernel_initializer='glorot_uniform', 
         bias_initializer='zeros', kernel_regularizer=None, bias_regularizer=None, 
-        activity_regularizer=None, kernel_constraint=None, bias_constraint=None)(dense)
+        activity_regularizer=None, kernel_constraint=None, bias_constraint=None)(merged)
     model = Model(inputs = [input_img, input_img_1] , outputs = output)
 
     return merged, model
@@ -63,31 +63,46 @@ def build_net_3(input_img):
 
     input_img - Input() tensor
     """
-    # Second net
-    conv2d_1 = Conv2D(64, (5, 5), input_shape=input_img.shape, strides=1, padding='same', dilation_rate=1, 
+    # Third net
+    conv2d_1_3 = Conv2D(64, (5, 5), input_shape=input_img.shape, strides=1, padding='same', dilation_rate=1, 
         activation='relu', use_bias=True, kernel_initializer='glorot_uniform', 
         bias_initializer='zeros', kernel_regularizer=None, bias_regularizer=None, 
         activity_regularizer=None, kernel_constraint=None, bias_constraint=None) (input_img)
-    max_pooling2d_1 = MaxPooling2D(pool_size=(3, 3), strides=2, padding='valid')(conv2d_1)
-    conv2d_2 = Conv2D(64, (5, 5), strides=1, padding='same', dilation_rate=1, 
+    max_pooling2d_1_3 = MaxPooling2D(pool_size=(3, 3), strides=2, padding='valid')(conv2d_1_3)
+    conv2d_2_3 = Conv2D(64, (5, 5), strides=1, padding='same', dilation_rate=1, 
         activation='relu', use_bias=True, kernel_initializer='glorot_uniform', 
         bias_initializer='zeros', kernel_regularizer=None, bias_regularizer=None, 
-        activity_regularizer=None, kernel_constraint=None, bias_constraint=None) (max_pooling2d_1)
-    max_pooling2d_2 = MaxPooling2D(pool_size=(3, 3), strides=2, padding='valid')(conv2d_2)
-    flatten_3 = Flatten()(max_pooling2d_2)
-    dense = Dense(256, activation='relu', use_bias=True, kernel_initializer='glorot_uniform', 
+        activity_regularizer=None, kernel_constraint=None, bias_constraint=None) (max_pooling2d_1_3)
+    max_pooling2d_2_3 = MaxPooling2D(pool_size=(3, 3), strides=2, padding='valid')(conv2d_2_3)
+    flatten_3 = Flatten()(max_pooling2d_2_3)
+    dense_3 = Dense(256, activation='relu', use_bias=True, kernel_initializer='glorot_uniform', 
         bias_initializer='zeros', kernel_regularizer=None, bias_regularizer=None, 
         activity_regularizer=None, kernel_constraint=None, bias_constraint=None)(flatten_3)
+    
     # Second net
     size = input_img.get_shape().as_list()[1]
     input_img_2 = Input(shape=(size / 2, size / 2, 3)) 
-    network_2, _ = build_net_2(input_img_2)
-    # Concatenate
-    flatten_merged = concatenate([dense, network_2])
+    conv2d = Conv2D(64, (5, 5), input_shape=input_img_2.shape, strides=1, padding='same', dilation_rate=1, 
+        activation='relu', use_bias=True, kernel_initializer='glorot_uniform', 
+        bias_initializer='zeros', kernel_regularizer=None, bias_regularizer=None, 
+        activity_regularizer=None, kernel_constraint=None, bias_constraint=None) (input_img_2)
+    max_pooling2d = MaxPooling2D(pool_size=(3, 3), strides=2, padding='valid')(conv2d)
+    flatten_2 = Flatten()(max_pooling2d)
+    dense = Dense(128, activation='relu', use_bias=True, kernel_initializer='glorot_uniform', 
+        bias_initializer='zeros', kernel_regularizer=None, bias_regularizer=None, 
+        activity_regularizer=None, kernel_constraint=None, bias_constraint=None)(flatten_2)
+    # First net
+    input_img_1 = Input(shape=(size / 4, size / 4, 3)) 
+    network_1, _ = build_net_1(input_img_1)
+    # Concatenate 2 and 1
+    network_2 = concatenate([dense, network_1])
+
+    # Concatenate 3 and 2
+    flatten_merged = concatenate([dense_3, network_2])
     output = Dense(2, activation='softmax', use_bias=True, kernel_initializer='glorot_uniform', 
         bias_initializer='zeros', kernel_regularizer=None, bias_regularizer=None, 
-        activity_regularizer=None, kernel_constraint=None, bias_constraint=None)(dense)
-    return Model(inputs = [input_img, input_img_2] , outputs = output)
+        activity_regularizer=None, kernel_constraint=None, bias_constraint=None)(flatten_merged)
+    return Model(inputs = [input_img, input_img_2, input_img_1] , outputs = output)
 
 
 
