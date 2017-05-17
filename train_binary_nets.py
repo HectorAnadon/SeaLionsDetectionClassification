@@ -28,7 +28,6 @@ def train_binary_net1():
 	print(model.summary())
 	# Compile model
 	model.compile(loss='categorical_crossentropy', optimizer='Adam', metrics=['accuracy'])
-	model.compile(loss='categorical_crossentropy', optimizer='Adam', metrics=['accuracy'])
  	# Checkpoint (for saving the weights)
 	filepath = 'Weights/weights_binary_net1.hdf5'
 	checkpoint = ModelCheckpoint(filepath, monitor='val_acc', verbose=1, save_best_only=True, 
