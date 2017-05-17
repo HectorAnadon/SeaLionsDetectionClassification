@@ -53,7 +53,7 @@ def build_net_2(input_img):
     merged = concatenate([dense, network_1])
     output = Dense(2, activation='softmax', use_bias=True, kernel_initializer='glorot_uniform', 
         bias_initializer='zeros', kernel_regularizer=None, bias_regularizer=None, 
-        activity_regularizer=None, kernel_constraint=None, bias_constraint=None)(dense)
+        activity_regularizer=None, kernel_constraint=None, bias_constraint=None)(merged)
     model = Model(inputs = [input_img, input_img_1] , outputs = output)
 
     return merged, model
@@ -86,7 +86,7 @@ def build_net_3(input_img):
     flatten_merged = concatenate([dense, network_2])
     output = Dense(2, activation='softmax', use_bias=True, kernel_initializer='glorot_uniform', 
         bias_initializer='zeros', kernel_regularizer=None, bias_regularizer=None, 
-        activity_regularizer=None, kernel_constraint=None, bias_constraint=None)(dense)
+        activity_regularizer=None, kernel_constraint=None, bias_constraint=None)(flatten_merged)
     return Model(inputs = [input_img, input_img_2] , outputs = output)
 
 
