@@ -7,6 +7,7 @@ from keras.layers.core import Dense, Dropout, Activation, Flatten
 from keras.layers.convolutional import Conv2D, MaxPooling2D
 from keras.layers.merge import concatenate
 from keras.utils import np_utils
+from keras.layers.normalization import BatchNormalization
 
 
 def build_net_1(input_img):
@@ -68,11 +69,13 @@ def build_net_3(input_img):
         activation='relu', use_bias=True, kernel_initializer='glorot_uniform', 
         bias_initializer='zeros', kernel_regularizer=None, bias_regularizer=None, 
         activity_regularizer=None, kernel_constraint=None, bias_constraint=None) (input_img)
-    max_pooling2d_1_3 = MaxPooling2D(pool_size=(3, 3), strides=2, padding='valid')(conv2d_1_3)
+    batch_norm_1 = BatchNormalization()(conv2d_1_3)
+    max_pooling2d_1_3 = MaxPooling2D(pool_size=(3, 3), strides=2, padding='valid')(batch_norm_1)
+    batch_norm_2 = BatchNormalization()(max_pooling2d_1_3)
     conv2d_2_3 = Conv2D(64, (5, 5), strides=1, padding='same', dilation_rate=1, 
         activation='relu', use_bias=True, kernel_initializer='glorot_uniform', 
         bias_initializer='zeros', kernel_regularizer=None, bias_regularizer=None, 
-        activity_regularizer=None, kernel_constraint=None, bias_constraint=None) (max_pooling2d_1_3)
+        activity_regularizer=None, kernel_constraint=None, bias_constraint=None) (batch_norm_2)
     max_pooling2d_2_3 = MaxPooling2D(pool_size=(3, 3), strides=2, padding='valid')(conv2d_2_3)
     flatten_3 = Flatten()(max_pooling2d_2_3)
     dense_3 = Dense(256, activation='relu', use_bias=True, kernel_initializer='glorot_uniform', 
