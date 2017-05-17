@@ -50,7 +50,7 @@ def predict_calib_net2(X_test):
 
     return labels
 
-def predict_calib_net2(X_test):
+def predict_calib_net3(X_test):
 
     means = np.load('Datasets/means_calib3.npy')
     X_test -= means
