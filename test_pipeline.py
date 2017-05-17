@@ -10,15 +10,18 @@ from global_variables import *
 from predict_calibration_nets import *
 
 
-def test_net_1(image):
-	windows, corners = sliding_window_net_1(image)
+def test_net_1(image, image_name, path):
+	#windows, corners = sliding_window_net_1(image)
+	windows = HDF5Matrix(path + 'TestDatasets/sliding_window_' + image_name + '.h5', 'data')
+	corners = HDF5Matrix(path + 'TestDatasets/sliding_window_' + image_name + '.h5', 'data')
 	windows, corners = predict_binary_net1(windows, corners)
 	labels = predict_calib_net1(windows)
 	movsDict = createCalibrationDictionary()
 	corners = calibrate(corners, labels, movsDict)
 	corners = non_max_suppression_slow(corners, OVERLAPPING_THRES)
+	np.save(path + 'Results/corners_net1_' + image_name + '.npy',corners)
 	for corner in corners:
-		plt.imshow(cropAndChangeResolution(image,'image_name',corner[0],corner[1],ORIGINAL_WINDOW_DIM,1)) #TODO: change resolution lvl to 2
+		plt.imshow(cropAndChangeResolution(image,image_name,corner[0],corner[1],ORIGINAL_WINDOW_DIM,1)) #TODO: change resolution lvl to 2
 		plt.show()
 
 
@@ -26,4 +29,4 @@ if __name__ == '__main__':
 	file_names = os.listdir("Data/Train/")
 	image = Image.open("Data/Train/" + file_names[1])
 	print(file_names[1])
-	test_net_1(image)
+	test_net_1(image, file_names[1], "")

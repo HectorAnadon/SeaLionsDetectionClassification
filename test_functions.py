@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 from global_variables import *
 from NMS import non_max_suppression_slow
 import pdb
+from make_datasets import save_to_disk
 
 def sliding_window_net_1(image, padding=PADDING_SLIDING_WINDOW, window_size=ORIGINAL_WINDOW_DIM):
 	windows = []
@@ -48,6 +49,16 @@ def sliding_window_net_1(image, padding=PADDING_SLIDING_WINDOW, window_size=ORIG
 
 	return np.stack(windows) /255.0, np.stack(corners)
 
+def generate_testing_dataset(path):
+	file_names = os.listdir(path + "Data/Train/") #TODO: change to TEST!!
+
+	for image_name in file_names:
+		if image_name.endswith('.jpg'):
+			print("Processing ", image_name)
+			image = Image.open(path + "Data/Train/" + image_name) #TODO: change to TEST!!
+			windows, corners = sliding_window_net_1(image)
+			save_to_disk(windows, corners, path + 'TestDatasets/sliding_window_' + image_name +'.h5')
+
 def calibrate(corners,predictions,dict):
 	assert (len(predictions) == corners.shape[0])
 	for i in range(len(predictions)):
@@ -80,6 +91,8 @@ def createCalibrationDictionary():
 
 """Testing"""
 if __name__ == "__main__":
+	generate_testing_dataset("")
+
 	# file_names = os.listdir("Data/Train/")
 	# image = Image.open("Data/Train/" + file_names[0])
 	# print(file_names[0])
@@ -87,6 +100,7 @@ if __name__ == "__main__":
 	# print(size_x, size_y)
 	# windows, corners = sliding_window_net_1(image)
 	# print(windows.shape)
+	# save_to_disk(windows, corners, 'Datasets/sliding_window_' + file_names[0] +'.h5')
 	#print(windows[0])
 	#print(corners[0])
 	#plt.imshow(windows[0])
@@ -100,13 +114,13 @@ if __name__ == "__main__":
 	#plt.imshow(windows[159083])
 	#plt.show()
 
-	movs = dict()
-	m = 0
-	for delta_x in X_N:
-		for delta_y in Y_N:
-			movs[m] = [-delta_x, -delta_y]
-			m += 1
+	# movs = dict()
+	# m = 0
+	# for delta_x in X_N:
+	# 	for delta_y in Y_N:
+	# 		movs[m] = [-delta_x, -delta_y]
+	# 		m += 1
 
-	predictions = [[0,8],[0,8],[0,8],[4],[3],[2],[5],[6],[3],[2]]
-	corners = np.zeros([10,2])
-	corners2 = calibrate(corners, predictions, movs)
+	# predictions = [[0,8],[0,8],[0,8],[4],[3],[2],[5],[6],[3],[2]]
+	# corners = np.zeros([10,2])
+	# corners2 = calibrate(corners, predictions, movs)
