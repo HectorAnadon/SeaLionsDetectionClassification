@@ -1,12 +1,12 @@
 INPUT_SIZE_NET_1 = 25
 N_CALIBRATION_TRANSFORMATIONS = 9
 TRAIN_SPLIT = 0.8
-ORIGINAL_WINDOW_DIM = 100
+ORIGINAL_WINDOW_DIM = 48
 PADDING_SLIDING_WINDOW = 10
 
 # Calibration offset vectors
-X_N = [-30, 0, 30]
-Y_N = [-30, 0, 30]
+X_N = [-15, 0, 15]
+Y_N = [-15, 0, 15]
 
 CLASSES = ["adult_males", "subadult_males", "adult_females", "juveniles", "pups"]
 

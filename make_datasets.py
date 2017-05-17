@@ -1,5 +1,4 @@
 from keras.utils.io_utils import HDF5Matrix
-import matplotlib.pyplot as plt
 from PIL import Image
 import numpy as np
 import os
@@ -295,6 +294,7 @@ if __name__ == '__main__':
     # print("POS 1\n", get_positive_samples(PATH, ORIGINAL_WINDOW_DIM / 2, 1))
     # print("POS 2\n", get_positive_samples(PATH, ORIGINAL_WINDOW_DIM / 2, 2))
     # print("POS 3\n", get_positive_samples(PATH, ORIGINAL_WINDOW_DIM / 2, 3))
+    print("POS 4\n", get_positive_samples(PATH, ORIGINAL_WINDOW_DIM / 2, 4))
 
     # Negative data (for binary nets)
     # print("NEG\n", get_negative_samples(PATH, ORIGINAL_WINDOW_DIM / 2))
@@ -304,9 +304,9 @@ if __name__ == '__main__':
 
     """Create calibration net datasets"""
 
-    print("CALIB 1\n", create_calib_dataset(PATH, ORIGINAL_WINDOW_DIM, 1))
-    print("CALIB 2\n", create_calib_dataset(PATH, ORIGINAL_WINDOW_DIM, 2))
-    print("CALIB 3\n", create_calib_dataset(PATH, ORIGINAL_WINDOW_DIM, 3))
+    #print("CALIB 1\n", create_calib_dataset(PATH, ORIGINAL_WINDOW_DIM, 1))
+    #print("CALIB 2\n", create_calib_dataset(PATH, ORIGINAL_WINDOW_DIM, 2))
+    #print("CALIB 3\n", create_calib_dataset(PATH, ORIGINAL_WINDOW_DIM, 3))
 
     """Testing"""
 
