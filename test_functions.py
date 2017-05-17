@@ -16,10 +16,8 @@ def sliding_window_net_1(image, padding=PADDING_SLIDING_WINDOW, window_size=ORIG
 
 	while (y+window_size <= size_y):
 
-
 		window = cropAndChangeResolution(image, 'image_name', x, y, window_size, 3)
 		windows.append(np.array(window))
-
 		corners.append(np.array([x,y]))
 		
 		#update window
@@ -53,8 +51,21 @@ def sliding_window_net_1(image, padding=PADDING_SLIDING_WINDOW, window_size=ORIG
 def calibrate(corners,predictions,dict):
 	assert (len(predictions) == corners.shape[0])
 	for i in range(len(predictions)):
-		corners[i,0] += dict[predictions[i]][0]
-		corners[i,1] += dict[predictions[i]][1]
+		if len(predictions[i]) == 0:
+			continue
+		elif len(predictions[i]) == 1:
+			corners[i,0] += dict[predictions[i][0]][0]
+			corners[i,1] += dict[predictions[i][0]][1]
+		else:
+			mov_x = 0
+			mov_y = 0
+			for p in predictions[i]:
+				mov_x += dict[p][0]
+				mov_y += dict[p][1]
+			mov_x = mov_x/len(predictions[i])
+			mov_y = mov_y / len(predictions[i])
+			corners[i, 0] += mov_x
+			corners[i, 1] += mov_y
 	return corners
 
 def createCalibrationDictionary():
@@ -96,6 +107,6 @@ if __name__ == "__main__":
 			movs[m] = [-delta_x, -delta_y]
 			m += 1
 
-	predictions = np.array([1,2,3,4,3,2,5,6,3,2])
+	predictions = [[0,8],[0,8],[0,8],[4],[3],[2],[5],[6],[3],[2]]
 	corners = np.zeros([10,2])
 	corners2 = calibrate(corners, predictions, movs)
