@@ -35,12 +35,6 @@ def predict_binary_net2(X_test, X_test_prev, corners_test):
 	means = np.load(PATH + 'Datasets/means_net2.npy')
 	# Zero center
 	X_test -= means
-	""" Predict labels for binary net 2 and return only windows containing sealions.
-	"""
-	# Load training data mean (current net)
-	means = np.load(PATH + 'Datasets/means_net2.npy')
-	# Zero center
-	X_test -= means
 	# Load training data mean (previous net)
 	means = np.load(PATH + 'Datasets/means_net1.npy')
 	# Zero center
