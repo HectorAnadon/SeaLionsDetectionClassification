@@ -53,6 +53,7 @@ def get_resolution_level(net):
 
 def changeResolution(image, resolution_lvl):
     # Get new window size
+    #print(image.size)
     new_size = getImageSize(resolution_lvl)
     # Resize window
     image = image.resize((new_size, new_size)) 
@@ -137,12 +138,6 @@ def extractCoordinates(path, image_name):
     coordinates_df["pups"][image_name] = pups
 
     return  coordinates_df
-
-# Returns a window given the path, x and y
-def getWindow(path, x, y, resolution_lvl=1):
-	image = Image.open(path)
-	image = image.crop((x,y,x+ORIGINAL_WINDOW_DIM,y+ORIGINAL_WINDOW_DIM))
-	return changeResolution(image, resolution_lvl)
 
 
 #####################

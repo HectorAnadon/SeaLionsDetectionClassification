@@ -71,6 +71,7 @@ def train_binary_net2():
 	assert np.array_equal(y_train, y_train_prev) and np.array_equal(y_test, y_test_prev)
 
 	# Create model
+	print(X_train.shape[1], X_train.shape[2])
 	layer, model = build_net_2(Input(shape=(X_train.shape[1], X_train.shape[2], 3)))
 	print(model.summary())
 	# Compile model

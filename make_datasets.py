@@ -293,6 +293,8 @@ if __name__ == '__main__':
     print("POS 1\n", get_positive_samples(PATH, ORIGINAL_WINDOW_DIM / 2, 1))
     print("POS 2\n", get_positive_samples(PATH, ORIGINAL_WINDOW_DIM / 2, 2))
     print("POS 3\n", get_positive_samples(PATH, ORIGINAL_WINDOW_DIM / 2, 3))
+    #print("POS 4\n", get_positive_samples(PATH, ORIGINAL_WINDOW_DIM / 2, 4))
+
 
     # Negative data (for binary nets)
     print("NEG\n", get_negative_samples(PATH, ORIGINAL_WINDOW_DIM / 2))
@@ -300,9 +302,6 @@ if __name__ == '__main__':
     # Combine data (for binary nets)
     print("COMBINED\n", create_binary_net_datasets())
 
-    """Create multiclass net datasets"""
-
-    # print("POS 4\n", get_positive_samples(PATH, ORIGINAL_WINDOW_DIM / 2, 4))
 
     """Create calibration net datasets"""
 
