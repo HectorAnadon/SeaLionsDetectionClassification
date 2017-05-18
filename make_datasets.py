@@ -1,7 +1,7 @@
 from keras.utils.io_utils import HDF5Matrix
 from PIL import Image
 import numpy as np
-import os
+import os, sys
 import time
 import h5py
 
@@ -289,35 +289,41 @@ if __name__ == '__main__':
 
     """Create binary net datasets"""
 
-    # Positive data (for binary nets)
-    print("POS 1\n", get_positive_samples(PATH, ORIGINAL_WINDOW_DIM / 2, 1))
-    print("POS 2\n", get_positive_samples(PATH, ORIGINAL_WINDOW_DIM / 2, 2))
-    print("POS 3\n", get_positive_samples(PATH, ORIGINAL_WINDOW_DIM / 2, 3))
-    #print("POS 4\n", get_positive_samples(PATH, ORIGINAL_WINDOW_DIM / 2, 4))
+    try:
+        arg1 = sys.argv[1]
+    except IndexError:
+        print("Command line argument missing. Usage: make_datasets.py <mode>")
+        sys.exit(1)
 
+    if arg1 == 'pos1':
+        print("POS 1\n", get_positive_samples(PATH, ORIGINAL_WINDOW_DIM / 2, 1))
 
-    # Negative data (for binary nets)
-    print("NEG\n", get_negative_samples(PATH, ORIGINAL_WINDOW_DIM / 2))
+    elif arg1 == 'pos2':
+        print("POS 2\n", get_positive_samples(PATH, ORIGINAL_WINDOW_DIM / 2, 2))
 
-    # Combine data (for binary nets)
-    print("COMBINED\n", create_binary_net_datasets())
+    elif arg1 == 'pos3':
+        print("POS 3\n", get_positive_samples(PATH, ORIGINAL_WINDOW_DIM / 2, 3))
 
+    elif arg1 == 'neg':
+        print("NEG\n", get_negative_samples(PATH, ORIGINAL_WINDOW_DIM / 2))
 
-    """Create calibration net datasets"""
+    elif arg1 == 'combine':
+        print("COMBINED\n", create_binary_net_datasets())
 
-    print("CALIB 1\n", create_calib_dataset(PATH, ORIGINAL_WINDOW_DIM, 1))
-    # print("CALIB 2\n", create_calib_dataset(PATH, ORIGINAL_WINDOW_DIM, 2))
-    # print("CALIB 3\n", create_calib_dataset(PATH, ORIGINAL_WINDOW_DIM, 3))
+    elif arg1 == 'multi':
+        print("POS 4\n", get_positive_samples(PATH, ORIGINAL_WINDOW_DIM / 2, 4))
 
-    """Testing"""
+    elif arg1 == 'cal1':
+        print("CALIB 1\n", create_calib_dataset(PATH, ORIGINAL_WINDOW_DIM, 1))
 
-    X_data_1 = HDF5Matrix('Datasets/data_positive_net1_small.h5', 'data')
-    X_data_2 = HDF5Matrix('Datasets/data_positive_net2_small.h5', 'data')
-    for i in range(15):
-         plt.imshow(X_data_1[i])
-         plt.show()
-         plt.imshow(X_data_2[i])
-         plt.show()
+    elif arg1 == 'cal2':
+        print("CALIB 2\n", create_calib_dataset(PATH, ORIGINAL_WINDOW_DIM, 2))
+
+    elif arg1 == 'cal3':
+        print("CALIB 3\n", create_calib_dataset(PATH, ORIGINAL_WINDOW_DIM, 3))
+
+    else:
+        print("Wrong command line argument.")
 
 
 
