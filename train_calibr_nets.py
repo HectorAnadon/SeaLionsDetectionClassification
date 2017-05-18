@@ -11,8 +11,8 @@ def train_calibr_net1():
     """Train the first binary net and save training data means and best model weights.
     """
     # Load data
-    X_data = HDF5Matrix('Datasets/data_calib1_small.h5', 'data')
-    y_data = HDF5Matrix('Datasets/data_calib1_small.h5', 'labels')
+    X_data = HDF5Matrix(PATH + 'Datasets/data_calib1_small.h5', 'data')
+    y_data = HDF5Matrix(PATH + 'Datasets/data_calib1_small.h5', 'labels')
     # Split into training and validation sets
     X_train, y_train, X_test, y_test = split_data(X_data, y_data, TRAIN_SPLIT)
     # Zero center
@@ -20,14 +20,14 @@ def train_calibr_net1():
     X_train -= means
     X_test -= means
     # Save means (for testing)
-    np.save('Datasets/means_calib1.npy',means)
+    np.save(PATH + 'Datasets/means_calib1.npy',means)
     # Create model
     model = calibration_net_1(Input(shape=(X_train.shape[1], X_train.shape[2], 3)), N_CALIBRATION_TRANSFORMATIONS)
     # Compile model
     model.compile(loss='categorical_crossentropy', optimizer='Adam', metrics=['accuracy'])
     print(model.summary())
     # Checkpoint (for saving the weights)
-    filepath = 'Weights/weights_calibration_net1.hdf5'
+    filepath = PATH + 'Weights/weights_calibration_net1.hdf5'
     checkpoint = ModelCheckpoint(filepath, monitor='val_acc', verbose=1, save_best_only=True, 
             save_weights_only=True, mode='max')
     callbacks_list = [checkpoint]
@@ -45,8 +45,8 @@ def train_calibr_net2():
     """Train the second binary net and save training data means and best model weights.
     """
     # Load data
-    X_data = HDF5Matrix('Datasets/data_calib2_small.h5', 'data')
-    y_data = HDF5Matrix('Datasets/data_calib2_small.h5', 'labels')
+    X_data = HDF5Matrix(PATH + 'Datasets/data_calib2_small.h5', 'data')
+    y_data = HDF5Matrix(PATH + 'Datasets/data_calib2_small.h5', 'labels')
     # Split into training and validation sets
     X_train, y_train, X_test, y_test = split_data(X_data, y_data, TRAIN_SPLIT)
     # Zero center
@@ -54,14 +54,14 @@ def train_calibr_net2():
     X_train -= means
     X_test -= means
     # Save means (for testing)
-    np.save('Datasets/means_calib2.npy',means)
+    np.save(PATH + 'Datasets/means_calib2.npy',means)
     # Create model
     model = calibration_net_2(Input(shape=(X_train.shape[1], X_train.shape[2], 3)), N_CALIBRATION_TRANSFORMATIONS)
     # Compile model
     model.compile(loss='categorical_crossentropy', optimizer='Adam', metrics=['accuracy'])
     print(model.summary())
     # Checkpoint (for saving the weights)
-    filepath = 'Weights/weights_calibration_net2.hdf5'
+    filepath = PATH + 'Weights/weights_calibration_net2.hdf5'
     checkpoint = ModelCheckpoint(filepath, monitor='val_acc', verbose=1, save_best_only=True, 
             save_weights_only=True, mode='max')
     callbacks_list = [checkpoint]
@@ -79,8 +79,8 @@ def train_calibr_net3():
     """Train the third binary net and save training data means and best model weights.
     """
     # Load data
-    X_data = HDF5Matrix('Datasets/data_calib3_small.h5', 'data')
-    y_data = HDF5Matrix('Datasets/data_calib3_small.h5', 'labels')
+    X_data = HDF5Matrix(PATH + 'Datasets/data_calib3_small.h5', 'data')
+    y_data = HDF5Matrix(PATH + 'Datasets/data_calib3_small.h5', 'labels')
     # Split into training and validation sets
     X_train, y_train, X_test, y_test = split_data(X_data, y_data, TRAIN_SPLIT)
     # Zero center
@@ -88,14 +88,14 @@ def train_calibr_net3():
     X_train -= means
     X_test -= means
     # Save means (for testing)
-    np.save('Datasets/means_calib3.npy',means)
+    np.save(PATH + 'Datasets/means_calib3.npy',means)
     # Create model
     model = calibration_net_3(Input(shape=(X_train.shape[1], X_train.shape[2], 3)), N_CALIBRATION_TRANSFORMATIONS)
     # Compile model
     model.compile(loss='categorical_crossentropy', optimizer='Adam', metrics=['accuracy'])
     print(model.summary())
     # Checkpoint (for saving the weights)
-    filepath = 'Weights/weights_calibration_net3.hdf5'
+    filepath = PATH + 'Weights/weights_calibration_net3.hdf5'
     checkpoint = ModelCheckpoint(filepath, monitor='val_acc', verbose=1, save_best_only=True, 
             save_weights_only=True, mode='max')
     callbacks_list = [checkpoint]
