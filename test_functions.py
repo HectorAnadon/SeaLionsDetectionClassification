@@ -1,5 +1,5 @@
 import numpy as np
-from usefulFunctions import cropAndChangeResolution, getWindow
+from usefulFunctions import cropAndChangeResolution
 import os
 from PIL import Image
 import matplotlib.pyplot as plt
@@ -14,8 +14,9 @@ def sliding_window_net_1(image, padding=PADDING_SLIDING_WINDOW, window_size=ORIG
 	size_x,size_y = image.size
 	x = 0
 	y = 0
-
-	while (y+window_size <= size_y):
+	debug = 0 #TODO: remove this
+	while (y+window_size <= size_y and debug < 88000):
+		debug += 1
 
 		window = cropAndChangeResolution(image, 'image_name', x, y, window_size, 3)
 		windows.append(np.array(window))
@@ -58,6 +59,13 @@ def generate_testing_dataset(path):
 			image = Image.open(path + "Data/Train/" + image_name) #TODO: change to TEST!!
 			windows, corners = sliding_window_net_1(image)
 			save_to_disk(windows, corners, path + 'TestDatasets/sliding_window_' + image_name +'.h5')
+
+# Returns a window given the path, x and y
+def getWindows(corners, image, resolution_lvl):
+	windows = []
+	for c in corners:
+		windows.append(cropAndChangeResolution(image,'',c[0],c[1],ORIGINAL_WINDOW_DIM,resolution_lvl))
+	return np.stack(windows) / 255.0
 
 def calibrate(corners,predictions,dict):
 	assert (len(predictions) == corners.shape[0])
