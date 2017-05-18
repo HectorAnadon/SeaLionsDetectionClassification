@@ -50,7 +50,7 @@ def build_classif_net(input_img):
     return model  
 
 
-def test():
+def train_classif_net():
     # Load data
     X_data = HDF5Matrix(PATH + 'Datasets/data_positive_net4_small.h5', 'data')
     y_data = HDF5Matrix(PATH + 'Datasets/data_positive_net4_small.h5', 'labels')
@@ -80,5 +80,8 @@ def test():
             verbose=1)
             #callbacks=callbacks_list)
 
-test()
+def predict_classif_net():
+    pass
+
+
 
