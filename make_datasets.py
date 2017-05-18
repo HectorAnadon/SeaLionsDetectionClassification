@@ -93,7 +93,7 @@ def get_positive_samples(path, radius, net):
     # Normalize data
     positive_samples /= 255.0
     # Save to disk
-    f = h5py.File('Datasets/data_positive_net'+str(net)+'_small.h5', 'w')
+    f = h5py.File(path + 'Datasets/data_positive_net'+str(net)+'_small.h5', 'w')
     # Create dataset to store images
     X_dset = f.create_dataset('data', positive_samples.shape, dtype='f')
     X_dset[:] = positive_samples
