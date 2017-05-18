@@ -10,18 +10,18 @@ def load_calibr_net1():
 		validation accuracy when the model was trained).
 	"""
 	# Load data
-	X_data = HDF5Matrix('Datasets/data_calib1_small.h5', 'data')
-	y_data = HDF5Matrix('Datasets/data_calib1_small.h5', 'labels')
+	X_data = HDF5Matrix(PATH + 'Datasets/data_calib1_small.h5', 'data')
+	y_data = HDF5Matrix(PATH + 'Datasets/data_calib1_small.h5', 'labels')
 	# Split into training and validation sets (same used during training)
 	X_train, y_train, X_test, y_test = split_data(X_data, y_data, TRAIN_SPLIT)
 	# Zero center
-	means = np.load('Datasets/means_calib1.npy')
+	means = np.load(PATH + 'Datasets/means_calib1.npy')
 	X_test -= means
 	# Create model
 	model = calibration_net_1(Input(shape=(X_train.shape[1], X_train.shape[2], 3)), N_CALIBRATION_TRANSFORMATIONS)
 	print(model.summary())
 	# Load weights
-	model.load_weights('Weights/weights_calibration_net1.hdf5')
+	model.load_weights(PATH + 'Weights/weights_calibration_net1.hdf5')
 	# Compile model
 	model.compile(loss='categorical_crossentropy', optimizer='Adam', metrics=['accuracy'])
 	# Evaluate model (Check validation accuracy)
@@ -35,18 +35,18 @@ def load_calibr_net2():
 		validation accuracy when the model was trained).
 	"""
 	# Load data
-	X_data = HDF5Matrix('Datasets/data_calib2_small.h5', 'data')
-	y_data = HDF5Matrix('Datasets/data_calib2_small.h5', 'labels')
+	X_data = HDF5Matrix(PATH + 'Datasets/data_calib2_small.h5', 'data')
+	y_data = HDF5Matrix(PATH + 'Datasets/data_calib2_small.h5', 'labels')
 	# Split into training and validation sets (same used during training)
 	X_train, y_train, X_test, y_test = split_data(X_data, y_data, TRAIN_SPLIT)
 	# Zero center
-	means = np.load('Datasets/means_calib2.npy')
+	means = np.load(PATH + 'Datasets/means_calib2.npy')
 	X_test -= means
 	# Create model
 	model = calibration_net_2(Input(shape=(X_train.shape[1], X_train.shape[2], 3)), N_CALIBRATION_TRANSFORMATIONS)
 	print(model.summary())
 	# Load weights
-	model.load_weights('Weights/weights_calibration_net2.hdf5')
+	model.load_weights(PATH + 'Weights/weights_calibration_net2.hdf5')
 	# Compile model
 	model.compile(loss='categorical_crossentropy', optimizer='Adam', metrics=['accuracy'])
 	# Evaluate model (Check validation accuracy)
@@ -60,18 +60,18 @@ def load_calibr_net3():
 		validation accuracy when the model was trained).
 	"""
 	# Load data
-	X_data = HDF5Matrix('Datasets/data_calib3_small.h5', 'data')
-	y_data = HDF5Matrix('Datasets/data_calib3_small.h5', 'labels')
+	X_data = HDF5Matrix(PATH + 'Datasets/data_calib3_small.h5', 'data')
+	y_data = HDF5Matrix(PATH + 'Datasets/data_calib3_small.h5', 'labels')
 	# Split into training and validation sets (same used during training)
 	X_train, y_train, X_test, y_test = split_data(X_data, y_data, TRAIN_SPLIT)
 	# Zero center
-	means = np.load('Datasets/means_calib3.npy')
+	means = np.load(PATH + 'Datasets/means_calib3.npy')
 	X_test -= means
 	# Create model
 	model = calibration_net_3(Input(shape=(X_train.shape[1], X_train.shape[2], 3)), N_CALIBRATION_TRANSFORMATIONS)
 	print(model.summary())
 	# Load weights
-	model.load_weights('Weights/weights_calibration_net3.hdf5')
+	model.load_weights(PATH + 'Weights/weights_calibration_net3.hdf5')
 	# Compile model
 	model.compile(loss='categorical_crossentropy', optimizer='Adam', metrics=['accuracy'])
 	# Evaluate model (Check validation accuracy)

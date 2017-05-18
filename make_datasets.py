@@ -52,7 +52,7 @@ def get_positive_samples(path, radius, net):
     coordinates and their labels (both in binary and multiclass one-hot representation)
     """
     resolution_lvl = get_resolution_level(net)
-    file_names = os.listdir(path + "Train/")
+    file_names = os.listdir(path + "Data/Train/")
     positive_samples = []
     # corners = []
     binary_labels = []
@@ -61,9 +61,9 @@ def get_positive_samples(path, radius, net):
     for image_name in file_names:
         if image_name.endswith('.jpg'):
             print("Processing ", image_name)
-            image = Image.open(path + "Train/" + image_name)
+            image = Image.open(path + "Data/Train/" + image_name)
             #CHECK IF THERE IS A SEA LION IN THE IMAGE
-            coordinates = extractCoordinates(path, image_name)
+            coordinates = extractCoordinates(path , image_name)
             classes = enumerate(CLASSES)
             for class_index, class_name in classes:
                 for lion in range(len(coordinates[class_name][image_name])):
@@ -111,13 +111,13 @@ def get_positive_samples(path, radius, net):
         y_dset[:] = multiclass_labels  
         print (y_dset.shape)
     f.close()
-    return positive_samples.shape, binary_labels.shape
+    return positive_samples.shape
 
 def get_negative_samples(path, radius):
     """Get an array of negative samples (windows without lions), their upper left corner 
     coordinates and their labels (only binary format - NO SEA LION [0,1] / SEA LION [1,0])
     """
-    file_names = os.listdir(path + "Train/")
+    file_names = os.listdir(path + "Data/Train/")
     res1 = get_resolution_level(1)
     res2 = get_resolution_level(2)
     res3 = get_resolution_level(3)
@@ -129,8 +129,8 @@ def get_negative_samples(path, radius):
     for image_name in file_names:
         if image_name.endswith('.jpg'):
             print("Processing ", image_name)
-            image = Image.open(path + "Train/" + image_name)
-            coordinates = extractCoordinates(path, image_name)
+            image = Image.open(path + "Data/Train/" + image_name)
+            coordinates = extractCoordinates(path , image_name)
             for it in range(NUM_NEG_SAMPLES):
                 # Upper left corner coordinates
                 x = np.random.uniform(0, image.size[0] - 2 * radius)
@@ -155,9 +155,9 @@ def get_negative_samples(path, radius):
     negative_samples_net2 /= 255.0
     negative_samples_net3 /= 255.0
     # Save to disk
-    save_to_disk(negative_samples_net1, labels, 'Datasets/data_negative_net1_small.h5')
-    save_to_disk(negative_samples_net2, labels, 'Datasets/data_negative_net2_small.h5')
-    save_to_disk(negative_samples_net3, labels, 'Datasets/data_negative_net3_small.h5')
+    save_to_disk(negative_samples_net1, labels, path+'Datasets/data_negative_net1_small.h5')
+    save_to_disk(negative_samples_net2, labels, path+'Datasets/data_negative_net2_small.h5')
+    save_to_disk(negative_samples_net3, labels, path+'Datasets/data_negative_net3_small.h5')
 
     return negative_samples_net1.shape, labels.shape
 
@@ -166,22 +166,22 @@ def create_binary_net_datasets():
     """Combine positive and negative samples into one dataset (for each binary net).
     """
     # Load positive samples
-    pos_samples1 = HDF5Matrix('Datasets/data_positive_net1_small.h5', 'data')
-    pos_samples2 = HDF5Matrix('Datasets/data_positive_net2_small.h5', 'data')
-    pos_samples3 = HDF5Matrix('Datasets/data_positive_net3_small.h5', 'data')
-    pos_labels1 = HDF5Matrix('Datasets/data_positive_net1_small.h5', 'labels')
-    pos_labels2 = HDF5Matrix('Datasets/data_positive_net2_small.h5', 'labels')
-    pos_labels3 = HDF5Matrix('Datasets/data_positive_net3_small.h5', 'labels')
+    pos_samples1 = HDF5Matrix(PATH + 'Datasets/data_positive_net1_small.h5', 'data')
+    pos_samples2 = HDF5Matrix(PATH + 'Datasets/data_positive_net2_small.h5', 'data')
+    pos_samples3 = HDF5Matrix(PATH + 'Datasets/data_positive_net3_small.h5', 'data')
+    pos_labels1 = HDF5Matrix(PATH + 'Datasets/data_positive_net1_small.h5', 'labels')
+    pos_labels2 = HDF5Matrix(PATH + 'Datasets/data_positive_net2_small.h5', 'labels')
+    pos_labels3 = HDF5Matrix(PATH + 'Datasets/data_positive_net3_small.h5', 'labels')
     # Check that labels are the same
     assert np.array_equal(pos_labels1, pos_labels2) and np.array_equal(pos_labels2, pos_labels3)
     pos_labels = pos_labels1
     # Load negative samples
-    neg_samples1 = HDF5Matrix('Datasets/data_negative_net1_small.h5', 'data')
-    neg_samples2 = HDF5Matrix('Datasets/data_negative_net2_small.h5', 'data')
-    neg_samples3 = HDF5Matrix('Datasets/data_negative_net3_small.h5', 'data')
-    neg_labels1 = HDF5Matrix('Datasets/data_negative_net1_small.h5', 'labels')
-    neg_labels2 = HDF5Matrix('Datasets/data_negative_net2_small.h5', 'labels')
-    neg_labels3 = HDF5Matrix('Datasets/data_negative_net3_small.h5', 'labels')
+    neg_samples1 = HDF5Matrix(PATH + 'Datasets/data_negative_net1_small.h5', 'data')
+    neg_samples2 = HDF5Matrix(PATH + 'Datasets/data_negative_net2_small.h5', 'data')
+    neg_samples3 = HDF5Matrix(PATH + 'Datasets/data_negative_net3_small.h5', 'data')
+    neg_labels1 = HDF5Matrix(PATH + 'Datasets/data_negative_net1_small.h5', 'labels')
+    neg_labels2 = HDF5Matrix(PATH + 'Datasets/data_negative_net2_small.h5', 'labels')
+    neg_labels3 = HDF5Matrix(PATH + 'Datasets/data_negative_net3_small.h5', 'labels')
     # Check that labels are the same
     assert np.array_equal(neg_labels1, neg_labels2) and np.array_equal(neg_labels2, neg_labels3)
     neg_labels = neg_labels1
@@ -197,9 +197,9 @@ def create_binary_net_datasets():
     # Shuffle data
     X1, X2, X3, y = unison_shuffled_copies(X1, X2, X3, y)
     # Save to disk
-    save_to_disk(X1, y, 'Datasets/data_net1_small.h5')
-    save_to_disk(X2, y, 'Datasets/data_net2_small.h5')
-    save_to_disk(X3, y, 'Datasets/data_net3_small.h5')
+    save_to_disk(X1, y, PATH + 'Datasets/data_net1_small.h5')
+    save_to_disk(X2, y, PATH + 'Datasets/data_net2_small.h5')
+    save_to_disk(X3, y, PATH + 'Datasets/data_net3_small.h5')
     return X1.shape, y.shape
 
 
@@ -230,7 +230,7 @@ def get_shifted_windows(image, image_name, x, y, resolution_lvl):
 
 def get_calib_samples(path, radius, net):
     resolution_lvl = get_resolution_level(net)
-    file_names = os.listdir(path + "Train/")
+    file_names = os.listdir(path + "Data/Train/")
     positive_samples = []
     corners = []
     labels = []
@@ -238,7 +238,7 @@ def get_calib_samples(path, radius, net):
     for image_name in file_names:
         if image_name.endswith('.jpg'):
             print ("Processing ", image_name)
-            image = Image.open(path + "Train/" + image_name)
+            image = Image.open(path + "Data/Train/" + image_name)
             #CHECK IF THERE IS A SEA LION IN THE IMAGE
             coordinates = extractCoordinates(path, image_name)
             classes = enumerate(CLASSES)
@@ -271,7 +271,7 @@ def create_calib_dataset(path, window_size, net):
     #Normalize
     X /= 255.0
     # Save to disk
-    f = h5py.File('Datasets/data_calib'+str(net)+'_small.h5', 'w')
+    f = h5py.File(path + 'Datasets/data_calib'+str(net)+'_small.h5', 'w')
     # Create dataset to store images
     X_dset = f.create_dataset('data', X.shape, dtype='f')
     X_dset[:] = X
@@ -285,7 +285,6 @@ def create_calib_dataset(path, window_size, net):
     return X.shape, y.shape, corners.shape
 
 
-
 if __name__ == '__main__':
 
     """Create binary net datasets"""
@@ -296,27 +295,29 @@ if __name__ == '__main__':
     print("POS 3\n", get_positive_samples(PATH, ORIGINAL_WINDOW_DIM / 2, 3))
     #print("POS 4\n", get_positive_samples(PATH, ORIGINAL_WINDOW_DIM / 2, 4))
 
+
     # Negative data (for binary nets)
     print("NEG\n", get_negative_samples(PATH, ORIGINAL_WINDOW_DIM / 2))
 
     # Combine data (for binary nets)
     print("COMBINED\n", create_binary_net_datasets())
 
+
     """Create calibration net datasets"""
 
-    #print("CALIB 1\n", create_calib_dataset(PATH, ORIGINAL_WINDOW_DIM, 1))
-    #print("CALIB 2\n", create_calib_dataset(PATH, ORIGINAL_WINDOW_DIM, 2))
-    #print("CALIB 3\n", create_calib_dataset(PATH, ORIGINAL_WINDOW_DIM, 3))
+    print("CALIB 1\n", create_calib_dataset(PATH, ORIGINAL_WINDOW_DIM, 1))
+    # print("CALIB 2\n", create_calib_dataset(PATH, ORIGINAL_WINDOW_DIM, 2))
+    # print("CALIB 3\n", create_calib_dataset(PATH, ORIGINAL_WINDOW_DIM, 3))
 
     """Testing"""
 
-    # X_data_1 = HDF5Matrix('Datasets/data_positive_net1_small.h5', 'data')
-    # X_data_2 = HDF5Matrix('Datasets/data_positive_net2_small.h5', 'data')
-    # for i in range(10):
-    #     plt.imshow(X_data_1[i])
-    #     plt.show()
-    #     plt.imshow(X_data_2[i])
-    #     plt.show()
+    X_data_1 = HDF5Matrix('Datasets/data_positive_net1_small.h5', 'data')
+    X_data_2 = HDF5Matrix('Datasets/data_positive_net2_small.h5', 'data')
+    for i in range(15):
+         plt.imshow(X_data_1[i])
+         plt.show()
+         plt.imshow(X_data_2[i])
+         plt.show()
 
 
 

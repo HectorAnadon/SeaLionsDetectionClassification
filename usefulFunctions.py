@@ -82,8 +82,8 @@ def extractCoordinates(path, image_name):
     coordinates_df = pd.DataFrame(index=list([image_name]), columns=classes)
 
     # READ TRAIN AND DOTTED IMAGES
-    image_1 = cv2.imread(path +"TrainDotted/" + image_name)
-    image_2 = cv2.imread(path + "Train/" + image_name)
+    image_1 = cv2.imread(path +"Data/TrainDotted/" + image_name)
+    image_2 = cv2.imread(path + "Data/Train/" + image_name)
 
     # COMPUTE ABSOLUTE DIFFERENCE BETWEEN TRAIN AND TRAIN DOTTED
     image_3 = cv2.absdiff(image_1,image_2)
@@ -146,8 +146,8 @@ def extractCoordinates(path, image_name):
 
 if __name__ == '__main__':
 
-    file_names = os.listdir("Data/Train/")
-    image = Image.open("Data/Train/" + file_names[1])
+    file_names = os.listdir(PATH + "Data/Train/")
+    image = Image.open(PATH + "Data/Train/" + file_names[1])
 
     a = sizeInfo(image,resolutions = [1,0.5,0.25])
     print(a)

@@ -8,7 +8,6 @@ from PIL import Image
 import matplotlib.pyplot as plt
 from global_variables import *
 from predict_calibration_nets import *
-import pdb
 
 
 def test_net(image, image_name, path):
@@ -69,7 +68,6 @@ def test_net(image, image_name, path):
 	for corner in corners:
 		plt.imshow(cropAndChangeResolution(image,image_name,corner[0],corner[1],ORIGINAL_WINDOW_DIM,1))
 		plt.show()
-
 
 
 if __name__ == '__main__':
