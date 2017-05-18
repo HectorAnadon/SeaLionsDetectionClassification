@@ -6,14 +6,14 @@ import pdb
 
 def predict_calib_net1(X_test):
 
-    means = np.load('Datasets/means_calib1.npy')
+    means = np.load(PATH + 'Datasets/means_calib1.npy')
     X_test -= means
 
     # Create model
     model = calibration_net_1(Input(shape=(X_test.shape[1], X_test.shape[2], 3)),N_CALIBRATION_TRANSFORMATIONS)
 
     # Load model
-    model.load_weights('./Weights/weights_calibration_net1.hdf5')
+    model.load_weights(PATH + 'Weights/weights_calibration_net1.hdf5')
 
     # Predict values
     prediction  = model.predict(X_test)
@@ -29,14 +29,14 @@ def predict_calib_net1(X_test):
 
 def predict_calib_net2(X_test):
 
-    means = np.load('Datasets/means_calib2.npy')
+    means = np.load(PATH + 'Datasets/means_calib2.npy')
     X_test -= means
 
     # Create model
     model = calibration_net_2(Input(shape=(X_test.shape[1], X_test.shape[2], 3)),N_CALIBRATION_TRANSFORMATIONS)
 
     # Load model
-    model.load_weights('./Weights/weights_calibration_net2.hdf5')
+    model.load_weights(PATH + 'Weights/weights_calibration_net2.hdf5')
 
     # Predict values
     prediction  = model.predict(X_test)
@@ -52,14 +52,14 @@ def predict_calib_net2(X_test):
 
 def predict_calib_net3(X_test):
 
-    means = np.load('Datasets/means_calib3.npy')
+    means = np.load(PATH + 'Datasets/means_calib3.npy')
     X_test -= means
 
     # Create model
     model = calibration_net_3(Input(shape=(X_test.shape[1], X_test.shape[2], 3)),N_CALIBRATION_TRANSFORMATIONS)
 
     # Load model
-    model.load_weights('./Weights/weights_calibration_net3.hdf5')
+    model.load_weights(PATH + 'Weights/weights_calibration_net3.hdf5')
 
     # Predict values
     prediction  = model.predict(X_test)

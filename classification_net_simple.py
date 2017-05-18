@@ -52,8 +52,8 @@ def build_classif_net(input_img):
 
 def test():
     # Load data
-    X_data = HDF5Matrix('Datasets/data_positive_net4_small.h5', 'data')
-    y_data = HDF5Matrix('Datasets/data_positive_net4_small.h5', 'labels')
+    X_data = HDF5Matrix(PATH + 'Datasets/data_positive_net4_small.h5', 'data')
+    y_data = HDF5Matrix(PATH + 'Datasets/data_positive_net4_small.h5', 'labels')
     # Split into training and validation sets
     X_train, y_train, X_test, y_test = split_data(X_data, y_data, TRAIN_SPLIT)
     # Zero center

@@ -13,8 +13,8 @@ def train_binary_net1():
 	"""Train the first binary net and save training data means and best model weights.
 	"""
 	# Load data
-	X_data = HDF5Matrix('Datasets/data_net1_small.h5', 'data')
-	y_data = HDF5Matrix('Datasets/data_net1_small.h5', 'labels')
+	X_data = HDF5Matrix(PATH + 'Datasets/data_net1_small.h5', 'data')
+	y_data = HDF5Matrix(PATH + 'Datasets/data_net1_small.h5', 'labels')
 	# Split into training and validation sets
 	X_train, y_train, X_test, y_test = split_data(X_data, y_data, TRAIN_SPLIT)
 	# Zero center
@@ -22,14 +22,14 @@ def train_binary_net1():
 	X_train -= means
 	X_test -= means
 	# Save means (for testing)
-	np.save('Datasets/means_net1.npy',means)
+	np.save(PATH + 'Datasets/means_net1.npy',means)
 	# Create model
 	layer, model = build_net_1(Input(shape=(X_train.shape[1], X_train.shape[2], 3)))
 	print(model.summary())
 	# Compile model
 	model.compile(loss='categorical_crossentropy', optimizer='Adam', metrics=['accuracy'])
  	# Checkpoint (for saving the weights)
-	filepath = 'Weights/weights_binary_net1.hdf5'
+	filepath = PATH + 'Weights/weights_binary_net1.hdf5'
 	checkpoint = ModelCheckpoint(filepath, monitor='val_acc', verbose=1, save_best_only=True, 
 			save_weights_only=True, mode='max')
 	callbacks_list = [checkpoint]
@@ -47,8 +47,8 @@ def train_binary_net2():
 	"""Train the second binary net and save training data means and best model weights.
 	"""
 	# Load data (current net)
-	X_data = HDF5Matrix('Datasets/data_net2_small.h5', 'data')
-	y_data = HDF5Matrix('Datasets/data_net2_small.h5', 'labels')
+	X_data = HDF5Matrix(PATH + 'Datasets/data_net2_small.h5', 'data')
+	y_data = HDF5Matrix(PATH + 'Datasets/data_net2_small.h5', 'labels')
 	# Split into training and validation sets
 	X_train, y_train, X_test, y_test = split_data(X_data, y_data, TRAIN_SPLIT)
 	# Zero center
@@ -56,14 +56,14 @@ def train_binary_net2():
 	X_train -= means
 	X_test -= means
 	# Save means (for testing)
-	np.save('Datasets/means_net2.npy', means)
+	np.save(PATH + 'Datasets/means_net2.npy', means)
 	# Load data (previous net)
-	X_data = HDF5Matrix('Datasets/data_net1_small.h5', 'data')
-	y_data = HDF5Matrix('Datasets/data_net1_small.h5', 'labels')
+	X_data = HDF5Matrix(PATH + 'Datasets/data_net1_small.h5', 'data')
+	y_data = HDF5Matrix(PATH + 'Datasets/data_net1_small.h5', 'labels')
 	# Split into training and validation sets
 	X_train_prev, y_train_prev, X_test_prev, y_test_prev = split_data(X_data, y_data, TRAIN_SPLIT)
 	# Zero center
-	means = np.load('Datasets/means_net1.npy')
+	means = np.load(PATH + 'Datasets/means_net1.npy')
 	X_train_prev -= means
 	X_test_prev -= means
 
@@ -76,7 +76,7 @@ def train_binary_net2():
 	# Compile model
 	model.compile(loss='categorical_crossentropy', optimizer='Adam', metrics=['accuracy'])
  	# Checkpoint (for saving the weights)
-	filepath = 'Weights/weights_binary_net2.hdf5'
+	filepath = PATH + 'Weights/weights_binary_net2.hdf5'
 	checkpoint = ModelCheckpoint(filepath, monitor='val_acc', verbose=1, save_best_only=True, 
 			save_weights_only=True, mode='max')
 	callbacks_list = [checkpoint]
@@ -94,8 +94,8 @@ def train_binary_net3():
 	"""Train the third binary net and save training data means and best model weights.
 	"""
 	# Load data (current net)
-	X_data = HDF5Matrix('Datasets/data_net3_small.h5', 'data')
-	y_data = HDF5Matrix('Datasets/data_net3_small.h5', 'labels')
+	X_data = HDF5Matrix(PATH + 'Datasets/data_net3_small.h5', 'data')
+	y_data = HDF5Matrix(PATH + 'Datasets/data_net3_small.h5', 'labels')
 	# Split into training and validation sets
 	X_train, y_train, X_test, y_test = split_data(X_data, y_data, TRAIN_SPLIT)
 	# Zero center
@@ -103,23 +103,23 @@ def train_binary_net3():
 	X_train -= means
 	X_test -= means
 	# Save means (for testing)
-	np.save('Datasets/means_net3.npy', means)
+	np.save(PATH + 'Datasets/means_net3.npy', means)
 	# Load data (2nd net)
-	X_data = HDF5Matrix('Datasets/data_net2_small.h5', 'data')
-	y_data = HDF5Matrix('Datasets/data_net2_small.h5', 'labels')
+	X_data = HDF5Matrix(PATH + 'Datasets/data_net2_small.h5', 'data')
+	y_data = HDF5Matrix(PATH + 'Datasets/data_net2_small.h5', 'labels')
 	# Split into training and validation sets
 	X_train2, y_train2, X_test2, y_test2 = split_data(X_data, y_data, TRAIN_SPLIT)
 	# Zero center
-	means = np.load('Datasets/means_net2.npy')
+	means = np.load(PATH + 'Datasets/means_net2.npy')
 	X_train2 -= means
 	X_test2 -= means
 	# Load data (1st net)
-	X_data = HDF5Matrix('Datasets/data_net1_small.h5', 'data')
-	y_data = HDF5Matrix('Datasets/data_net1_small.h5', 'labels')
+	X_data = HDF5Matrix(PATH + 'Datasets/data_net1_small.h5', 'data')
+	y_data = HDF5Matrix(PATH + 'Datasets/data_net1_small.h5', 'labels')
 	# Split into training and validation sets
 	X_train1, y_train1, X_test1, y_test1 = split_data(X_data, y_data, TRAIN_SPLIT)
 	# Zero center
-	means = np.load('Datasets/means_net1.npy')
+	means = np.load(PATH + 'Datasets/means_net1.npy')
 	X_train1 -= means
 	X_test1 -= means
 	# Check the labels are the same
@@ -131,7 +131,7 @@ def train_binary_net3():
 	# Compile model
 	model.compile(loss='categorical_crossentropy', optimizer='Adam', metrics=['accuracy'])
  	# Checkpoint (for saving the weights)
-	filepath = 'Weights/weights_binary_net3.hdf5'
+	filepath = PATH + 'Weights/weights_binary_net3.hdf5'
 	checkpoint = ModelCheckpoint(filepath, monitor='val_acc', verbose=1, save_best_only=True, 
 			save_weights_only=True, mode='max')
 	callbacks_list = [checkpoint]
