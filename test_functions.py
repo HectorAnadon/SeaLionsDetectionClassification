@@ -14,9 +14,7 @@ def sliding_window_net_1(image, padding=PADDING_SLIDING_WINDOW, window_size=ORIG
 	size_x,size_y = image.size
 	x = 0
 	y = 0
-	debug = 0 #TODO: remove this
-	while (y+window_size <= size_y and debug < 88000):
-		debug += 1
+	while (y+window_size <= size_y):
 
 		window = cropAndChangeResolution(image, 'image_name', x, y, window_size, 3)
 		windows.append(np.array(window))

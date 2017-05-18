@@ -26,20 +26,50 @@ def test_net(image, image_name, path):
 	print("predict_calib_net1")
 	movsDict = createCalibrationDictionary()
 	corners = calibrate(corners, labels, movsDict)
-	print("number of corners after net 1", corners.shape[0])
+	print("number of corners after net 1:", corners.shape[0])
 	corners = non_max_suppression_slow(corners, OVERLAPPING_THRES)
-	print("number of corners after NMS", corners.shape[0])
+	print("number of corners after NMS:", corners.shape[0])
 	np.save(path + 'Results/corners_net1_' + image_name + '.npy',corners)
-	for corner in corners:
-		print(100)
-		plt.imshow(cropAndChangeResolution(image,image_name,corner[0],corner[1],100,1))
-		plt.show()
+	# for corner in corners:
+	# 	print(100)
+	# 	plt.imshow(cropAndChangeResolution(image,image_name,corner[0],corner[1],ORIGINAL_WINDOW_DIM,1))
+	# 	plt.show()
 
 	# NET 2
 	# Windows for net 2
-	windows = getWindows(corners, image, 2)
-	print(windows.shape)
-	print(windows) #Normalized???
+	windows2 = getWindows(corners, image, 2)
+	windows1 = getWindows(corners, image, 3)
+	print(windows1.shape)
+	windows, corners = predict_binary_net2(windows2, windows1, corners)
+	labels = predict_calib_net2(windows)
+	print("predict_calib_net2")
+	corners = calibrate(corners, labels, movsDict)
+	print("number of corners after net 2:", corners.shape[0])
+	corners = non_max_suppression_slow(corners, OVERLAPPING_THRES)
+	print("number of corners after NMS:", corners.shape[0])
+	np.save(path + 'Results/corners_net2_' + image_name + '.npy',corners)
+	# for corner in corners:
+	# 	plt.imshow(cropAndChangeResolution(image,image_name,corner[0],corner[1],ORIGINAL_WINDOW_DIM,1))
+	# 	plt.show()
+
+	# NET 3
+	# Windows for net 3
+	windows3 = getWindows(corners, image, 1)
+	windows2 = getWindows(corners, image, 2)
+	windows1 = getWindows(corners, image, 3)
+	print(windows1.shape)
+	windows, corners = predict_binary_net3(windows3, windows2, windows1, corners)
+	labels = predict_calib_net3(windows)
+	print("predict_calib_net3")
+	corners = calibrate(corners, labels, movsDict)
+	print("number of corners after net 3:", corners.shape[0])
+	corners = non_max_suppression_slow(corners, OVERLAPPING_THRES)
+	print("number of corners after NMS:", corners.shape[0])
+	np.save(path + 'Results/corners_net3_' + image_name + '.npy',corners)
+	for corner in corners:
+		plt.imshow(cropAndChangeResolution(image,image_name,corner[0],corner[1],ORIGINAL_WINDOW_DIM,1))
+		plt.show()
+
 
 
 if __name__ == '__main__':

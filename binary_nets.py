@@ -48,7 +48,8 @@ def build_net_2(input_img):
         activity_regularizer=None, kernel_constraint=None, bias_constraint=None)(flatten_2)
     # First net
     size = input_img.get_shape().as_list()[1]
-    input_img_1 = Input(shape=(size / 2, size / 2, 3)) 
+    size = int(size / 2)
+    input_img_1 = Input(shape=(size, size, 3))
     network_1, _ = build_net_1(input_img_1)
     # Concatenate
     merged = concatenate([dense, network_1])
@@ -84,7 +85,8 @@ def build_net_3(input_img):
     
     # Second net
     size = input_img.get_shape().as_list()[1]
-    input_img_2 = Input(shape=(size / 2, size / 2, 3)) 
+    size = int(size / 2)
+    input_img_2 = Input(shape=(size, size, 3)) 
     conv2d = Conv2D(64, (5, 5), input_shape=input_img_2.shape, strides=1, padding='same', dilation_rate=1, 
         activation='relu', use_bias=True, kernel_initializer='glorot_uniform', 
         bias_initializer='zeros', kernel_regularizer=None, bias_regularizer=None, 
@@ -95,7 +97,8 @@ def build_net_3(input_img):
         bias_initializer='zeros', kernel_regularizer=None, bias_regularizer=None, 
         activity_regularizer=None, kernel_constraint=None, bias_constraint=None)(flatten_2)
     # First net
-    input_img_1 = Input(shape=(size / 4, size / 4, 3)) 
+    size = int(size/ 2)
+    input_img_1 = Input(shape=(size, size, 3)) 
     network_1, _ = build_net_1(input_img_1)
     # Concatenate 2 and 1
     network_2 = concatenate([dense, network_1])
