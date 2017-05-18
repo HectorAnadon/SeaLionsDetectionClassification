@@ -6,7 +6,7 @@ from global_variables import *
 
 def classification_net():
     base_model = VGG19(include_top=False, weights='imagenet', input_tensor=None, input_shape=(ORIGINAL_WINDOW_DIM, ORIGINAL_WINDOW_DIM, 3))
-    print(base_model.summary())
+
     keras_input = Input(shape=(ORIGINAL_WINDOW_DIM, ORIGINAL_WINDOW_DIM, 3),name = 'image_input')
     base_model = base_model(keras_input)
 

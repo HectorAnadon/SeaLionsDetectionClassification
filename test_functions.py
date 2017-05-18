@@ -48,13 +48,13 @@ def sliding_window_net_1(image, padding=PADDING_SLIDING_WINDOW, window_size=ORIG
 
 	return np.stack(windows) /255.0, np.stack(corners)
 
-def generate_testing_dataset(path):
-	file_names = os.listdir(path + "Data/Train/") #TODO: change to TEST!!
+def generate_testing_dataset(path, pathToTestFolder):
+	file_names = os.listdir(path + pathToTestFolder)
 
 	for image_name in file_names:
 		if image_name.endswith('.jpg'):
 			print("Processing ", image_name)
-			image = Image.open(path + "Data/Train/" + image_name) #TODO: change to TEST!!
+			image = Image.open(path + pathToTestFolder + image_name)
 			windows, corners = sliding_window_net_1(image)
 			save_to_disk(windows, corners, path + 'TestDatasets/sliding_window_' + image_name +'.h5')
 
@@ -97,7 +97,7 @@ def createCalibrationDictionary():
 
 """Testing"""
 if __name__ == "__main__":
-	generate_testing_dataset("")
+	generate_testing_dataset("", "Data/Train")
 
 	# file_names = os.listdir("Data/Train/")
 	# image = Image.open("Data/Train/" + file_names[0])
