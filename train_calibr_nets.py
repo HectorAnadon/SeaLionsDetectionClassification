@@ -1,6 +1,6 @@
 import sys, pdb
 from keras.utils.io_utils import HDF5Matrix
-from keras.callbacks import ModelCheckpoint
+from keras.callbacks import ModelCheckpoint, Callback
 from PIL import Image
 import matplotlib.pyplot as plt
 from calibration_nets import *
@@ -8,6 +8,14 @@ from global_variables import *
 from make_datasets import *
 
 def train_calibr_net1():
+    class LossHistory(Callback):
+        def on_train_begin(self, logs={}):
+            self.metrics = []
+
+        def on_epoch_end(self, epoch, logs={}):
+            self.metrics.append(logs)
+            np.save(PATH + 'Results/loss_calibration_net1.npy', np.array(self.metrics))
+
     """Train the first binary net and save training data means and best model weights.
     """
     # Load data
@@ -26,11 +34,12 @@ def train_calibr_net1():
     # Compile model
     model.compile(loss='categorical_crossentropy', optimizer='Adam', metrics=['accuracy'])
     print(model.summary())
+    history = LossHistory()
     # Checkpoint (for saving the weights)
     filepath = PATH + 'Weights/weights_calibration_net1.hdf5'
     checkpoint = ModelCheckpoint(filepath, monitor='val_acc', verbose=1, save_best_only=True, 
             save_weights_only=True, mode='max')
-    callbacks_list = [checkpoint]
+    callbacks_list = [checkpoint, history]
     # Train model (and save the weights)
     model.fit(X_train, y_train,
 	          batch_size=32,
@@ -42,6 +51,14 @@ def train_calibr_net1():
 
 
 def train_calibr_net2():
+    class LossHistory(Callback):
+        def on_train_begin(self, logs={}):
+            self.metrics = []
+
+        def on_epoch_end(self, epoch, logs={}):
+            self.metrics.append(logs)
+            np.save(PATH + 'Results/loss_calibration_net2.npy', np.array(self.metrics))
+
     """Train the second binary net and save training data means and best model weights.
     """
     # Load data
@@ -60,11 +77,12 @@ def train_calibr_net2():
     # Compile model
     model.compile(loss='categorical_crossentropy', optimizer='Adam', metrics=['accuracy'])
     print(model.summary())
+    history = LossHistory()
     # Checkpoint (for saving the weights)
     filepath = PATH + 'Weights/weights_calibration_net2.hdf5'
     checkpoint = ModelCheckpoint(filepath, monitor='val_acc', verbose=1, save_best_only=True, 
             save_weights_only=True, mode='max')
-    callbacks_list = [checkpoint]
+    callbacks_list = [checkpoint, history]
     # Train model (and save the weights)
     model.fit(X_train, y_train,
               batch_size=32,
@@ -76,6 +94,14 @@ def train_calibr_net2():
 
 
 def train_calibr_net3():
+    class LossHistory(Callback):
+        def on_train_begin(self, logs={}):
+            self.metrics = []
+
+        def on_epoch_end(self, epoch, logs={}):
+            self.metrics.append(logs)
+            np.save(PATH + 'Results/loss_calibration_net3.npy', np.array(self.metrics))
+
     """Train the third binary net and save training data means and best model weights.
     """
     # Load data
@@ -94,11 +120,12 @@ def train_calibr_net3():
     # Compile model
     model.compile(loss='categorical_crossentropy', optimizer='Adam', metrics=['accuracy'])
     print(model.summary())
+    history = LossHistory()
     # Checkpoint (for saving the weights)
     filepath = PATH + 'Weights/weights_calibration_net3.hdf5'
     checkpoint = ModelCheckpoint(filepath, monitor='val_acc', verbose=1, save_best_only=True, 
             save_weights_only=True, mode='max')
-    callbacks_list = [checkpoint]
+    callbacks_list = [checkpoint, history]
     # Train model (and save the weights)
     model.fit(X_train, y_train,
               batch_size=32,

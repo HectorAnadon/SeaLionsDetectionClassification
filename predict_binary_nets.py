@@ -65,21 +65,21 @@ def predict_binary_net3(X_test, X_test_2, X_test_1, corners_test):
 	""" Predict labels for binary net 3 and return only windows containing sealions.
 	"""
 	# Load training data mean (current net)
-	means = np.load('Datasets/means_net3.npy')
+	means = np.load(PATH + 'Datasets/means_net3.npy')
 	# Zero center
 	X_test -= means
 	# Load training data mean (net 2)
-	means = np.load('Datasets/means_net2.npy')
+	means = np.load(PATH + 'Datasets/means_net2.npy')
 	# Zero center
 	X_test_2 -= means
 	# Load training data mean (net 1)
-	means = np.load('Datasets/means_net1.npy')
+	means = np.load(PATH + 'Datasets/means_net1.npy')
 	# Zero center
 	X_test_1 -= means
 	# Create model
 	model = build_net_3(Input(shape=(X_test.shape[1], X_test.shape[2], 3)))
 	# Load weights
-	model.load_weights('Weights/weights_binary_net3.hdf5')
+	model.load_weights(PATH + 'Weights/weights_binary_net3.hdf5')
 	# Compile model
 	model.compile(loss='categorical_crossentropy', optimizer='Adam', metrics=['accuracy'])
 	# Predict model
@@ -95,9 +95,9 @@ def predict_binary_net3(X_test, X_test_2, X_test_1, corners_test):
 """Testing"""
 if __name__ == '__main__':
 
-	X1 = HDF5Matrix('Datasets/data_net1_small.h5', 'data', start=0, end=100)
-	X2 = HDF5Matrix('Datasets/data_net2_small.h5', 'data', start=0, end=100)
-	X3 = HDF5Matrix('Datasets/data_net3_small.h5', 'data', start=0, end=100)
+	X1 = HDF5Matrix(PATH + 'Datasets/data_net1_small.h5', 'data', start=0, end=100)
+	X2 = HDF5Matrix(PATH + 'Datasets/data_net2_small.h5', 'data', start=0, end=100)
+	X3 = HDF5Matrix(PATH + 'Datasets/data_net3_small.h5', 'data', start=0, end=100)
 	corners = np.ones((X1.shape[0], 2))
 	print(X1.shape, X2.shape, X3.shape, corners.shape)
 

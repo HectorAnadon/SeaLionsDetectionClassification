@@ -67,10 +67,12 @@ def test_net(image, image_name, path):
 	corners = non_max_suppression_slow(corners, OVERLAPPING_THRES)
 	print("number of corners after NMS:", corners.shape[0])
 	np.save(path + 'Results/corners_net3_' + image_name + '.npy',corners)
+
 	for corner in corners:
 		coordinates = extractCoordinates(path, image_name)
 		plt.imshow(cropAndChangeResolution(image,image_name,corner[0],corner[1],ORIGINAL_WINDOW_DIM,1))
 		plt.show()
+
 
 if __name__ == '__main__':
 	file_names = os.listdir("Data/Train/")

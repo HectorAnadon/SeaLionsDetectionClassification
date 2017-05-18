@@ -14,7 +14,7 @@ REGULARIZATION_CALIBRATION_1 = 0.001
 REGULARIZATION_CALIBRATION_2 = 0.001
 REGULARIZATION_CALIBRATION_3 = 0.08
 
-NUM_NEG_SAMPLES = 30 # Number of negative samples per image (should be >100) TODO: SET THIS
+NUM_NEG_SAMPLES = 30 # Number of negative samples per image (should be >100)
 
 PATH = ""
 
