@@ -106,11 +106,11 @@ def extractCoordinates(path, image_name):
     # DETECT BLOBS
     blobs = skimage.feature.blob_log(image_3, min_sigma=3, max_sigma=4, num_sigma=1, threshold=0.02)
 
-    adult_males = []
-    subadult_males = []
+    #adult_males = []
+    #subadult_males = []
     pups = []
-    juveniles = []
-    adult_females = []
+    #juveniles = []
+    #adult_females = []
 
     for blob in blobs:
         # GET THE COORDINATES OF EACH BLOB
@@ -120,21 +120,9 @@ def extractCoordinates(path, image_name):
         g, b, r = image_1[int(y)][int(x)][:]
 
         # DETECT THE COLOR
-        if r > 200 and g < 50 and b < 50:  # RED = ADULT MALES
-            adult_males.append((int(x), int(y)))
-        elif r > 200 and g > 200 and b < 50:  # MAGENTA = SUBADULT MALES
-            subadult_males.append((int(x), int(y)))
-        elif r < 100 and g < 100 and 150 < b < 200:  # GREEN = PUPS
+        if  r < 100 and g < 100 and 150 < b < 200:  # GREEN = PUPS
             pups.append((int(x), int(y)))
-        elif r < 100 and 100 < g and b < 100:  # BLUE = JUVENILES
-            juveniles.append((int(x), int(y)))
-        elif r < 150 and g < 50 and b < 100:  # BROWN = FEMALES
-            adult_females.append((int(x), int(y)))
 
-    coordinates_df["adult_males"][image_name] = adult_males
-    coordinates_df["subadult_males"][image_name] = subadult_males
-    coordinates_df["adult_females"][image_name] = adult_females
-    coordinates_df["juveniles"][image_name] = juveniles
     coordinates_df["pups"][image_name] = pups
 
     return  coordinates_df

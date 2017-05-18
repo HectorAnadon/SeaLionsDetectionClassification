@@ -325,5 +325,9 @@ if __name__ == '__main__':
     else:
         print("Wrong command line argument.")
 
+    #X_data = HDF5Matrix(PATH + 'Datasets/data_positive_net3_small.h5', 'data')
+    #for i in range(30,50):
+        #plt.imshow(X_data[i])
+        #plt.show()
 
 

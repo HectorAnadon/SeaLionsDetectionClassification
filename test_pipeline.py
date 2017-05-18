@@ -2,7 +2,7 @@ import numpy as np
 from predict_binary_nets import *
 from predict_binary_nets import *
 from test_functions import *
-from usefulFunctions import cropAndChangeResolution
+from usefulFunctions import *
 import os
 from PIL import Image
 import matplotlib.pyplot as plt
@@ -13,6 +13,8 @@ from predict_calibration_nets import *
 def test_net(image, image_name, path):
 	# NET 1
 	windows, corners = sliding_window_net_1(image)
+	windows = windows[0:3000,:,:,:]
+	corners = corners[0:3000,:]
 	#windows = HDF5Matrix(path + 'TestDatasets/sliding_window_' + image_name + '.h5', 'data')
 	#corners = HDF5Matrix(path + 'TestDatasets/sliding_window_' + image_name + '.h5', 'labels')
 	print(type(windows))
@@ -66,9 +68,9 @@ def test_net(image, image_name, path):
 	print("number of corners after NMS:", corners.shape[0])
 	np.save(path + 'Results/corners_net3_' + image_name + '.npy',corners)
 	for corner in corners:
+		coordinates = extractCoordinates(path, image_name)
 		plt.imshow(cropAndChangeResolution(image,image_name,corner[0],corner[1],ORIGINAL_WINDOW_DIM,1))
 		plt.show()
-
 
 if __name__ == '__main__':
 	file_names = os.listdir("Data/Train/")

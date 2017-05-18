@@ -35,8 +35,14 @@ def predict_binary_net2(X_test, X_test_prev, corners_test):
 	means = np.load(PATH + 'Datasets/means_net2.npy')
 	# Zero center
 	X_test -= means
-	# Load training data mean (previous net)
+	""" Predict labels for binary net 2 and return only windows containing sealions.
+	"""
+	# Load training data mean (current net)
 	means = np.load(PATH + 'Datasets/means_net2.npy')
+	# Zero center
+	X_test -= means
+	# Load training data mean (previous net)
+	means = np.load(PATH + 'Datasets/means_net1.npy')
 	# Zero center
 	X_test_prev -= means
 	# Create model
@@ -47,7 +53,7 @@ def predict_binary_net2(X_test, X_test_prev, corners_test):
 	model.compile(loss='categorical_crossentropy', optimizer='Adam', metrics=['accuracy'])
 	# Predict model
 	scores = model.predict([X_test, X_test_prev])
-	# Get indexes of the windows labeled as sealions (0 because sealions are [1 0]) 
+	# Get indexes of the windows labeled as sealions (0 because sealions are [1 0])
 	argmax = np.argmax(scores, axis=1)
 	idx = np.argwhere(argmax == 0)
 	idx = np.reshape(idx, (idx.shape[0],))
