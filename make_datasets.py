@@ -111,7 +111,7 @@ def get_positive_samples(path, radius, net):
         y_dset[:] = multiclass_labels  
         print (y_dset.shape)
     f.close()
-    return positive_samples.shape, binary_labels.shape
+    return positive_samples.shape
 
 def get_negative_samples(path, radius):
     """Get an array of negative samples (windows without lions), their upper left corner 
@@ -291,22 +291,25 @@ if __name__ == '__main__':
     """Create binary net datasets"""
 
     # Positive data (for binary nets)
-    # print("POS 1\n", get_positive_samples(PATH, ORIGINAL_WINDOW_DIM / 2, 1))
-    # print("POS 2\n", get_positive_samples(PATH, ORIGINAL_WINDOW_DIM / 2, 2))
-    # print("POS 3\n", get_positive_samples(PATH, ORIGINAL_WINDOW_DIM / 2, 3))
-    print("POS 4\n", get_positive_samples(PATH, ORIGINAL_WINDOW_DIM / 2, 4))
+    print("POS 1\n", get_positive_samples(PATH, ORIGINAL_WINDOW_DIM / 2, 1))
+    print("POS 2\n", get_positive_samples(PATH, ORIGINAL_WINDOW_DIM / 2, 2))
+    print("POS 3\n", get_positive_samples(PATH, ORIGINAL_WINDOW_DIM / 2, 3))
 
     # Negative data (for binary nets)
-    # print("NEG\n", get_negative_samples(PATH, ORIGINAL_WINDOW_DIM / 2))
+    print("NEG\n", get_negative_samples(PATH, ORIGINAL_WINDOW_DIM / 2))
 
     # Combine data (for binary nets)
-    # print("COMBINED\n", create_binary_net_datasets())
+    print("COMBINED\n", create_binary_net_datasets())
+
+    """Create multiclass net datasets"""
+
+    # print("POS 4\n", get_positive_samples(PATH, ORIGINAL_WINDOW_DIM / 2, 4))
 
     """Create calibration net datasets"""
 
-    #print("CALIB 1\n", create_calib_dataset(PATH, ORIGINAL_WINDOW_DIM, 1))
-    #print("CALIB 2\n", create_calib_dataset(PATH, ORIGINAL_WINDOW_DIM, 2))
-    #print("CALIB 3\n", create_calib_dataset(PATH, ORIGINAL_WINDOW_DIM, 3))
+    print("CALIB 1\n", create_calib_dataset(PATH, ORIGINAL_WINDOW_DIM, 1))
+    # print("CALIB 2\n", create_calib_dataset(PATH, ORIGINAL_WINDOW_DIM, 2))
+    # print("CALIB 3\n", create_calib_dataset(PATH, ORIGINAL_WINDOW_DIM, 3))
 
     """Testing"""
 
