@@ -7,7 +7,7 @@ from global_variables import *
 import numpy as np
 
 def predict_classification_net(X_test, image_name):
-	""" Predict labels for binary net 1 and return only windows containing sealions.
+	""" Predict labels for classification
 	"""
 	# Load training data mean 
 	means = np.load(PATH + 'Datasets/means_classification.npy')
