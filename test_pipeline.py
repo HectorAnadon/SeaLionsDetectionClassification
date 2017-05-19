@@ -79,8 +79,8 @@ def test_net(image, image_name, path, imageDotted):
 
 if __name__ == '__main__':
 	file_names = os.listdir("Data/Train/")
-	image = Image.open("Data/Train/" + file_names[7])
-	imageDotted = Image.open("Data/TrainDotted/" + file_names[7])
-	print(file_names[7])
-	found_pups = test_net(image, file_names[7], "", imageDotted)
+	image = Image.open("Data/Train/" + file_names[6])
+	imageDotted = Image.open("Data/TrainDotted/" + file_names[6])
+	print(file_names[6])
+	found_pups = test_net(image, file_names[6], "", imageDotted)
 	print("Found ", found_pups, " pups")
