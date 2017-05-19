@@ -19,7 +19,7 @@
 
 # load the anaconda module
 module add cudnn/5.1-cuda-8.0
-module load anaconda/py35/4.2
+module load anaconda/py35/4.2.0
 
 # if you need the tensorflow environment:
 source activate tensorflow
