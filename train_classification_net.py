@@ -7,12 +7,12 @@ from global_variables import *
 
 def train_classification():
 	class LossHistory(Callback):
-        def on_train_begin(self, logs={}):
-            self.metrics = []
+		def on_train_begin(self, logs={}):
+			self.metrics = []
 
-        def on_epoch_end(self, epoch, logs={}):
-            self.metrics.append(logs)
-            np.save(PATH + 'Results/loss_classification_net.npy', np.array(self.metrics))
+		def on_epoch_end(self, epoch, logs={}):
+			self.metrics.append(logs)
+			np.save(PATH + 'Results/loss_classification_net.npy', np.array(self.metrics))
 
 	X_data = HDF5Matrix(PATH + 'Datasets/data_positive_net4_small.h5', 'data')
 	y_data = HDF5Matrix(PATH + 'Datasets/data_positive_net4_small.h5', 'labels')

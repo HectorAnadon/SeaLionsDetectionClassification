@@ -11,12 +11,12 @@ from make_datasets import *
 
 def train_binary_net1():
 	class LossHistory(Callback):
-        def on_train_begin(self, logs={}):
-            self.metrics = []
+		def on_train_begin(self, logs={}):
+			self.metrics = []
 
-        def on_epoch_end(self, epoch, logs={}):
-            self.metrics.append(logs)
-            np.save(PATH + 'Results/loss_binary_net1.npy', np.array(self.metrics))
+		def on_epoch_end(self, epoch, logs={}):
+			self.metrics.append(logs)
+			np.save(PATH + 'Results/loss_binary_net1.npy', np.array(self.metrics))
 
 	"""Train the first binary net and save training data means and best model weights.
 	"""
@@ -54,12 +54,12 @@ def train_binary_net1():
 
 def train_binary_net2():
 	class LossHistory(Callback):
-        def on_train_begin(self, logs={}):
-            self.metrics = []
+		def on_train_begin(self, logs={}):
+			self.metrics = []
 
-        def on_epoch_end(self, epoch, logs={}):
-            self.metrics.append(logs)
-            np.save(PATH + 'Results/loss_binary_net2.npy', np.array(self.metrics))
+		def on_epoch_end(self, epoch, logs={}):
+			self.metrics.append(logs)
+			np.save(PATH + 'Results/loss_binary_net2.npy', np.array(self.metrics))
 
 	"""Train the second binary net and save training data means and best model weights.
 	"""
@@ -111,12 +111,12 @@ def train_binary_net2():
 
 def train_binary_net3():
 	class LossHistory(Callback):
-        def on_train_begin(self, logs={}):
-            self.metrics = []
+		def on_train_begin(self, logs={}):
+			self.metrics = []
 
-        def on_epoch_end(self, epoch, logs={}):
-            self.metrics.append(logs)
-            np.save(PATH + 'Results/loss_binary_net3.npy', np.array(self.metrics))
+		def on_epoch_end(self, epoch, logs={}):
+			self.metrics.append(logs)
+			np.save(PATH + 'Results/loss_binary_net3.npy', np.array(self.metrics))
 
 	"""Train the third binary net and save training data means and best model weights.
 	"""
