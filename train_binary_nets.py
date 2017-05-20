@@ -14,9 +14,9 @@ def train_binary_net1():
 		def on_train_begin(self, logs={}):
 			self.metrics = []
 
-        def on_epoch_end(self, epoch, logs={}):
-            self.metrics.append(logs)
-            np.save(PATH + 'Results/loss_binary_net1.npy', np.array(self.metrics))
+		def on_epoch_end(self, epoch, logs={}):
+			self.metrics.append(logs)
+			np.save(PATH + 'Results/loss_binary_net1.npy', np.array(self.metrics))
 
 	"""Train the first binary net and save training data means and best model weights.
 	"""
@@ -45,7 +45,7 @@ def train_binary_net1():
 	# Train model (and save the weights)
 	model.fit(X_train, y_train,
 			batch_size=32,
-			epochs=30,
+			epochs=100,
 			validation_data=(X_test, y_test),
 			shuffle='batch', # Have to use shuffle='batch' or False with HDF5Matrix
 			verbose=0, 
@@ -57,9 +57,9 @@ def train_binary_net2():
 		def on_train_begin(self, logs={}):
 			self.metrics = []
 
-        def on_epoch_end(self, epoch, logs={}):
-            self.metrics.append(logs)
-            np.save(PATH + 'Results/loss_binary_net2.npy', np.array(self.metrics))
+		def on_epoch_end(self, epoch, logs={}):
+			self.metrics.append(logs)
+			np.save(PATH + 'Results/loss_binary_net2.npy', np.array(self.metrics))
 
 	"""Train the second binary net and save training data means and best model weights.
 	"""
@@ -102,7 +102,7 @@ def train_binary_net2():
 	# Train model (and save the weights)
 	model.fit([X_train, X_train_prev], y_train,
 			batch_size=32,
-			epochs=30,
+			epochs=100,
 			validation_data=([X_test, X_test_prev], y_test),
 			shuffle='batch', # Have to use shuffle='batch' or False with HDF5Matrix
 			verbose=0, 
@@ -114,9 +114,9 @@ def train_binary_net3():
 		def on_train_begin(self, logs={}):
 			self.metrics = []
 
-        def on_epoch_end(self, epoch, logs={}):
-            self.metrics.append(logs)
-            np.save(PATH + 'Results/loss_binary_net3.npy', np.array(self.metrics))
+		def on_epoch_end(self, epoch, logs={}):
+			self.metrics.append(logs)
+			np.save(PATH + 'Results/loss_binary_net3.npy', np.array(self.metrics))
 
 	"""Train the third binary net and save training data means and best model weights.
 	"""
@@ -166,7 +166,7 @@ def train_binary_net3():
 	# Train model (and save the weights)
 	model.fit([X_train, X_train2, X_train1], y_train,
 			batch_size=32,
-			epochs=30,
+			epochs=100,
 			validation_data=([X_test, X_test2, X_test1], y_test),
 			shuffle='batch', # Have to use shuffle='batch' or False with HDF5Matrix
 			verbose=0, 
