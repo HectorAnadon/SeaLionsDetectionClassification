@@ -2,6 +2,7 @@ import numpy as np
 from usefulFunctions import cropAndChangeResolution
 import os
 from PIL import Image
+from matplotlib.patches import Rectangle
 import matplotlib.pyplot as plt
 from global_variables import *
 from NMS import non_max_suppression_slow
@@ -108,6 +109,22 @@ def visualize_corners(path_to_image, image_name):
 	windows = getWindows(corners, image, 1)
 	for window in windows:
 		plt.imshow(window)
+		plt.show()
+
+def dispWindows(image, corners, disp):
+	if (disp):
+		fig, ax = plt.subplots(1)
+
+		# Display the image
+		ax.imshow(image)
+
+		for corner in corners:
+			# Create a Rectangle patch
+			rect = Rectangle((corner[0], corner[1]), ORIGINAL_WINDOW_DIM, ORIGINAL_WINDOW_DIM, linewidth=1, edgecolor='g', facecolor='none')
+
+			# Add the patch to the Axes
+			ax.add_patch(rect)
+
 		plt.show()
 
 """Testing"""
