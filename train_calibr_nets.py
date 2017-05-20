@@ -44,7 +44,7 @@ def train_calibr_net1():
     model.fit(X_train, y_train,
 	          batch_size=32,
 	          epochs=100,
-	          verbose=1,
+	          verbose=0,
 	          validation_data=(X_test, y_test),
 	          shuffle='batch', # have to use shuffle='batch' or False with HDF5Matrix
               callbacks=callbacks_list)
@@ -87,7 +87,7 @@ def train_calibr_net2():
     model.fit(X_train, y_train,
               batch_size=32,
               epochs=100,
-              verbose=1,
+              verbose=0,
               validation_data=(X_test, y_test),
               shuffle='batch', # have to use shuffle='batch' or False with HDF5Matrix
               callbacks=callbacks_list)
@@ -130,7 +130,7 @@ def train_calibr_net3():
     model.fit(X_train, y_train,
               batch_size=32,
               epochs=100,
-              verbose=1,
+              verbose=0,
               validation_data=(X_test, y_test),
               shuffle='batch', # have to use shuffle='batch' or False with HDF5Matrix
               callbacks=callbacks_list)
