@@ -8,17 +8,24 @@ from NMS import non_max_suppression_slow
 import pdb
 from make_datasets import save_to_disk
 
-def sliding_window_net_1(image, padding=PADDING_SLIDING_WINDOW, window_size=ORIGINAL_WINDOW_DIM):
+def sliding_window_net_1(image, imageDotted=None, padding=PADDING_SLIDING_WINDOW, window_size=ORIGINAL_WINDOW_DIM):
 	windows = []
 	corners = []
 	size_x,size_y = image.size
 	x = 0
 	y = 0
 	while (y+window_size <= size_y):
+		doCrop = True
 
-		window = cropAndChangeResolution(image, 'image_name', x, y, window_size, 3)
-		windows.append(np.array(window))
-		corners.append(np.array([x,y]))
+		if (imageDotted):
+			isBlack = cropAndChangeResolution(imageDotted, 'image_name', x, y, window_size, 1)
+			if not isBlack.getbbox():
+				doCrop = False
+
+		if (doCrop):
+			window = cropAndChangeResolution(image, 'image_name', x, y, window_size, 3)
+			windows.append(np.array(window))
+			corners.append(np.array([x,y]))
 		
 		#update window
 		x += padding

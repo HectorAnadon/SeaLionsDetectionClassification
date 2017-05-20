@@ -10,9 +10,12 @@ from global_variables import *
 from predict_calibration_nets import *
 
 
-def test_net(image, image_name):
+def test_net(image, image_name, imageDotted=None):
 	# NET 1
-	windows, corners = sliding_window_net_1(image)
+	if (imageDotted):
+		windows, corners = sliding_window_net_1(image, imageDotted)
+	else:
+		windows, corners = sliding_window_net_1(image)
 
 	print(type(windows))
 	print(windows.shape)
@@ -67,21 +70,27 @@ def test_net(image, image_name):
 	# 	plt.imshow(cropAndChangeResolution(image,image_name,corner[0],corner[1],ORIGINAL_WINDOW_DIM,1))
 	# 	plt.show()
 
-def test_folder(path):
+def test_folder(path, pathDotted=None):
 	file_names = os.listdir(PATH + path)
 	for image_name in file_names:
 		if image_name.endswith('.jpg'):
 			image = Image.open(PATH + path + image_name)
 			print(image_name)
-			test_net(image, image_name)
+			if (pathDotted):
+				imageDotted = Image.open(PATH + pathDotted + image_name)
+				test_net(image, image_name, imageDotted)
+			else:
+				test_net(image, image_name)
 
 
 if __name__ == '__main__':
-	
 	try:
 		arg1 = sys.argv[1]
 	except IndexError:
 		print("Command line argument missing. Usage: test_pipeline.py path_to_folder/ (Test/)")
 		sys.exit(1)
 
-	test_folder(arg1)
+	if (len(sys.argv)==3):
+		test_folder(arg1, sys.argv[2])
+	else:
+		test_folder(arg1)
