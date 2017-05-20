@@ -312,11 +312,4 @@ if __name__ == '__main__':
     else:
         print("Wrong command line argument.")
 
-    X_data = HDF5Matrix(PATH + 'Datasets/data_net3_pups.h5', 'data')
-    Y_data = HDF5Matrix(PATH + 'Datasets/data_net3_pups.h5', 'labels')
-    for i in range(100,200):
-       print(Y_data[i])
-       plt.imshow(X_data[i])
-       plt.show()
-
 
