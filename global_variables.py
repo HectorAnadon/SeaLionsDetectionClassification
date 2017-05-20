@@ -8,7 +8,7 @@ CALIBRATION_THRESHOLD = 0.4
 X_N = [-5, 0, 5]
 Y_N = [-5, 0, 5]
 
-CLASSES = ["pups"]
+CLASSES = ["adult_males", "subadult_males", "adult_females", "juveniles", "pups"]
 
 REGULARIZATION_CALIBRATION_1 = 0.001
 REGULARIZATION_CALIBRATION_2 = 0.001

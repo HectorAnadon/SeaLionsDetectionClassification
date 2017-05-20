@@ -10,8 +10,8 @@ def load_binary_net1():
 		validation accuracy when the model was trained).
 	"""
 	# Load data
-	X_data = HDF5Matrix(PATH + 'Datasets/data_net1_small.h5', 'data')
-	y_data = HDF5Matrix(PATH + 'Datasets/data_net1_small.h5', 'labels')
+	X_data = HDF5Matrix(PATH + 'Datasets/data_net1_pups.h5', 'data')
+	y_data = HDF5Matrix(PATH + 'Datasets/data_net1_pups.h5', 'labels')
 	# Split into training and validation sets (same used during training)
 	X_train, y_train, X_test, y_test = split_data(X_data, y_data, TRAIN_SPLIT)
 	# Zero center
@@ -35,16 +35,16 @@ def load_binary_net2():
 		validation accuracy when the model was trained).
 	"""
 	# Load data (current net)
-	X_data = HDF5Matrix(PATH + 'Datasets/data_net2_small.h5', 'data')
-	y_data = HDF5Matrix(PATH + 'Datasets/data_net2_small.h5', 'labels')
+	X_data = HDF5Matrix(PATH + 'Datasets/data_net2_pups.h5', 'data')
+	y_data = HDF5Matrix(PATH + 'Datasets/data_net2_pups.h5', 'labels')
 	# Split into training and validation sets (same used during training)
 	X_train, y_train, X_test, y_test = split_data(X_data, y_data, TRAIN_SPLIT)
 	# Zero center
 	means = np.load(PATH + 'Datasets/means_net2.npy')
 	X_test -= means
 	# Load data (previous net)
-	X_data = HDF5Matrix(PATH + 'Datasets/data_net1_small.h5', 'data')
-	y_data = HDF5Matrix(PATH + 'Datasets/data_net1_small.h5', 'labels')
+	X_data = HDF5Matrix(PATH + 'Datasets/data_net1_pups.h5', 'data')
+	y_data = HDF5Matrix(PATH + 'Datasets/data_net1_pups.h5', 'labels')
 	# Split into training and validation sets
 	X_train_prev, y_train_prev, X_test_prev, y_test_prev = split_data(X_data, y_data, TRAIN_SPLIT)
 	# Zero center
@@ -68,16 +68,16 @@ def load_binary_net3():
 		validation accuracy when the model was trained).
 	"""
 	# Load data (current net)
-	X_data = HDF5Matrix(PATH + 'Datasets/data_net3_small.h5', 'data')
-	y_data = HDF5Matrix(PATH + 'Datasets/data_net3_small.h5', 'labels')
+	X_data = HDF5Matrix(PATH + 'Datasets/data_net3_pups.h5', 'data')
+	y_data = HDF5Matrix(PATH + 'Datasets/data_net3_pups.h5', 'labels')
 	# Split into training and validation sets (same used during training)
 	X_train, y_train, X_test, y_test = split_data(X_data, y_data, TRAIN_SPLIT)
 	# Zero center
 	means = np.load(PATH + 'Datasets/means_net3.npy')
 	X_test -= means
 	# Load data (2nd net)
-	X_data = HDF5Matrix(PATH + 'Datasets/data_net2_small.h5', 'data')
-	y_data = HDF5Matrix(PATH + 'Datasets/data_net2_small.h5', 'labels')
+	X_data = HDF5Matrix(PATH + 'Datasets/data_net2_pups.h5', 'data')
+	y_data = HDF5Matrix(PATH + 'Datasets/data_net2_pups.h5', 'labels')
 	# Split into training and validation sets
 	X_train2, y_train2, X_test2, y_test2 = split_data(X_data, y_data, TRAIN_SPLIT)
 	# Zero center
@@ -85,8 +85,8 @@ def load_binary_net3():
 	X_train2 -= means
 	X_test2 -= means
 	# Load data (1st net)
-	X_data = HDF5Matrix(PATH + 'Datasets/data_net1_small.h5', 'data')
-	y_data = HDF5Matrix(PATH + 'Datasets/data_net1_small.h5', 'labels')
+	X_data = HDF5Matrix(PATH + 'Datasets/data_net1_pups.h5', 'data')
+	y_data = HDF5Matrix(PATH + 'Datasets/data_net1_pups.h5', 'labels')
 	# Split into training and validation sets
 	X_train1, y_train1, X_test1, y_test1 = split_data(X_data, y_data, TRAIN_SPLIT)
 	# Zero center

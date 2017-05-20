@@ -89,9 +89,9 @@ def predict_binary_net3(X_test, X_test_2, X_test_1, corners_test):
 """Testing"""
 if __name__ == '__main__':
 
-	X1 = HDF5Matrix(PATH + 'Datasets/data_net1_small.h5', 'data', start=0, end=100)
-	X2 = HDF5Matrix(PATH + 'Datasets/data_net2_small.h5', 'data', start=0, end=100)
-	X3 = HDF5Matrix(PATH + 'Datasets/data_net3_small.h5', 'data', start=0, end=100)
+	X1 = HDF5Matrix(PATH + 'Datasets/data_net1_pups.h5', 'data', start=0, end=100)
+	X2 = HDF5Matrix(PATH + 'Datasets/data_net2_pups.h5', 'data', start=0, end=100)
+	X3 = HDF5Matrix(PATH + 'Datasets/data_net3_pups.h5', 'data', start=0, end=100)
 	corners = np.ones((X1.shape[0], 2))
 	print(X1.shape, X2.shape, X3.shape, corners.shape)
 

@@ -11,8 +11,8 @@ from make_datasets import *
 
 def train_binary_net1():
 	class LossHistory(Callback):
-        def on_train_begin(self, logs={}):
-            self.metrics = []
+		def on_train_begin(self, logs={}):
+			self.metrics = []
 
         def on_epoch_end(self, epoch, logs={}):
             self.metrics.append(logs)
@@ -21,8 +21,8 @@ def train_binary_net1():
 	"""Train the first binary net and save training data means and best model weights.
 	"""
 	# Load data
-	X_data = HDF5Matrix(PATH + 'Datasets/data_net1_small.h5', 'data')
-	y_data = HDF5Matrix(PATH + 'Datasets/data_net1_small.h5', 'labels')
+	X_data = HDF5Matrix(PATH + 'Datasets/data_net1_pups.h5', 'data')
+	y_data = HDF5Matrix(PATH + 'Datasets/data_net1_pups.h5', 'labels')
 	# Split into training and validation sets
 	X_train, y_train, X_test, y_test = split_data(X_data, y_data, TRAIN_SPLIT)
 	# Zero center
@@ -37,7 +37,7 @@ def train_binary_net1():
 	# Compile model
 	model.compile(loss='categorical_crossentropy', optimizer='Adam', metrics=['accuracy'])
 	history = LossHistory()
- 	# Checkpoint (for saving the weights)
+	# Checkpoint (for saving the weights)
 	filepath = PATH + 'Weights/weights_binary_net1.hdf5'
 	checkpoint = ModelCheckpoint(filepath, monitor='val_acc', verbose=1, save_best_only=True, 
 			save_weights_only=True, mode='max')
@@ -54,8 +54,8 @@ def train_binary_net1():
 
 def train_binary_net2():
 	class LossHistory(Callback):
-        def on_train_begin(self, logs={}):
-            self.metrics = []
+		def on_train_begin(self, logs={}):
+			self.metrics = []
 
         def on_epoch_end(self, epoch, logs={}):
             self.metrics.append(logs)
@@ -64,8 +64,8 @@ def train_binary_net2():
 	"""Train the second binary net and save training data means and best model weights.
 	"""
 	# Load data (current net)
-	X_data = HDF5Matrix(PATH + 'Datasets/data_net2_small.h5', 'data')
-	y_data = HDF5Matrix(PATH + 'Datasets/data_net2_small.h5', 'labels')
+	X_data = HDF5Matrix(PATH + 'Datasets/data_net2_pups.h5', 'data')
+	y_data = HDF5Matrix(PATH + 'Datasets/data_net2_pups.h5', 'labels')
 	# Split into training and validation sets
 	X_train, y_train, X_test, y_test = split_data(X_data, y_data, TRAIN_SPLIT)
 	# Zero center
@@ -75,8 +75,8 @@ def train_binary_net2():
 	# Save means (for testing)
 	np.save(PATH + 'Datasets/means_net2.npy', means)
 	# Load data (previous net)
-	X_data = HDF5Matrix(PATH + 'Datasets/data_net1_small.h5', 'data')
-	y_data = HDF5Matrix(PATH + 'Datasets/data_net1_small.h5', 'labels')
+	X_data = HDF5Matrix(PATH + 'Datasets/data_net1_pups.h5', 'data')
+	y_data = HDF5Matrix(PATH + 'Datasets/data_net1_pups.h5', 'labels')
 	# Split into training and validation sets
 	X_train_prev, y_train_prev, X_test_prev, y_test_prev = split_data(X_data, y_data, TRAIN_SPLIT)
 	# Zero center
@@ -111,8 +111,8 @@ def train_binary_net2():
 
 def train_binary_net3():
 	class LossHistory(Callback):
-        def on_train_begin(self, logs={}):
-            self.metrics = []
+		def on_train_begin(self, logs={}):
+			self.metrics = []
 
         def on_epoch_end(self, epoch, logs={}):
             self.metrics.append(logs)
@@ -121,8 +121,8 @@ def train_binary_net3():
 	"""Train the third binary net and save training data means and best model weights.
 	"""
 	# Load data (current net)
-	X_data = HDF5Matrix(PATH + 'Datasets/data_net3_small.h5', 'data')
-	y_data = HDF5Matrix(PATH + 'Datasets/data_net3_small.h5', 'labels')
+	X_data = HDF5Matrix(PATH + 'Datasets/data_net3_pups.h5', 'data')
+	y_data = HDF5Matrix(PATH + 'Datasets/data_net3_pups.h5', 'labels')
 	# Split into training and validation sets
 	X_train, y_train, X_test, y_test = split_data(X_data, y_data, TRAIN_SPLIT)
 	# Zero center
@@ -132,8 +132,8 @@ def train_binary_net3():
 	# Save means (for testing)
 	np.save(PATH + 'Datasets/means_net3.npy', means)
 	# Load data (2nd net)
-	X_data = HDF5Matrix(PATH + 'Datasets/data_net2_small.h5', 'data')
-	y_data = HDF5Matrix(PATH + 'Datasets/data_net2_small.h5', 'labels')
+	X_data = HDF5Matrix(PATH + 'Datasets/data_net2_pups.h5', 'data')
+	y_data = HDF5Matrix(PATH + 'Datasets/data_net2_pups.h5', 'labels')
 	# Split into training and validation sets
 	X_train2, y_train2, X_test2, y_test2 = split_data(X_data, y_data, TRAIN_SPLIT)
 	# Zero center
@@ -141,8 +141,8 @@ def train_binary_net3():
 	X_train2 -= means
 	X_test2 -= means
 	# Load data (1st net)
-	X_data = HDF5Matrix(PATH + 'Datasets/data_net1_small.h5', 'data')
-	y_data = HDF5Matrix(PATH + 'Datasets/data_net1_small.h5', 'labels')
+	X_data = HDF5Matrix(PATH + 'Datasets/data_net1_pups.h5', 'data')
+	y_data = HDF5Matrix(PATH + 'Datasets/data_net1_pups.h5', 'labels')
 	# Split into training and validation sets
 	X_train1, y_train1, X_test1, y_test1 = split_data(X_data, y_data, TRAIN_SPLIT)
 	# Zero center

@@ -10,8 +10,8 @@ def load_calibr_net1():
 		validation accuracy when the model was trained).
 	"""
 	# Load data
-	X_data = HDF5Matrix(PATH + 'Datasets/data_calib1_small.h5', 'data')
-	y_data = HDF5Matrix(PATH + 'Datasets/data_calib1_small.h5', 'labels')
+	X_data = HDF5Matrix(PATH + 'Datasets/data_calib1_pups.h5', 'data')
+	y_data = HDF5Matrix(PATH + 'Datasets/data_calib1_pups.h5', 'labels')
 	# Split into training and validation sets (same used during training)
 	X_train, y_train, X_test, y_test = split_data(X_data, y_data, TRAIN_SPLIT)
 	# Zero center
@@ -35,8 +35,8 @@ def load_calibr_net2():
 		validation accuracy when the model was trained).
 	"""
 	# Load data
-	X_data = HDF5Matrix(PATH + 'Datasets/data_calib2_small.h5', 'data')
-	y_data = HDF5Matrix(PATH + 'Datasets/data_calib2_small.h5', 'labels')
+	X_data = HDF5Matrix(PATH + 'Datasets/data_calib2_pups.h5', 'data')
+	y_data = HDF5Matrix(PATH + 'Datasets/data_calib2_pups.h5', 'labels')
 	# Split into training and validation sets (same used during training)
 	X_train, y_train, X_test, y_test = split_data(X_data, y_data, TRAIN_SPLIT)
 	# Zero center
@@ -60,8 +60,8 @@ def load_calibr_net3():
 		validation accuracy when the model was trained).
 	"""
 	# Load data
-	X_data = HDF5Matrix(PATH + 'Datasets/data_calib3_small.h5', 'data')
-	y_data = HDF5Matrix(PATH + 'Datasets/data_calib3_small.h5', 'labels')
+	X_data = HDF5Matrix(PATH + 'Datasets/data_calib3_pups.h5', 'data')
+	y_data = HDF5Matrix(PATH + 'Datasets/data_calib3_pups.h5', 'labels')
 	# Split into training and validation sets (same used during training)
 	X_train, y_train, X_test, y_test = split_data(X_data, y_data, TRAIN_SPLIT)
 	# Zero center

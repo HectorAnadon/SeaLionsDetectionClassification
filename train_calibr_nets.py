@@ -19,8 +19,8 @@ def train_calibr_net1():
     """Train the first binary net and save training data means and best model weights.
     """
     # Load data
-    X_data = HDF5Matrix(PATH + 'Datasets/data_calib1_small.h5', 'data')
-    y_data = HDF5Matrix(PATH + 'Datasets/data_calib1_small.h5', 'labels')
+    X_data = HDF5Matrix(PATH + 'Datasets/data_calib1_pups.h5', 'data')
+    y_data = HDF5Matrix(PATH + 'Datasets/data_calib1_pups.h5', 'labels')
     # Split into training and validation sets
     X_train, y_train, X_test, y_test = split_data(X_data, y_data, TRAIN_SPLIT)
     # Zero center
@@ -62,8 +62,8 @@ def train_calibr_net2():
     """Train the second binary net and save training data means and best model weights.
     """
     # Load data
-    X_data = HDF5Matrix(PATH + 'Datasets/data_calib2_small.h5', 'data')
-    y_data = HDF5Matrix(PATH + 'Datasets/data_calib2_small.h5', 'labels')
+    X_data = HDF5Matrix(PATH + 'Datasets/data_calib2_pups.h5', 'data')
+    y_data = HDF5Matrix(PATH + 'Datasets/data_calib2_pups.h5', 'labels')
     # Split into training and validation sets
     X_train, y_train, X_test, y_test = split_data(X_data, y_data, TRAIN_SPLIT)
     # Zero center
@@ -105,8 +105,8 @@ def train_calibr_net3():
     """Train the third binary net and save training data means and best model weights.
     """
     # Load data
-    X_data = HDF5Matrix(PATH + 'Datasets/data_calib3_small.h5', 'data')
-    y_data = HDF5Matrix(PATH + 'Datasets/data_calib3_small.h5', 'labels')
+    X_data = HDF5Matrix(PATH + 'Datasets/data_calib3_pups.h5', 'data')
+    y_data = HDF5Matrix(PATH + 'Datasets/data_calib3_pups.h5', 'labels')
     # Split into training and validation sets
     X_train, y_train, X_test, y_test = split_data(X_data, y_data, TRAIN_SPLIT)
     # Zero center

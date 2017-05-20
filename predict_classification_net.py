@@ -32,8 +32,8 @@ def predict_classification_net(X_test, image_name):
 """Testing"""
 if __name__ == '__main__':
 
-	X = HDF5Matrix(PATH + 'Datasets/data_positive_net4_small.h5', 'data', start=500, end=550)
-	labels = HDF5Matrix(PATH + 'Datasets/data_positive_net4_small.h5', 'labels', start=500, end=550)
+	X = HDF5Matrix(PATH + 'Datasets/data_positive_net4_pups.h5', 'data', start=500, end=550)
+	labels = HDF5Matrix(PATH + 'Datasets/data_positive_net4_pups.h5', 'labels', start=500, end=550)
 	output = predict_classification_net(X, 'dummy')
 
 	print (output.shape)
