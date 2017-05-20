@@ -95,9 +95,17 @@ def createCalibrationDictionary():
 
 	return movs
 
+def visualize_corners(path_to_image, image_name):
+	image = Image.open(PATH + path_to_image)
+	corners = np.load(PATH + 'Results/corners_net3_' + image_name + '.npy')
+	windows = getWindows(corners, image, 1)
+	for window in windows:
+		plt.imshow(window)
+		plt.show()
+
 """Testing"""
 if __name__ == "__main__":
-	generate_testing_dataset("", "Data/Train")
+	visualize_corners("Data/TrainDotted/41.jpg", "41.jpg")
 
 	# file_names = os.listdir("Data/Train/")
 	# image = Image.open("Data/Train/" + file_names[0])
