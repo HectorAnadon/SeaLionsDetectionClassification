@@ -20,6 +20,7 @@ def predict_binary_net1(X_test, corners_test):
 	model.compile(loss='categorical_crossentropy', optimizer='Adam', metrics=['accuracy'])
 	# Predict model
 	scores = model.predict(X_test)
+	scores[:,0] = np.where(scores[:,0] > ARGMAX_THRESHOLD, scores[:,0], -1)
 	# Get indexes of the windows labeled as sealions (0 because sealions are [1 0])
 	argmax = np.argmax(scores, axis=1)
 	idx = np.argwhere(argmax == 0)
@@ -47,6 +48,7 @@ def predict_binary_net2(X_test, X_test_prev, corners_test):
 	model.compile(loss='categorical_crossentropy', optimizer='Adam', metrics=['accuracy'])
 	# Predict model
 	scores = model.predict([X_test, X_test_prev])
+	scores[:,0] = np.where(scores[:,0] > ARGMAX_THRESHOLD, scores[:,0], -1)
 	# Get indexes of the windows labeled as sealions (0 because sealions are [1 0]) 
 	argmax = np.argmax(scores, axis=1)
 	idx = np.argwhere(argmax == 0)
@@ -78,6 +80,7 @@ def predict_binary_net3(X_test, X_test_2, X_test_1, corners_test):
 	model.compile(loss='categorical_crossentropy', optimizer='Adam', metrics=['accuracy'])
 	# Predict model
 	scores = model.predict([X_test, X_test_2, X_test_1])
+	scores[:,0] = np.where(scores[:,0] > ARGMAX_THRESHOLD, scores[:,0], -1)
 	# Get indexes of the windows labeled as sealions (0 because sealions are [1 0]) 
 	argmax = np.argmax(scores, axis=1)
 	idx = np.argwhere(argmax == 0)
@@ -113,10 +116,10 @@ if __name__ == '__main__':
 	print (output.shape)
 	print (corners.shape)
 
-	for i in range(output.shape[0]):
-		img = output[i,:,:,:]
-		plt.imshow(img)
-		plt.show()
+	# for i in range(output.shape[0]):
+	# 	img = output[i,:,:,:]
+	# 	plt.imshow(img)
+	# 	plt.show()
 
 
 
