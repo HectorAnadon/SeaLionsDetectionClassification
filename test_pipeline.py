@@ -99,7 +99,7 @@ def evaluate_result(path, pathDotted, visualize=False):
 			print("Found ", len(corners), " lions")
 
 			parent_folder = path.split("/")
-			coordinates = extractCoordinates(PATH, image_name, parent_folder[0]+"/")
+			coordinates = extractCoordinates(PATH, image_name, parent_folder[-3]+"/")
 
 			classes = CLASSES
 			s = 0
