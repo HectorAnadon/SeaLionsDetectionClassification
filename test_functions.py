@@ -20,8 +20,14 @@ def sliding_window_net_1(image, imageDotted=None, padding=PADDING_SLIDING_WINDOW
 
 		if (imageDotted):
 			isBlack = cropAndChangeResolution(imageDotted, 'image_name', x, y, window_size, 1)
-			if not isBlack.getbbox():
-				doCrop = False
+			pixels = isBlack.getdata()          # get the pixels as a flattened sequence
+			nblack = 0
+			for pixel in pixels:
+			    if pixel == (0,0,0):
+			        nblack += 1
+			n = len(pixels)
+			if (nblack / float(n)) > 0.4:
+			    doCrop = False
 
 		if (doCrop):
 			window = cropAndChangeResolution(image, 'image_name', x, y, window_size, 3)
