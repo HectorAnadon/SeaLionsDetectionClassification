@@ -75,15 +75,15 @@ def cropAndChangeResolution(image,image_name,x0,y0,s,resolution_lvl):
 
 
 #EXTRACT SEA LION COORDINATES
-def extractCoordinates(path, image_name):
+def extractCoordinates(path, image_name, defaultParent="Data/"):
 
     #DATAFRAME TO STORE THE RESULTS
     classes = CLASSES
     coordinates_df = pd.DataFrame(index=list([image_name]), columns=classes)
 
     # READ TRAIN AND DOTTED IMAGES
-    image_1 = cv2.imread(path +"Data/TrainDotted/" + image_name)
-    image_2 = cv2.imread(path + "Data/Train/" + image_name)
+    image_1 = cv2.imread(path + defaultParent + "TrainDotted/" + image_name)
+    image_2 = cv2.imread(path + defaultParent + "Train/" + image_name)
 
     # COMPUTE ABSOLUTE DIFFERENCE BETWEEN TRAIN AND TRAIN DOTTED
     image_3 = cv2.absdiff(image_1,image_2)

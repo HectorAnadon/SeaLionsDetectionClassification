@@ -79,6 +79,73 @@ def test_net(image, image_name, imageDotted=None, disp=False):
 	# 	plt.imshow(cropAndChangeResolution(image,image_name,corner[0],corner[1],ORIGINAL_WINDOW_DIM,1))
 	# 	plt.show()
 
+
+
+def evaluate_result(path, pathDotted, visualize=False):
+	file_names = os.listdir(PATH + path)
+	avg_recall = 0.0
+	avg_precision = 0.0
+	num_files = 0.0
+
+	for image_name in file_names:
+		if image_name.endswith('.jpg'):
+			num_files += 1
+			image = Image.open(PATH + path + image_name)
+			print sizeInfo(image, resolutions=[1])
+
+			imageDotted = Image.open(PATH + pathDotted + image_name)
+
+			corners = np.load(PATH + 'Results/corners_net3_' + image_name + '.npy')
+			print("Found ", len(corners), " lions")
+
+			parent_folder = path.split("/")
+			print(parent_folder[0])
+			coordinates = extractCoordinates(PATH, image_name, parent_folder[0])
+
+	    	classes = CLASSES
+	    	s = 0
+	    	for lion_class in CLASSES:
+	    		s = s + len(coordinates[lion_class][image_name])
+
+			print("Extracted ", s, " lions")
+
+			precision = 0.0 # sealions in our res / total res
+			recall = 0.0 # sealions in our res / total sealions
+			count = 0.0
+			total_dots = 0.0
+
+			for lion_class in classes:
+				for coordinate in coordinates[lion_class][image_name]:
+					print(coordinate[0]-ORIGINAL_WINDOW_DIM/2, coordinate[1]-ORIGINAL_WINDOW_DIM/2)
+					total_dots += 1
+					for corner in corners:
+						if abs(corner[0] - (coordinate[0]-ORIGINAL_WINDOW_DIM/2)) < EVALUATION_MARGIN and \
+								abs(corner[1] - (coordinate[1]-ORIGINAL_WINDOW_DIM/2)) < EVALUATION_MARGIN:
+							count += 1
+							if visualize:
+								print("MATCH: ", corner)
+								plt.imshow(cropAndChangeResolution(imageDotted,image_name,corner[0],corner[1],ORIGINAL_WINDOW_DIM,1))
+								plt.show()
+								plt.imshow(cropAndChangeResolution(image,image_name,corner[0],corner[1],ORIGINAL_WINDOW_DIM,1))
+								plt.show()
+							break;
+					if visualize:
+						plt.imshow(cropAndChangeResolution(imageDotted,image_name,coordinate[0]-ORIGINAL_WINDOW_DIM/2,coordinate[1]-ORIGINAL_WINDOW_DIM/2,ORIGINAL_WINDOW_DIM,1))
+						plt.show()
+			recall = count / len(corners)
+			precision = count / total_dots
+			print("recall: ", recall)
+			print("precision: ", precision)
+			avg_recall += recall
+			avg_precision += precision
+
+	avg_recall /= num_files
+	avg_precision /= num_files
+
+	print("AVG recall: ", avg_recall)
+	print("AVG precision: ", avg_precision)
+
+
 def test_folder(path, pathDotted=None):
 	file_names = os.listdir(PATH + path)
 	for image_name in file_names:
@@ -99,7 +166,11 @@ if __name__ == '__main__':
 		print("Command line argument missing. Usage: test_pipeline.py path_to_folder/ (Test/)")
 		sys.exit(1)
 
-	if (len(sys.argv)==3):
+	if (len(sys.argv)==4):
 		test_folder(arg1, sys.argv[2])
+		evaluate_result(arg1, sys.argv[2], visualize=True)
+	elif (len(sys.argv)==3):
+		test_folder(arg1, sys.argv[2])
+		evaluate_result(arg1, sys.argv[2])
 	else:
 		test_folder(arg1)
