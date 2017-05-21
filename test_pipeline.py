@@ -2,7 +2,7 @@ import numpy as np
 from predict_binary_nets import *
 from predict_binary_nets import *
 from test_functions import *
-from usefulFunctions import cropAndChangeResolution
+from usefulFunctions import *
 import os, sys
 from PIL import Image
 import matplotlib.pyplot as plt
@@ -91,7 +91,7 @@ def evaluate_result(path, pathDotted, visualize=False):
 		if image_name.endswith('.jpg'):
 			num_files += 1
 			image = Image.open(PATH + path + image_name)
-			print sizeInfo(image, resolutions=[1])
+			#print(sizeInfo(image, resolutions=[1]))
 
 			imageDotted = Image.open(PATH + pathDotted + image_name)
 
@@ -99,13 +99,12 @@ def evaluate_result(path, pathDotted, visualize=False):
 			print("Found ", len(corners), " lions")
 
 			parent_folder = path.split("/")
-			print(parent_folder[0])
-			coordinates = extractCoordinates(PATH, image_name, parent_folder[0])
+			coordinates = extractCoordinates(PATH, image_name, parent_folder[0]+"/")
 
-	    	classes = CLASSES
-	    	s = 0
-	    	for lion_class in CLASSES:
-	    		s = s + len(coordinates[lion_class][image_name])
+			classes = CLASSES
+			s = 0
+			for lion_class in CLASSES:
+				s = s + len(coordinates[lion_class][image_name])
 
 			print("Extracted ", s, " lions")
 
@@ -116,7 +115,7 @@ def evaluate_result(path, pathDotted, visualize=False):
 
 			for lion_class in classes:
 				for coordinate in coordinates[lion_class][image_name]:
-					print(coordinate[0]-ORIGINAL_WINDOW_DIM/2, coordinate[1]-ORIGINAL_WINDOW_DIM/2)
+					#print(coordinate[0]-ORIGINAL_WINDOW_DIM/2, coordinate[1]-ORIGINAL_WINDOW_DIM/2)
 					total_dots += 1
 					for corner in corners:
 						if abs(corner[0] - (coordinate[0]-ORIGINAL_WINDOW_DIM/2)) < EVALUATION_MARGIN and \
@@ -167,10 +166,10 @@ if __name__ == '__main__':
 		sys.exit(1)
 
 	if (len(sys.argv)==4):
-		test_folder(arg1, sys.argv[2])
+		#test_folder(arg1, sys.argv[2])
 		evaluate_result(arg1, sys.argv[2], visualize=True)
 	elif (len(sys.argv)==3):
-		test_folder(arg1, sys.argv[2])
+		#test_folder(arg1, sys.argv[2])
 		evaluate_result(arg1, sys.argv[2])
 	else:
 		test_folder(arg1)
