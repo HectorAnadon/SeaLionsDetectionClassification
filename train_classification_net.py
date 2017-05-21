@@ -1,7 +1,9 @@
 import numpy as np
 from keras.utils.io_utils import HDF5Matrix
 from classification_net import classification_net
+from classification_net_simple import build_classif_net
 from keras.callbacks import ModelCheckpoint, Callback
+from keras.layers import Input
 from make_datasets import split_data
 from global_variables import *
 
@@ -26,7 +28,8 @@ def train_classification():
 	# Save means (for testing)
 	np.save(PATH + 'Datasets/means_classification.npy',means)
 
-	model = classification_net()
+	model = build_classif_net(Input(shape=(X_train.shape[1], X_train.shape[2], 3))) # Simple
+	#model = classification_net() # VGG
 	model.compile(optimizer='Adam', loss='categorical_crossentropy', metrics=['accuracy'])
 	print(model.summary())
 

@@ -11,6 +11,8 @@ Y_N = [-15, 0, 15]
 CLASSES = ["adult_males", "subadult_males", "adult_females", "juveniles", "pups"]
 
 REGULARIZATION_CALIBRATION_1 = 0.001
+REGULARIZATION_MULTICLASS = 0.01
+
 
 NUM_NEG_SAMPLES = 150 # Number of negative samples per image (should be >100)
 
