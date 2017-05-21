@@ -99,8 +99,8 @@ def evaluate_result(path, pathDotted, visualize=False):
 			print("Found ", len(corners), " lions")
 
 			parent_folder = path.split("/")
-			parent = parent_folder[0]+"/"
-			for i in range(len(parent_folder)-3):
+			parent = ""
+			for i in range(len(parent_folder)-2):
 				parent += parent_folder[i]
 				parent += "/"
 			coordinates = extractCoordinates(PATH, image_name, parent)
@@ -135,8 +135,8 @@ def evaluate_result(path, pathDotted, visualize=False):
 					if visualize:
 						plt.imshow(cropAndChangeResolution(imageDotted,image_name,coordinate[0]-ORIGINAL_WINDOW_DIM/2,coordinate[1]-ORIGINAL_WINDOW_DIM/2,ORIGINAL_WINDOW_DIM,1))
 						plt.show()
-			recall = count / len(corners)
-			precision = count / total_dots
+			recall = count / total_dots
+			precision = count / len(corners)
 			print("recall: ", recall)
 			print("precision: ", precision)
 			avg_recall += recall
