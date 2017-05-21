@@ -12,7 +12,7 @@ from make_datasets import *
 def build_classif_net(input_img):
     """Build a simple classification net
     """
-    print input_img.shape
+    print(input_img.shape)
 
     conv2d_1 = Conv2D(16, (5, 5), input_shape=input_img.shape, strides=1, padding='same', dilation_rate=1, 
         activation='relu', use_bias=True, kernel_initializer='glorot_uniform', 
