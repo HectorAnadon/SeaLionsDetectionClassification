@@ -21,7 +21,7 @@ def count_folder(path):
 	for image_name in file_names:
 		if image_name.endswith('.jpg'):
 			image = Image.open(PATH + path + image_name)
-			counts = count_sea_lions(image_name, image)
+			corners, prediction, counts = count_sea_lions(image_name, image)
 
 
 
@@ -31,9 +31,13 @@ def evaluate_result(path, pathDotted, visualize=False):
 	avg_recall = [0.0]*5
 	avg_precision = [0.0]*5
 	num_files = [0.0]*5
+	num_files_global = 0.0
+	rms_global = 0.0
 
 	for image_name in file_names:
 		if image_name.endswith('.jpg'):
+			num_files_global += 1
+			rms_value = [0.0] * 5
 			for i in range(len(num_files)):
 				num_files[i] += 1
 			image = Image.open(PATH + path + image_name)
@@ -82,12 +86,26 @@ def evaluate_result(path, pathDotted, visualize=False):
 					print("Skipping image ", image_name, " as it contains no sealions.")
 					num_files[class_index] -= 1
 
+				rms[class_index] = (count - total_dots)**2.0
+
+			rms_value = 0
+			for i in range(len(rms))
+				rms_value += rms[i]
+			rms_value /= 5.0
+			rms_value = sqrt(rms_value)
+
+			rms_global += rms_value
+
+
+
 	for idx in range(len(avg_recall)):
 		avg_recall[idx] /= num_files[idx]
 		avg_precision[idx] /= num_files[idx]
+	rms_global /= num_files_global
 
 	print("AVG recall: ", avg_recall)
 	print("AVG precision: ", avg_precision)
+	print ("RMS: ", rms_global)
 
 
 
