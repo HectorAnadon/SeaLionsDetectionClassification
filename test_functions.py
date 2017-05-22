@@ -135,7 +135,20 @@ def dispWindows(image, corners, disp):
 
 """Testing"""
 if __name__ == "__main__":
-	visualize_corners("Data/TrainDotted/41.jpg", "41.jpg")
+	image = Image.open("cornersDisplay/590.jpg")
+	file_names = os.listdir("cornersDisplay/")
+	for corners_name in file_names:
+		if corners_name.endswith('.npy'):
+			print(corners_name)
+			corner = np.load('cornersDisplay/' + corners_name)
+			dispWindows(image, corner, True)
+	# 
+	# print(file_names[0])
+	# size_x,size_y = image.size
+	# print(size_x, size_y)
+
+
+	#visualize_corners("Data/TrainDotted/41.jpg", "41.jpg")
 
 	# file_names = os.listdir("Data/Train/")
 	# image = Image.open("Data/Train/" + file_names[0])

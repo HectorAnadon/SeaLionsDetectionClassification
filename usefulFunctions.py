@@ -8,8 +8,7 @@ import skimage.feature
 import pandas as pd
 import time
 from global_variables import *
-
-
+import numpy as np
 
 
 #RETURNS THE IMAGE SIZE IN EACH RESOLUTION
@@ -139,22 +138,48 @@ def extractCoordinates(path, image_name, defaultParent="Data/"):
 
     return  coordinates_df
 
+def plot_loss_functions():
+    path = PATH + 'Results/'
+    file_names = os.listdir(path)
+    legend = []
+    plt.gca().set_color_cycle(['red', 'red', 'green', 'green', 'blue', 'blue'])
+    for loss_np in file_names:
+        #if loss_np.startswith('loss') and loss_np.endswith('.npy'):
+        if 'loss_calib' in loss_np and loss_np.endswith('.npy'):
+            legend.append(loss_np) #TODO: process the name
+            logs = np.load(path + loss_np)
+            loss = []
+            val_loss = []
+            for log in logs:
+                loss.append(log['loss'])
+                val_loss.append(log['val_loss'])
+            plt.plot(loss)
+            plt.plot(val_loss, '--')
+    plt.xlabel('Epochs')
+    plt.ylabel('Loss')
+    plt.title('Loss function - Calibration nets')            
+    plt.legend(['Train net 1', 'Validation net 1', 'Train net 2', 'Validation net 2', 'Train net 3', 'Validation net 3'])
+    plt.show()
+    
+
+
 
 #####################
 #      EXAMPLE      #
 #####################
 
 if __name__ == '__main__':
+    plot_loss_functions()
 
-    file_names = os.listdir(PATH + "Data/Train/")
-    image = Image.open(PATH + "Data/Train/" + file_names[1])
+    # file_names = os.listdir(PATH + "Data/Train/")
+    # image = Image.open(PATH + "Data/Train/" + file_names[1])
 
-    a = sizeInfo(image,resolutions = [1,0.5,0.25])
-    print(a)
+    # a = sizeInfo(image,resolutions = [1,0.5,0.25])
+    # print(a)
 
-    image = cropAndChangeResolution("Data/",file_names[1],0,0,3328,1)
-    coordinates = extractCoordinates("Data/", file_names[1])
-    label = getLabel(file_names[1], coordinates, 0, 0, 1000);
-    print(label)
-    plt.imshow(image)
-    plt.show()
+    # image = cropAndChangeResolution("Data/",file_names[1],0,0,3328,1)
+    # coordinates = extractCoordinates("Data/", file_names[1])
+    # label = getLabel(file_names[1], coordinates, 0, 0, 1000);
+    # print(label)
+    # plt.imshow(image)
+    # plt.show()
