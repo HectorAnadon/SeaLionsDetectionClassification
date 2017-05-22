@@ -53,7 +53,7 @@ def evaluate_result(path, pathDotted, visualize=False):
 			corners, prediction, counts = count_sea_lions(image_name, image)
 
 			classes = enumerate(CLASSES)
-            for class_index, lion_class in classes:
+			for class_index, lion_class in classes:
 				precision = 0.0 # sealions in our res / total res
 				recall = 0.0 # sealions in our res / total sealions
 				count = 0.0
