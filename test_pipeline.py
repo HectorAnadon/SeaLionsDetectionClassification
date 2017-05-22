@@ -16,7 +16,7 @@ def test_net(image, image_name, imageDotted=None, disp=False):
 		windows, corners = sliding_window_net_1(image, imageDotted)
 	else:
 		windows, corners = sliding_window_net_1(image)
-
+	return_values = []
 	print(type(windows))
 	print(windows.shape)
 	print("Data loaded")
@@ -29,8 +29,10 @@ def test_net(image, image_name, imageDotted=None, disp=False):
 	movsDict = createCalibrationDictionary()
 	corners = calibrate(corners, labels, movsDict)
 	dispWindows(image, corners, disp)
+	return_values.append(corners.shape[0])
 	print("number of corners after net 1:", corners.shape[0])
 	corners = non_max_suppression_slow(corners, OVERLAPPING_THRES)
+	return_values.append(corners.shape[0])
 	print("number of corners after NMS:", corners.shape[0])
 	np.save(PATH + 'Results/corners_net1_' + image_name + '.npy',corners)
 	dispWindows(image, corners, disp)
@@ -49,8 +51,10 @@ def test_net(image, image_name, imageDotted=None, disp=False):
 	print("predict_calib_net2")
 	corners = calibrate(corners, labels, movsDict)
 	dispWindows(image, corners, disp)
+	return_values.append(corners.shape[0])
 	print("number of corners after net 2:", corners.shape[0])
 	corners = non_max_suppression_slow(corners, OVERLAPPING_THRES)
+	return_values.append(corners.shape[0])
 	print("number of corners after NMS:", corners.shape[0])
 	np.save(PATH + 'Results/corners_net2_' + image_name + '.npy',corners)
 	dispWindows(image, corners, disp)
@@ -70,14 +74,17 @@ def test_net(image, image_name, imageDotted=None, disp=False):
 	print("predict_calib_net3")
 	corners = calibrate(corners, labels, movsDict)
 	dispWindows(image, corners, disp)
+	return_values.append(corners.shape[0])
 	print("number of corners after net 3:", corners.shape[0])
 	corners = non_max_suppression_slow(corners, OVERLAPPING_THRES)
+	return_values.append(corners.shape[0])
 	print("number of corners after NMS:", corners.shape[0])
 	np.save(PATH + 'Results/corners_net3_' + image_name + '.npy',corners)
 	dispWindows(image, corners, disp)
 	# for corner in corners:
 	# 	plt.imshow(cropAndChangeResolution(image,image_name,corner[0],corner[1],ORIGINAL_WINDOW_DIM,1))
 	# 	plt.show()
+	return return_values
 
 
 
@@ -135,12 +142,15 @@ def evaluate_result(path, pathDotted, visualize=False):
 					if visualize:
 						plt.imshow(cropAndChangeResolution(imageDotted,image_name,coordinate[0]-ORIGINAL_WINDOW_DIM/2,coordinate[1]-ORIGINAL_WINDOW_DIM/2,ORIGINAL_WINDOW_DIM,1))
 						plt.show()
-			recall = count / total_dots
-			precision = count / len(corners)
-			print("recall: ", recall)
-			print("precision: ", precision)
-			avg_recall += recall
-			avg_precision += precision
+			try: # TO DO DECIDE HOW TO DO THIS - TOGETHER WITH THE GUYS!
+				recall = count / total_dots
+				precision = count / len(corners)
+				print("recall: ", recall)
+				print("precision: ", precision)
+				avg_recall += recall
+				avg_precision += precision
+			except:
+				print("Skipping image ", image_name, " as it contains no sealions.")
 
 	avg_recall /= num_files
 	avg_precision /= num_files
@@ -151,16 +161,25 @@ def evaluate_result(path, pathDotted, visualize=False):
 
 def test_folder(path, pathDotted=None):
 	file_names = os.listdir(PATH + path)
+	avg_windows = [0.0]*6
+	num_files = 0.0
 	for image_name in file_names:
 		if image_name.endswith('.jpg'):
+			num_files += 1
 			image = Image.open(PATH + path + image_name)
 			print(image_name)
 			if (pathDotted):
 				imageDotted = Image.open(PATH + pathDotted + image_name)
-				test_net(image, image_name, imageDotted)
+				#windows = test_net(image, image_name, imageDotted)
+				windows = [0.2]*6
+				print("windows: ", windows)
+				for i in range(len(avg_windows)):
+					avg_windows[i] += windows[i]
 			else:
 				test_net(image, image_name)
-
+	for i in range(len(avg_windows)):
+		avg_windows[i] /= num_files
+	print("AVG windows: ", avg_windows)
 
 if __name__ == '__main__':
 	try:
@@ -170,10 +189,10 @@ if __name__ == '__main__':
 		sys.exit(1)
 
 	if (len(sys.argv)==4):
-		#test_folder(arg1, sys.argv[2])
+		test_folder(arg1, sys.argv[2])
 		evaluate_result(arg1, sys.argv[2], visualize=True)
 	elif (len(sys.argv)==3):
-		#test_folder(arg1, sys.argv[2])
+		test_folder(arg1, sys.argv[2])
 		evaluate_result(arg1, sys.argv[2])
 	else:
 		test_folder(arg1)
