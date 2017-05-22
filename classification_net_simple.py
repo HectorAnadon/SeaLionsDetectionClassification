@@ -9,45 +9,20 @@ from keras.utils import np_utils
 from global_variables import * 
 from make_datasets import *
 
-def build_classif_net(input_img):
+def build_classif_net():
     """Build a simple classification net
     """
-    print(input_img.shape)
+    model = Sequential()
 
-    conv2d_1 = Conv2D(16, (5, 5), input_shape=input_img.shape, strides=1, padding='same', dilation_rate=1, 
-        activation='relu', use_bias=True, kernel_initializer='glorot_uniform', 
-        bias_initializer='zeros', kernel_regularizer=regularizers.l2(REGULARIZATION_MULTICLASS), bias_regularizer=None, 
-        activity_regularizer=None, kernel_constraint=None, bias_constraint=None) (input_img)
-    conv2d_1 = BatchNormalization()(conv2d_1)
-    max_pooling2d_1 = MaxPooling2D(pool_size=(3, 3), strides=2, padding='valid')(conv2d_1)
+    model.add(Conv2D(32, (5, 5), input_shape=(ORIGINAL_WINDOW_DIM,ORIGINAL_WINDOW_DIM,3), activation='relu', padding='same'))
+    model.add(MaxPooling2D(pool_size=(2,2)))
+    model.add(Conv2D(64, (5, 5), activation='relu', padding='same'))
 
-    conv2d_2 = Conv2D(32, (5, 5), strides=1, padding='same', dilation_rate=1, 
-        activation='relu', use_bias=True, kernel_initializer='glorot_uniform', 
-        bias_initializer='zeros', kernel_regularizer=regularizers.l2(REGULARIZATION_MULTICLASS), bias_regularizer=None, 
-        activity_regularizer=None, kernel_constraint=None, bias_constraint=None) (max_pooling2d_1)
-    conv2d_2 = BatchNormalization()(conv2d_2)
-    max_pooling2d_2 = MaxPooling2D(pool_size=(3, 3), strides=2, padding='valid')(conv2d_2)
+    model.add(Flatten())
 
-    conv2d_3 = Conv2D(64, (5, 5), strides=1, padding='same', dilation_rate=1, 
-        activation='relu', use_bias=True, kernel_initializer='glorot_uniform', 
-        bias_initializer='zeros', kernel_regularizer=regularizers.l2(REGULARIZATION_MULTICLASS), bias_regularizer=None, 
-        activity_regularizer=None, kernel_constraint=None, bias_constraint=None) (max_pooling2d_2)
-    conv2d_3 = BatchNormalization()(conv2d_3)
-    max_pooling2d_3 = MaxPooling2D(pool_size=(3, 3), strides=2, padding='valid')(conv2d_3)
-
-    flatten = Flatten()(max_pooling2d_3)
-    dense_1 = Dense(100, activation='relu', use_bias=True, kernel_initializer='glorot_uniform', 
-        bias_initializer='zeros', kernel_regularizer=regularizers.l2(REGULARIZATION_MULTICLASS), bias_regularizer=None, 
-        activity_regularizer=None, kernel_constraint=None, bias_constraint=None)(flatten)
-    dense_1 = BatchNormalization()(dense_1)
-    dense_2 = Dense(50, activation='relu', use_bias=True, kernel_initializer='glorot_uniform', 
-        bias_initializer='zeros', kernel_regularizer=regularizers.l2(REGULARIZATION_MULTICLASS), bias_regularizer=None, 
-        activity_regularizer=None, kernel_constraint=None, bias_constraint=None)(dense_1)
-    dense_2 = BatchNormalization()(dense_2)
-    output = Dense(5, activation='softmax', use_bias=True, kernel_initializer='glorot_uniform', 
-        bias_initializer='zeros', kernel_regularizer=regularizers.l2(REGULARIZATION_MULTICLASS), bias_regularizer=None, 
-        activity_regularizer=None, kernel_constraint=None, bias_constraint=None)(dense_2)
-    model = Model(inputs=input_img, outputs=output)
+    model.add(Dense(512, activation='relu'))
+    model.add(Dropout(0.5))
+    model.add(Dense(5, activation='softmax'))
     return model  
 
 

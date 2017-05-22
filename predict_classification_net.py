@@ -2,7 +2,7 @@ import pdb
 import sys
 import matplotlib.pyplot as plt
 from keras.utils.io_utils import HDF5Matrix
-from classification_net import *
+from classification_net_simple import build_classif_net
 from global_variables import *
 import numpy as np
 
@@ -14,7 +14,7 @@ def predict_classification_net(X_test, image_name):
 	# Zero center
 	X_test -= means
 	# Create model
-	model = classification_net()
+	model = build_classif_net()
 	# Load weights
 	model.load_weights(PATH + 'Weights/weights_classification_net.hdf5')
 	# Compile model
