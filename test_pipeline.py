@@ -17,6 +17,7 @@ def test_net(image, image_name, imageDotted=None, disp=False):
 	else:
 		windows, corners = sliding_window_net_1(image)
 	return_values = []
+	return_values.append(corners.shape[0])
 	print(type(windows))
 	print(windows.shape)
 	print("Data loaded")
@@ -178,7 +179,7 @@ def evaluate_result(path, pathDotted, visualize=False):
 
 def test_folder(path, pathDotted=None):
 	file_names = os.listdir(PATH + path)
-	avg_windows = [0.0]*9
+	avg_windows = [0.0]*10
 	num_files = 0.0
 	for image_name in file_names:
 		if image_name.endswith('.jpg'):
