@@ -31,6 +31,7 @@ def test_net(image, image_name, imageDotted=None, disp=False):
 	dispWindows(image, corners, disp)
 	return_values.append(corners.shape[0])
 	print("number of corners after net 1:", corners.shape[0])
+	np.save(PATH + 'Results/corners_net1_NMS_' + image_name + '.npy',corners)
 	corners = non_max_suppression_slow(corners, OVERLAPPING_THRES)
 	return_values.append(corners.shape[0])
 	print("number of corners after NMS:", corners.shape[0])
@@ -53,6 +54,7 @@ def test_net(image, image_name, imageDotted=None, disp=False):
 	dispWindows(image, corners, disp)
 	return_values.append(corners.shape[0])
 	print("number of corners after net 2:", corners.shape[0])
+	np.save(PATH + 'Results/corners_net2_NMS_' + image_name + '.npy',corners)
 	corners = non_max_suppression_slow(corners, OVERLAPPING_THRES)
 	return_values.append(corners.shape[0])
 	print("number of corners after NMS:", corners.shape[0])
@@ -76,6 +78,7 @@ def test_net(image, image_name, imageDotted=None, disp=False):
 	dispWindows(image, corners, disp)
 	return_values.append(corners.shape[0])
 	print("number of corners after net 3:", corners.shape[0])
+	np.save(PATH + 'Results/corners_net3_NMS_' + image_name + '.npy',corners)
 	corners = non_max_suppression_slow(corners, OVERLAPPING_THRES)
 	return_values.append(corners.shape[0])
 	print("number of corners after NMS:", corners.shape[0])
@@ -90,20 +93,15 @@ def test_net(image, image_name, imageDotted=None, disp=False):
 
 def evaluate_result(path, pathDotted, visualize=False):
 	file_names = os.listdir(PATH + path)
-	avg_recall = 0.0
-	avg_precision = 0.0
+	avg_recall = [0.0]*6
+	avg_precision = [0.0]*6
 	num_files = 0.0
 
 	for image_name in file_names:
 		if image_name.endswith('.jpg'):
 			num_files += 1
 			image = Image.open(PATH + path + image_name)
-			#print(sizeInfo(image, resolutions=[1]))
-
 			imageDotted = Image.open(PATH + pathDotted + image_name)
-
-			corners = np.load(PATH + 'Results/corners_net3_' + image_name + '.npy')
-			print("Found ", len(corners), " lions")
 
 			parent_folder = path.split("/")
 			parent = ""
@@ -111,49 +109,58 @@ def evaluate_result(path, pathDotted, visualize=False):
 				parent += parent_folder[i]
 				parent += "/"
 			coordinates = extractCoordinates(PATH, image_name, parent)
-
 			classes = CLASSES
 			s = 0
 			for lion_class in CLASSES:
 				s = s + len(coordinates[lion_class][image_name])
-
 			print("Extracted ", s, " lions")
 
-			precision = 0.0 # sealions in our res / total res
-			recall = 0.0 # sealions in our res / total sealions
-			count = 0.0
-			total_dots = 0.0
+			corners = [None] * 6
+			corners[0] = np.load(PATH + 'Results/corners_net1_' + image_name + '.npy')
+			corners[1] = np.load(PATH + 'Results/corners_net1_NMS_' + image_name + '.npy')
+			corners[2] = np.load(PATH + 'Results/corners_net2_' + image_name + '.npy')
+			corners[3] = np.load(PATH + 'Results/corners_net2_NMS_' + image_name + '.npy')
+			corners[4] = np.load(PATH + 'Results/corners_net3_' + image_name + '.npy')
+			corners[5] = np.load(PATH + 'Results/corners_net3_NMS_' + image_name + '.npy')
+			
+			for stage in range(len(corners)):
+				print("Found ", len(corners[stage]), " lions")
+				precision = 0.0 # sealions in our res / total res
+				recall = 0.0 # sealions in our res / total sealions
+				count = 0.0
+				total_dots = 0.0
 
-			for lion_class in classes:
-				for coordinate in coordinates[lion_class][image_name]:
-					#print(coordinate[0]-ORIGINAL_WINDOW_DIM/2, coordinate[1]-ORIGINAL_WINDOW_DIM/2)
-					total_dots += 1
-					for corner in corners:
-						if abs(corner[0] - (coordinate[0]-ORIGINAL_WINDOW_DIM/2)) < EVALUATION_MARGIN and \
-								abs(corner[1] - (coordinate[1]-ORIGINAL_WINDOW_DIM/2)) < EVALUATION_MARGIN:
-							count += 1
-							if visualize:
-								print("MATCH: ", corner)
-								plt.imshow(cropAndChangeResolution(imageDotted,image_name,corner[0],corner[1],ORIGINAL_WINDOW_DIM,1))
-								plt.show()
-								plt.imshow(cropAndChangeResolution(image,image_name,corner[0],corner[1],ORIGINAL_WINDOW_DIM,1))
-								plt.show()
-							break;
-					if visualize:
-						plt.imshow(cropAndChangeResolution(imageDotted,image_name,coordinate[0]-ORIGINAL_WINDOW_DIM/2,coordinate[1]-ORIGINAL_WINDOW_DIM/2,ORIGINAL_WINDOW_DIM,1))
-						plt.show()
-			try: # TO DO DECIDE HOW TO DO THIS - TOGETHER WITH THE GUYS!
-				recall = count / total_dots
-				precision = count / len(corners)
-				print("recall: ", recall)
-				print("precision: ", precision)
-				avg_recall += recall
-				avg_precision += precision
-			except:
-				print("Skipping image ", image_name, " as it contains no sealions.")
+				for lion_class in classes:
+					for coordinate in coordinates[lion_class][image_name]:
+						#print(coordinate[0]-ORIGINAL_WINDOW_DIM/2, coordinate[1]-ORIGINAL_WINDOW_DIM/2)
+						total_dots += 1
+						for corner in corners[stage]:
+							if abs(corner[0] - (coordinate[0]-ORIGINAL_WINDOW_DIM/2)) < EVALUATION_MARGIN and \
+									abs(corner[1] - (coordinate[1]-ORIGINAL_WINDOW_DIM/2)) < EVALUATION_MARGIN:
+								count += 1
+								if visualize:
+									print("MATCH: ", corner)
+									plt.imshow(cropAndChangeResolution(imageDotted,image_name,corner[0],corner[1],ORIGINAL_WINDOW_DIM,1))
+									plt.show()
+									plt.imshow(cropAndChangeResolution(image,image_name,corner[0],corner[1],ORIGINAL_WINDOW_DIM,1))
+									plt.show()
+								break;
+						if visualize:
+							plt.imshow(cropAndChangeResolution(imageDotted,image_name,coordinate[0]-ORIGINAL_WINDOW_DIM/2,coordinate[1]-ORIGINAL_WINDOW_DIM/2,ORIGINAL_WINDOW_DIM,1))
+							plt.show()
+				try: 
+					recall = count / total_dots
+					precision = count / len(corners[stage])
+					print("recall: ", recall)
+					print("precision: ", precision)
+					avg_recall[stage] += recall
+					avg_precision[stage] += precision
+				except:
+					print("Skipping image ", image_name, " as it contains no sealions.")
 
-	avg_recall /= num_files
-	avg_precision /= num_files
+	for stage in range(len(avg_recall)):
+		avg_recall[stage] /= num_files
+		avg_precision[stage] /= num_files
 
 	print("AVG recall: ", avg_recall)
 	print("AVG precision: ", avg_precision)
@@ -170,8 +177,7 @@ def test_folder(path, pathDotted=None):
 			print(image_name)
 			if (pathDotted):
 				imageDotted = Image.open(PATH + pathDotted + image_name)
-				#windows = test_net(image, image_name, imageDotted)
-				windows = [0.2]*6
+				windows = test_net(image, image_name, imageDotted)
 				print("windows: ", windows)
 				for i in range(len(avg_windows)):
 					avg_windows[i] += windows[i]
