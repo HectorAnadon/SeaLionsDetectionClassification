@@ -21,6 +21,8 @@ def test_net(image, image_name, imageDotted=None, disp=False):
 	print(windows.shape)
 	print("Data loaded")
 	windows, corners = predict_binary_net1(windows, corners)
+	return_values.append(corners.shape[0])
+	np.save(PATH + 'Results/corners_net1_prediction_' + image_name + '.npy',corners)
 	dispWindows(image, corners, disp)
 	print("Predict_binary_net1")
 	print(windows.shape)
@@ -31,7 +33,7 @@ def test_net(image, image_name, imageDotted=None, disp=False):
 	dispWindows(image, corners, disp)
 	return_values.append(corners.shape[0])
 	print("number of corners after net 1:", corners.shape[0])
-	np.save(PATH + 'Results/corners_net1_NMS_' + image_name + '.npy',corners)
+	np.save(PATH + 'Results/corners_net1_calibration_' + image_name + '.npy',corners)
 	corners = non_max_suppression_slow(corners, OVERLAPPING_THRES)
 	return_values.append(corners.shape[0])
 	print("number of corners after NMS:", corners.shape[0])
@@ -47,6 +49,8 @@ def test_net(image, image_name, imageDotted=None, disp=False):
 	windows1 = getWindows(corners, image, 3)
 	print(windows1.shape)
 	windows, corners = predict_binary_net2(windows2, windows1, corners)
+	return_values.append(corners.shape[0])
+	np.save(PATH + 'Results/corners_net2_prediction_' + image_name + '.npy',corners)
 	dispWindows(image, corners, disp)
 	labels = predict_calib_net2(windows)
 	print("predict_calib_net2")
@@ -54,7 +58,7 @@ def test_net(image, image_name, imageDotted=None, disp=False):
 	dispWindows(image, corners, disp)
 	return_values.append(corners.shape[0])
 	print("number of corners after net 2:", corners.shape[0])
-	np.save(PATH + 'Results/corners_net2_NMS_' + image_name + '.npy',corners)
+	np.save(PATH + 'Results/corners_net2_calibration_' + image_name + '.npy',corners)
 	corners = non_max_suppression_slow(corners, OVERLAPPING_THRES)
 	return_values.append(corners.shape[0])
 	print("number of corners after NMS:", corners.shape[0])
@@ -71,6 +75,8 @@ def test_net(image, image_name, imageDotted=None, disp=False):
 	windows1 = getWindows(corners, image, 3)
 	print(windows1.shape)
 	windows, corners = predict_binary_net3(windows3, windows2, windows1, corners)
+	return_values.append(corners.shape[0])
+	np.save(PATH + 'Results/corners_net3_prediction_' + image_name + '.npy',corners)
 	dispWindows(image, corners, disp)
 	labels = predict_calib_net3(windows)
 	print("predict_calib_net3")
@@ -78,7 +84,7 @@ def test_net(image, image_name, imageDotted=None, disp=False):
 	dispWindows(image, corners, disp)
 	return_values.append(corners.shape[0])
 	print("number of corners after net 3:", corners.shape[0])
-	np.save(PATH + 'Results/corners_net3_NMS_' + image_name + '.npy',corners)
+	np.save(PATH + 'Results/corners_net3_calibration_' + image_name + '.npy',corners)
 	corners = non_max_suppression_slow(corners, OVERLAPPING_THRES)
 	return_values.append(corners.shape[0])
 	print("number of corners after NMS:", corners.shape[0])
@@ -93,8 +99,8 @@ def test_net(image, image_name, imageDotted=None, disp=False):
 
 def evaluate_result(path, pathDotted, visualize=False):
 	file_names = os.listdir(PATH + path)
-	avg_recall = [0.0]*6
-	avg_precision = [0.0]*6
+	avg_recall = [0.0]*9
+	avg_precision = [0.0]*9
 	num_files = 0.0
 
 	for image_name in file_names:
@@ -115,13 +121,16 @@ def evaluate_result(path, pathDotted, visualize=False):
 				s = s + len(coordinates[lion_class][image_name])
 			print("Extracted ", s, " lions")
 
-			corners = [None] * 6
-			corners[0] = np.load(PATH + 'Results/corners_net1_' + image_name + '.npy')
-			corners[1] = np.load(PATH + 'Results/corners_net1_NMS_' + image_name + '.npy')
-			corners[2] = np.load(PATH + 'Results/corners_net2_' + image_name + '.npy')
-			corners[3] = np.load(PATH + 'Results/corners_net2_NMS_' + image_name + '.npy')
-			corners[4] = np.load(PATH + 'Results/corners_net3_' + image_name + '.npy')
-			corners[5] = np.load(PATH + 'Results/corners_net3_NMS_' + image_name + '.npy')
+			corners = [None] * 9
+			corners[0] = np.load(PATH + 'Results/corners_net1_prediction_' + image_name + '.npy')
+			corners[1] = np.load(PATH + 'Results/corners_net1_calibration_' + image_name + '.npy')
+			corners[2] = np.load(PATH + 'Results/corners_net1_' + image_name + '.npy')
+			corners[3] = np.load(PATH + 'Results/corners_net2_prediction_' + image_name + '.npy')
+			corners[4] = np.load(PATH + 'Results/corners_net2_calibration_' + image_name + '.npy')
+			corners[5] = np.load(PATH + 'Results/corners_net2_' + image_name + '.npy')
+			corners[6] = np.load(PATH + 'Results/corners_net3_prediction_' + image_name + '.npy')
+			corners[7] = np.load(PATH + 'Results/corners_net3_calibration_' + image_name + '.npy')
+			corners[8] = np.load(PATH + 'Results/corners_net3_' + image_name + '.npy')
 			
 			for stage in range(len(corners)):
 				print("Found ", len(corners[stage]), " lions")
@@ -157,6 +166,7 @@ def evaluate_result(path, pathDotted, visualize=False):
 					avg_precision[stage] += precision
 				except:
 					print("Skipping image ", image_name, " as it contains no sealions.")
+					num_files -= 1
 
 	for stage in range(len(avg_recall)):
 		avg_recall[stage] /= num_files
@@ -168,7 +178,7 @@ def evaluate_result(path, pathDotted, visualize=False):
 
 def test_folder(path, pathDotted=None):
 	file_names = os.listdir(PATH + path)
-	avg_windows = [0.0]*6
+	avg_windows = [0.0]*9
 	num_files = 0.0
 	for image_name in file_names:
 		if image_name.endswith('.jpg'):
