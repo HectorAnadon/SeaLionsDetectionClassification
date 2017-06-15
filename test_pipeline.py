@@ -177,12 +177,18 @@ def evaluate_result(path, pathDotted, visualize=False):
 	print("AVG precision: ", avg_precision)
 
 
-def test_folder(path, pathDotted=None):
+def test_folder(path, pathResults, pathDotted=None):
 	file_names = os.listdir(PATH + path)
+	# Create list of image names that have been already tested
+	result_file_names = os.listdir(PATH + pathResults)
+	result_file_names = [name for name in result_file_names if name.endswith(".jpg.npy")]
+	result_file_names = [name[13:-4] for name in result_file_names]
+	result_file_names = set(result_file_names)
+	# Average number of windows initially and after each of 9 stages (3 x binary/calibr/nms)
 	avg_windows = [0.0]*10
 	num_files = 0.0
 	for image_name in file_names:
-		if image_name.endswith('.jpg'):
+		if image_name.endswith('.jpg') and image_name not in result_file_names:
 			num_files += 1
 			image = Image.open(PATH + path + image_name)
 			print(image_name)
@@ -202,14 +208,14 @@ if __name__ == '__main__':
 	try:
 		arg1 = sys.argv[1]
 	except IndexError:
-		print("Command line argument missing. Usage: test_pipeline.py path_to_folder/ (Test/)")
+		print("Command line argument missing. Usage: test_pipeline.py path_to_test/ path_to_results/ (e.g. Data/Test/ Results/)")
 		sys.exit(1)
 
-	if (len(sys.argv)==4):
-		test_folder(arg1, sys.argv[2])
-		evaluate_result(arg1, sys.argv[2], visualize=True)
-	elif (len(sys.argv)==3):
-		test_folder(arg1, sys.argv[2])
-		evaluate_result(arg1, sys.argv[2])
+	if (len(sys.argv)==5):
+		test_folder(arg1, sys.argv[2], sys.argv[3])
+		evaluate_result(arg1, sys.argv[3], visualize=True)
+	elif (len(sys.argv)==4):
+		test_folder(arg1, sys.argv[2], sys.argv[3])
+		evaluate_result(arg1, sys.argv[3])
 	else:
-		test_folder(arg1)
+		test_folder(arg1, sys.argv[2])
