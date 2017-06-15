@@ -181,7 +181,7 @@ def test_folder(path, pathResults, pathDotted=None):
 	file_names = os.listdir(PATH + path)
 	# Create list of image names that have been already tested
 	result_file_names = os.listdir(PATH + pathResults)
-	result_file_names = [name for name in result_file_names if name.endswith(".jpg.npy")]
+	result_file_names = [name for name in result_file_names if name.startswith("corners_net3_")]
 	result_file_names = [name[13:-4] for name in result_file_names]
 	result_file_names = set(result_file_names)
 	# Average number of windows initially and after each of 9 stages (3 x binary/calibr/nms)
