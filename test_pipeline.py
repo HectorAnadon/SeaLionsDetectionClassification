@@ -40,9 +40,6 @@ def test_net(image, image_name, imageDotted=None, disp=False):
 	print("number of corners after NMS:", corners.shape[0])
 	np.save(PATH + 'Results/corners_net1_' + image_name + '.npy',corners)
 	dispWindows(image, corners, disp)
-	# for corner in corners:
-	# 	plt.imshow(cropAndChangeResolution(image,image_name,corner[0],corner[1],ORIGINAL_WINDOW_DIM,1))
-	# 	plt.show()
 
 	# NET 2
 	# Windows for net 2
@@ -65,9 +62,6 @@ def test_net(image, image_name, imageDotted=None, disp=False):
 	print("number of corners after NMS:", corners.shape[0])
 	np.save(PATH + 'Results/corners_net2_' + image_name + '.npy',corners)
 	dispWindows(image, corners, disp)
-	# for corner in corners:
-	# 	plt.imshow(cropAndChangeResolution(image,image_name,corner[0],corner[1],ORIGINAL_WINDOW_DIM,1))
-	# 	plt.show()
 
 	# NET 3
 	# Windows for net 3
@@ -91,9 +85,7 @@ def test_net(image, image_name, imageDotted=None, disp=False):
 	print("number of corners after NMS:", corners.shape[0])
 	np.save(PATH + 'Results/corners_net3_' + image_name + '.npy',corners)
 	dispWindows(image, corners, disp)
-	# for corner in corners:
-	# 	plt.imshow(cropAndChangeResolution(image,image_name,corner[0],corner[1],ORIGINAL_WINDOW_DIM,1))
-	# 	plt.show()
+	
 	return return_values
 
 

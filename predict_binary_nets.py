@@ -5,7 +5,7 @@ from keras.utils.io_utils import HDF5Matrix
 from binary_nets import *
 from global_variables import*
 
-def predict_binary_net1(X_test, corners_test):
+def predict_binary_net1(X_test, corners_test, onlyPrediction=None):
 	""" Predict labels for binary net 1 and return only windows containing sealions.
 	"""
 	# Load training data mean 
@@ -20,16 +20,19 @@ def predict_binary_net1(X_test, corners_test):
 	model.compile(loss='categorical_crossentropy', optimizer='Adam', metrics=['accuracy'])
 	# Predict model
 	scores = model.predict(X_test)
-	scores[:,0] = np.where(scores[:,0] > ARGMAX_THRESHOLD, scores[:,0], -1)
+	scores[:,0] = np.where(scores[:,0] > ARGMAX_THRESHOLD_1, scores[:,0], -1)
 	# Get indexes of the windows labeled as sealions (0 because sealions are [1 0])
 	argmax = np.argmax(scores, axis=1)
 	idx = np.argwhere(argmax == 0)
 	idx = np.reshape(idx, (idx.shape[0],))
+	if (onlyPrediction):
+		return argmax
 	# Return only windows containing sealions
 	return X_test[idx], corners_test[idx], scores[idx,0]
 
 
-def predict_binary_net2(X_test, X_test_prev, corners_test):
+
+def predict_binary_net2(X_test, X_test_prev, corners_test, onlyPrediction=None):
 	""" Predict labels for binary net 2 and return only windows containing sealions.
 	"""
 	# Load training data mean (current net)
@@ -48,16 +51,18 @@ def predict_binary_net2(X_test, X_test_prev, corners_test):
 	model.compile(loss='categorical_crossentropy', optimizer='Adam', metrics=['accuracy'])
 	# Predict model
 	scores = model.predict([X_test, X_test_prev])
-	scores[:,0] = np.where(scores[:,0] > ARGMAX_THRESHOLD, scores[:,0], -1)
+	scores[:,0] = np.where(scores[:,0] > ARGMAX_THRESHOLD_2, scores[:,0], -1)
 	# Get indexes of the windows labeled as sealions (0 because sealions are [1 0]) 
 	argmax = np.argmax(scores, axis=1)
 	idx = np.argwhere(argmax == 0)
 	idx = np.reshape(idx, (idx.shape[0],))
+	if (onlyPrediction):
+		return argmax
 	# Return only windows containing sealions
 	return X_test[idx], corners_test[idx], scores[idx,0]
 
 
-def predict_binary_net3(X_test, X_test_2, X_test_1, corners_test):
+def predict_binary_net3(X_test, X_test_2, X_test_1, corners_test, onlyPrediction=None):
 	""" Predict labels for binary net 3 and return only windows containing sealions.
 	"""
 	# Load training data mean (current net)
@@ -80,11 +85,13 @@ def predict_binary_net3(X_test, X_test_2, X_test_1, corners_test):
 	model.compile(loss='categorical_crossentropy', optimizer='Adam', metrics=['accuracy'])
 	# Predict model
 	scores = model.predict([X_test, X_test_2, X_test_1])
-	scores[:,0] = np.where(scores[:,0] > ARGMAX_THRESHOLD, scores[:,0], -1)
+	scores[:,0] = np.where(scores[:,0] > ARGMAX_THRESHOLD_3, scores[:,0], -1)
 	# Get indexes of the windows labeled as sealions (0 because sealions are [1 0]) 
 	argmax = np.argmax(scores, axis=1)
 	idx = np.argwhere(argmax == 0)
 	idx = np.reshape(idx, (idx.shape[0],))
+	if (onlyPrediction):
+		return argmax
 	# Return only windows containing sealions
 	return X_test[idx], corners_test[idx], scores[idx,0]
 
