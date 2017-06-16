@@ -3,7 +3,7 @@ import numpy as np
 import pdb
 from global_variables import *
 
-def non_max_suppression_slow(corners,overlapThresh): #COMMON VALUES FOR "overlapThresh" ARE BETWEEN 0.3 AND 0.5
+def non_max_suppression_slow(corners,overlapThresh,confidenceScores): #COMMON VALUES FOR "overlapThresh" ARE BETWEEN 0.3 AND 0.5
 
     # IF THERE ARE NO BOXES, RETURN EMPY LIST
     if corners.shape[0] == 0:
@@ -21,7 +21,8 @@ def non_max_suppression_slow(corners,overlapThresh): #COMMON VALUES FOR "overlap
     # COMPUTE THE AREA OF THE BOUNDING BOXES AND SORT THE BOUNDING
     # BOXES BY THE BOTTON-RIGHT Y-COORDINATE OF THE BOUNDING BOX
     area = (x2 - x1 + 1) * (y2 - y1 + 1)
-    idxs = np.argsort(y2)
+    idxs = np.argsort(confidenceScores)
+    #idxs = np.argsort(y2)
 
     # KEEP LOOPING WHILE SOME IDEXES STILL REMAIN IN THE LIST
     while len(idxs) > 0:
@@ -66,12 +67,19 @@ def non_max_suppression_slow(corners,overlapThresh): #COMMON VALUES FOR "overlap
         # RETURN ONLY THE BOUNDING BOXES THAT WERE PICKED
     return corners[pick,:]
 
-
 ###################
 #       TEST      #
 ###################
 if __name__ == '__main__':
     images = np.random.randn(20,100,100,3)
-    corners = np.random.randn(20,2)
-    picked_corners = non_max_suppression_slow(corners,0.3,100)
+    scores = np.random.rand(20)
+    corner = np.random.randn(10,2)+100
+    corners = np.append(corner,np.random.randn(10,2),axis=0)
+    picked_corners = non_max_suppression_slow(corners,0.3,scores)
+    for i in range(len(scores)):
+        print(str(i+1) +':'+str(scores[i]))
+    print('#'*50)
+    for i in range(len(scores)):
+        print(str(i+1) +': '+str(corners[i]))
+    print('#'*50)
     print(picked_corners)

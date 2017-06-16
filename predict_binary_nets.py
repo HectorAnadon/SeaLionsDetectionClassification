@@ -26,7 +26,7 @@ def predict_binary_net1(X_test, corners_test):
 	idx = np.argwhere(argmax == 0)
 	idx = np.reshape(idx, (idx.shape[0],))
 	# Return only windows containing sealions
-	return X_test[idx], corners_test[idx]
+	return X_test[idx], corners_test[idx], scores[idx,0]
 
 
 def predict_binary_net2(X_test, X_test_prev, corners_test):
@@ -54,7 +54,7 @@ def predict_binary_net2(X_test, X_test_prev, corners_test):
 	idx = np.argwhere(argmax == 0)
 	idx = np.reshape(idx, (idx.shape[0],))
 	# Return only windows containing sealions
-	return X_test[idx], corners_test[idx]
+	return X_test[idx], corners_test[idx], scores[idx,0]
 
 
 def predict_binary_net3(X_test, X_test_2, X_test_1, corners_test):
@@ -86,7 +86,7 @@ def predict_binary_net3(X_test, X_test_2, X_test_1, corners_test):
 	idx = np.argwhere(argmax == 0)
 	idx = np.reshape(idx, (idx.shape[0],))
 	# Return only windows containing sealions
-	return X_test[idx], corners_test[idx]
+	return X_test[idx], corners_test[idx], scores[idx,0]
 
 
 """Testing"""
@@ -105,11 +105,11 @@ if __name__ == '__main__':
 		sys.exit(1)
 
 	if arg1 == '1':
-		output, corners = predict_binary_net1(X1, corners)
+		output, corners, scores = predict_binary_net1(X1, corners)
 	elif arg1 == '2':
-		output, corners = predict_binary_net2(X2, X1, corners)
+		output, corners, scores = predict_binary_net2(X2, X1, corners)
 	elif arg1 == '3':
-		output, corners = predict_binary_net3(X3, X2, X1, corners)
+		output, corners, scores = predict_binary_net3(X3, X2, X1, corners)
 	else:
 		print("Wrong command line argument. Must be a value between 1-3.")
 
