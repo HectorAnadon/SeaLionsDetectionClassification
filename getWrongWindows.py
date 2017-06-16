@@ -18,7 +18,7 @@ def getWrongWindowsNet1():
 	#  1 - Sea lion classify as rock
 	# -1 - Rock classify as sea lion
 	accuracy = argmax - labels
-	counts = Counter(accuracy) 
+	counts = Counter(accuracy)
 	print(counts)
 
 	indexes = []
@@ -53,7 +53,7 @@ def getWrongWindowsNet2():
 	#  1 - Sea lion classify as rock
 	# -1 - Rock classify as sea lion
 	accuracy = argmax - labels
-	counts = Counter(accuracy) 
+	counts = Counter(accuracy)
 	print(counts)
 
 	indexes = []
@@ -64,6 +64,30 @@ def getWrongWindowsNet2():
 	print(len(indexes))
 	np.save(PATH + 'Datasets/indexes_net3.npy', np.array(indexes))
 
+
+def getStatsNet3():
+	indexes = np.load(PATH + 'Datasets/indexes_net3.npy')
+
+	X_data_3 = HDF5Matrix(PATH + 'Datasets/data_net3_small.h5', 'data')
+	X_data_3 = X_data_3[indexes]
+	X_data_2 = HDF5Matrix(PATH + 'Datasets/data_net2_small.h5', 'data')
+	X_data_2 = X_data_2[indexes]
+	X_data_1 = HDF5Matrix(PATH + 'Datasets/data_net1_small.h5', 'data')
+	X_data_1 = X_data_1[indexes]
+	y_data = HDF5Matrix(PATH + 'Datasets/data_net1_small.h5', 'labels')
+	y_data = y_data[indexes]
+	dummy = np.zeros(X_data_2.shape)
+
+	argmax = predict_binary_net3(X_data_3, X_data_2, X_data_1, dummy, onlyPrediction=True)
+	labels = np.argmax(y_data, axis=1)
+
+	# PRINT false positive and true negative
+	#  0 - correct
+	#  1 - Sea lion classify as rock
+	# -1 - Rock classify as sea lion
+	accuracy = argmax - labels
+	counts = Counter(accuracy)
+	print(counts)
 
 
 """Testing"""
@@ -80,6 +104,8 @@ if __name__ == '__main__':
 		getWrongWindowsNet1()
 	elif arg1 == '2':
 		getWrongWindowsNet2()
+	elif arg1 == '3':
+		getStatsNet3()
 	else:
 		print("Wrong command line argument. Must be a value between 1-3.")
 
