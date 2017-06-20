@@ -23,7 +23,7 @@ def test_net(image, image_name, imageDotted=None, disp=False):
 	print("Data loaded")
 	windows, corners, scores = predict_binary_net1(windows, corners)
 	return_values.append(corners.shape[0])
-	np.save(PATH + 'Results/corners_net1_prediction_' + image_name + '.npy',corners)
+	#np.save(PATH + 'Results/corners_net1_prediction_' + image_name + '.npy',corners)
 	dispWindows(image, corners, disp)
 	print("Predict_binary_net1")
 	print(windows.shape)
@@ -34,11 +34,11 @@ def test_net(image, image_name, imageDotted=None, disp=False):
 	dispWindows(image, corners, disp)
 	return_values.append(corners.shape[0])
 	print("number of corners after net 1:", corners.shape[0])
-	np.save(PATH + 'Results/corners_net1_calibration_' + image_name + '.npy',corners)
+	#np.save(PATH + 'Results/corners_net1_calibration_' + image_name + '.npy',corners)
 	corners = non_max_suppression_slow(corners, OVERLAPPING_THRES, scores)
 	return_values.append(corners.shape[0])
 	print("number of corners after NMS:", corners.shape[0])
-	np.save(PATH + 'Results/corners_net1_' + image_name + '.npy',corners)
+	#np.save(PATH + 'Results/corners_net1_' + image_name + '.npy',corners)
 	dispWindows(image, corners, disp)
 
 	# NET 2
@@ -48,7 +48,7 @@ def test_net(image, image_name, imageDotted=None, disp=False):
 	print(windows1.shape)
 	windows, corners, scores = predict_binary_net2(windows2, windows1, corners)
 	return_values.append(corners.shape[0])
-	np.save(PATH + 'Results/corners_net2_prediction_' + image_name + '.npy',corners)
+	#np.save(PATH + 'Results/corners_net2_prediction_' + image_name + '.npy',corners)
 	dispWindows(image, corners, disp)
 	labels = predict_calib_net2(windows)
 	print("predict_calib_net2")
@@ -56,11 +56,11 @@ def test_net(image, image_name, imageDotted=None, disp=False):
 	dispWindows(image, corners, disp)
 	return_values.append(corners.shape[0])
 	print("number of corners after net 2:", corners.shape[0])
-	np.save(PATH + 'Results/corners_net2_calibration_' + image_name + '.npy',corners)
+	#np.save(PATH + 'Results/corners_net2_calibration_' + image_name + '.npy',corners)
 	corners = non_max_suppression_slow(corners, OVERLAPPING_THRES, scores)
 	return_values.append(corners.shape[0])
 	print("number of corners after NMS:", corners.shape[0])
-	np.save(PATH + 'Results/corners_net2_' + image_name + '.npy',corners)
+	#np.save(PATH + 'Results/corners_net2_' + image_name + '.npy',corners)
 	dispWindows(image, corners, disp)
 
 	# NET 3
@@ -71,7 +71,7 @@ def test_net(image, image_name, imageDotted=None, disp=False):
 	print(windows1.shape)
 	windows, corners, scores = predict_binary_net3(windows3, windows2, windows1, corners)
 	return_values.append(corners.shape[0])
-	np.save(PATH + 'Results/corners_net3_prediction_' + image_name + '.npy',corners)
+	#np.save(PATH + 'Results/corners_net3_prediction_' + image_name + '.npy',corners)
 	dispWindows(image, corners, disp)
 	labels = predict_calib_net3(windows)
 	print("predict_calib_net3")
@@ -79,7 +79,7 @@ def test_net(image, image_name, imageDotted=None, disp=False):
 	dispWindows(image, corners, disp)
 	return_values.append(corners.shape[0])
 	print("number of corners after net 3:", corners.shape[0])
-	np.save(PATH + 'Results/corners_net3_calibration_' + image_name + '.npy',corners)
+	#np.save(PATH + 'Results/corners_net3_calibration_' + image_name + '.npy',corners)
 	corners = non_max_suppression_slow(corners, OVERLAPPING_THRES, scores)
 	return_values.append(corners.shape[0])
 	print("number of corners after NMS:", corners.shape[0])
@@ -181,20 +181,26 @@ def test_folder(path, pathResults, pathDotted=None):
 	num_files = 0.0
 	for image_name in file_names:
 		if image_name.endswith('.jpg') and image_name not in result_file_names:
-			num_files += 1
 			image = Image.open(PATH + path + image_name)
 			print(image_name)
 			if (pathDotted):
+				num_files += 1
 				imageDotted = Image.open(PATH + pathDotted + image_name)
 				windows = test_net(image, image_name, imageDotted)
 				print("windows: ", windows)
 				for i in range(len(avg_windows)):
 					avg_windows[i] += windows[i]
 			else:
-				test_net(image, image_name)
-	for i in range(len(avg_windows)):
-		avg_windows[i] /= num_files
-	print("AVG windows: ", avg_windows)
+				try:
+					test_net(image, image_name)
+				except:
+					print(image_name, " - unexpected error - (or not finding sea lions)")
+	if (pathDotted):
+		for i in range(len(avg_windows)):
+			avg_windows[i] /= num_files
+		print("AVG windows: ", avg_windows)
+	else:
+		print("DONE!")
 
 if __name__ == '__main__':
 	try:
