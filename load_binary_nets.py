@@ -19,7 +19,7 @@ def load_binary_net1():
 	X_test -= means
 	# Create model
 	layer, model = build_net_1(Input(shape=(X_train.shape[1], X_train.shape[2], 3)))
-	print model.summary()
+	print(model.summary())
 	# Load weights
 	model.load_weights(PATH + 'Weights/weights_binary_net1.hdf5')
 	# Compile model
@@ -52,7 +52,7 @@ def load_binary_net2():
 	X_test_prev -= means
 	# Create model
 	layer, model = build_net_2(Input(shape=(X_train.shape[1], X_train.shape[2], 3)))
-	print model.summary()
+	print(model.summary())
 	# Load weights
 	model.load_weights(PATH + 'Weights/weights_binary_net2.hdf5')
 	# Compile model
@@ -98,7 +98,7 @@ def load_binary_net3():
 
 	# Create model
 	model = build_net_3(Input(shape=(X_train.shape[1], X_train.shape[2], 3)))
-	print model.summary()
+	print(model.summary())
 	# Load weights
 	model.load_weights(PATH + 'Weights/weights_binary_net3.hdf5')
 	# Compile model

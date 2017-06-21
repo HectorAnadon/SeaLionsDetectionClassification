@@ -5,6 +5,7 @@ from test_functions import *
 import os, sys
 from PIL import Image
 from predict_classification_net import predict_classification_net
+from usefulFunctions import extractCoordinates
 
 def count_sea_lions(image_name, image):
 	corners = np.load(PATH + 'Results/corners_net3_' + image_name + '.npy')
@@ -37,7 +38,7 @@ def evaluate_result(path, pathDotted, visualize=False):
 	for image_name in file_names:
 		if image_name.endswith('.jpg'):
 			num_files_global += 1
-			rms_value = [0.0] * 5
+			rms = [0.0] * 5
 			for i in range(len(num_files)):
 				num_files[i] += 1
 			image = Image.open(PATH + path + image_name)
@@ -62,6 +63,7 @@ def evaluate_result(path, pathDotted, visualize=False):
 					#print(coordinate[0]-ORIGINAL_WINDOW_DIM/2, coordinate[1]-ORIGINAL_WINDOW_DIM/2)
 					total_dots += 1
 					for idx in range(len(corners)):
+						corner = corners[idx]
 						if prediction[idx] == class_index and abs(corner[0] - (coordinate[0]-ORIGINAL_WINDOW_DIM/2)) < EVALUATION_MARGIN and \
 								abs(corner[1] - (coordinate[1]-ORIGINAL_WINDOW_DIM/2)) < EVALUATION_MARGIN:
 							count += 1
@@ -75,24 +77,28 @@ def evaluate_result(path, pathDotted, visualize=False):
 					if visualize:
 						plt.imshow(cropAndChangeResolution(imageDotted,image_name,coordinate[0]-ORIGINAL_WINDOW_DIM/2,coordinate[1]-ORIGINAL_WINDOW_DIM/2,ORIGINAL_WINDOW_DIM,1))
 						plt.show()
-				try: 
+				try:
+					print("class: ", lion_class)
+					print("count: ", count) 
+					print("total_dots", total_dots)
+					print("our estim", counts[class_index])
 					recall = count / total_dots
-					precision = count / len(counts[class_index])
+					precision = count / counts[class_index]
 					print("recall: ", recall)
 					print("precision: ", precision)
 					avg_recall[class_index] += recall
 					avg_precision[class_index] += precision
 				except:
-					print("Skipping image ", image_name, " as it contains no sealions.")
+					print("Skipping image ", image_name, " as it contains no ", lion_class)
 					num_files[class_index] -= 1
 
 				rms[class_index] = (count - total_dots)**2.0
 
 			rms_value = 0
-			for i in range(len(rms))
+			for i in range(len(rms)):
 				rms_value += rms[i]
 			rms_value /= 5.0
-			rms_value = sqrt(rms_value)
+			rms_value = np.sqrt(rms_value)
 
 			rms_global += rms_value
 

@@ -2,7 +2,7 @@ import sys, pdb
 from keras.utils.io_utils import HDF5Matrix
 from keras.callbacks import ModelCheckpoint, Callback
 from PIL import Image
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 from calibration_nets import *
 from global_variables import *
 from make_datasets import *
@@ -43,8 +43,8 @@ def train_calibr_net1():
     # Train model (and save the weights)
     model.fit(X_train, y_train,
 	          batch_size=32,
-	          epochs=30,
-	          verbose=1,
+	          epochs=100,
+	          verbose=0,
 	          validation_data=(X_test, y_test),
 	          shuffle='batch', # have to use shuffle='batch' or False with HDF5Matrix
               callbacks=callbacks_list)
@@ -86,8 +86,8 @@ def train_calibr_net2():
     # Train model (and save the weights)
     model.fit(X_train, y_train,
               batch_size=32,
-              epochs=30,
-              verbose=1,
+              epochs=100,
+              verbose=0,
               validation_data=(X_test, y_test),
               shuffle='batch', # have to use shuffle='batch' or False with HDF5Matrix
               callbacks=callbacks_list)
@@ -128,9 +128,9 @@ def train_calibr_net3():
     callbacks_list = [checkpoint, history]
     # Train model (and save the weights)
     model.fit(X_train, y_train,
-              batch_size=32,
-              epochs=30,
-              verbose=1,
+              batch_size=128,
+              epochs=100,
+              verbose=0,
               validation_data=(X_test, y_test),
               shuffle='batch', # have to use shuffle='batch' or False with HDF5Matrix
               callbacks=callbacks_list)

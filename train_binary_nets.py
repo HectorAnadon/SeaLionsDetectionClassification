@@ -3,7 +3,7 @@ import sys
 from keras.utils.io_utils import HDF5Matrix
 from keras.callbacks import ModelCheckpoint, Callback
 from PIL import Image
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 from binary_nets import *
 from global_variables import *
 from make_datasets import *
@@ -45,7 +45,7 @@ def train_binary_net1():
 	# Train model (and save the weights)
 	model.fit(X_train, y_train,
 			batch_size=32,
-			epochs=30,
+			epochs=100,
 			validation_data=(X_test, y_test),
 			shuffle='batch', # Have to use shuffle='batch' or False with HDF5Matrix
 			verbose=0, 
@@ -108,7 +108,7 @@ def train_binary_net2():
 	# Train model (and save the weights)
 	model.fit([X_train, X_train_prev], y_train,
 			batch_size=32,
-			epochs=30,
+			epochs=100,
 			validation_data=([X_test, X_test_prev], y_test),
 			shuffle='batch', # Have to use shuffle='batch' or False with HDF5Matrix
 			verbose=0, 
@@ -179,8 +179,8 @@ def train_binary_net3():
 	callbacks_list = [checkpoint, history]
 	# Train model (and save the weights)
 	model.fit([X_train, X_train2, X_train1], y_train,
-			batch_size=32,
-			epochs=30,
+			batch_size=128,
+			epochs=100,
 			validation_data=([X_test, X_test2, X_test1], y_test),
 			shuffle='batch', # Have to use shuffle='batch' or False with HDF5Matrix
 			verbose=0, 
