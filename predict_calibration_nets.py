@@ -10,6 +10,7 @@ def predict_calib_net1(X_test):
     X_test -= means
 
     # Create model
+    # TODO: load regularization
     model = calibration_net_1(Input(shape=(X_test.shape[1], X_test.shape[2], 3)),N_CALIBRATION_TRANSFORMATIONS)
 
     # Load model
@@ -33,6 +34,7 @@ def predict_calib_net2(X_test):
     X_test -= means
 
     # Create model
+    # TODO: load regularization
     model = calibration_net_2(Input(shape=(X_test.shape[1], X_test.shape[2], 3)),N_CALIBRATION_TRANSFORMATIONS)
 
     # Load model
@@ -56,6 +58,7 @@ def predict_calib_net3(X_test):
     X_test -= means
 
     # Create model
+    # TODO: load regularization
     model = calibration_net_3(Input(shape=(X_test.shape[1], X_test.shape[2], 3)),N_CALIBRATION_TRANSFORMATIONS)
 
     # Load model
@@ -77,5 +80,5 @@ def predict_calib_net3(X_test):
 #       RUN      #
 ##################
 if __name__ == '__main__':
-    samples = np.random.randn(20,25,25,3)
+    samples = np.random.randn(20,12,12,3)
     pred = predict_calib_net1(samples)
