@@ -2,7 +2,7 @@ import sys, pdb
 from keras.utils.io_utils import HDF5Matrix
 from keras.callbacks import ModelCheckpoint, Callback
 from PIL import Image
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 from calibration_nets import *
 from global_variables import *
 from make_datasets import *
@@ -38,7 +38,6 @@ def train_calibr_net1():
             save_weights_only=True, mode='max')
     callbacks_list = [checkpoint, history]
     # Train model (and save the weights)
-
     # prepare data augmentation configuration
     datagen = ImageDataGenerator(
         featurewise_center=False,
