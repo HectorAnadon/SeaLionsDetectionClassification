@@ -97,20 +97,11 @@ def train_binary_net1():
 	#Now, further train with the best value
 	opt = Adam(lr=bestlr, decay=1e-5)
 	model.compile(loss='categorical_crossentropy', optimizer=opt, metrics=['accuracy'])
-	for e in range(100):
-		print('Epoch', e + 1)
-		batches = 0
-		for x_batch, y_batch in datagen.flow(X_train, y_train, batch_size=32):
-			model.fit(x_batch, y_batch,
-					  validation_data=(X_test, y_test),
-					  shuffle='batch',  # Have to use shuffle='batch' or False with HDF5Matrix
-					  verbose=1,
-					  callbacks=callbacks_list)
-			batches += 1
-			if batches >= len(X_train) / 32:
-				# we need to break the loop by hand because
-				# the generator loops indefinitely
-				break
+	model.fit_generator(datagen.flow(X_train, y_train, batch_size=32),
+						steps_per_epoch=len(X_train) / 32, epochs=100,
+						validation_data = (X_test, y_test),
+						verbose=1,
+						callbacks=callbacks_list)
 
 
 def train_binary_net2():
