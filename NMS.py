@@ -89,7 +89,7 @@ def non_max_suppression_fast(corners,overlapThresh,confidenceScores): #COMMON VA
     # compute the area of the bounding boxes and sort the bounding
     # boxes by the bottom-right y-coordinate of the bounding box
     area = (x2 - x1 + 1) * (y2 - y1 + 1)
-    idxs = np.argsort(y2)
+    idxs = np.argsort(confidenceScores)
 
     # keep looping while some indexes still remain in the indexes
     # list
@@ -132,7 +132,7 @@ if __name__ == '__main__':
     scores = np.random.rand(30)
     corner = np.random.randn(10,2)+100
     corners = np.append(corner,np.random.randn(10,2),axis=0)
-    corners = np.append(corners,np.random.randn(10,2)+500,axis=0)
+    corners = np.append(corners,np.random.randn(10,2)+900,axis=0)
 
     picked_corners = non_max_suppression_fast(corners,0.3,scores)
     for i in range(len(scores)):
