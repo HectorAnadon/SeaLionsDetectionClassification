@@ -10,7 +10,7 @@ Y_N = [-15, 0, 15]
 
 CLASSES = ["adult_males", "subadult_males", "adult_females", "juveniles", "pups"]
 
-REGULARIZATION_CALIBRATION_1 = 0.001
+REGULARIZATION_CALIBRATION = 0.001
 REGULARIZATION_MULTICLASS = 0.01
 
 

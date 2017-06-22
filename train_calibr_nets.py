@@ -61,40 +61,31 @@ def train_calibr_net1():
     bestlr = 0
     bestAcc = 0
     bestRegularizationTerm = 0
-    for i in range(1):
+    for i in range(150):
         learningRate = np.random.uniform(0.01, 0.00001, 1)
         print(str(i + 1) + ' - Learning Rate: ', learningRate)
         regularization_term = np.random.uniform(0.1, 0.0001, 1)
         print(str(i + 1) + ' - Regularization Term: ', regularization_term)
         # Create model
-        model = calibration_net_3(Input(shape=(X_train.shape[1], X_train.shape[2], 3)), N_CALIBRATION_TRANSFORMATIONS,
+        model = calibration_net_1(Input(shape=(X_train.shape[1], X_train.shape[2], 3)), N_CALIBRATION_TRANSFORMATIONS,
                                   regularization_term)
         # Compile model
-        model.compile(loss='categorical_crossentropy', optimizer='Adam', metrics=['accuracy'])
-        print(model.summary())
         opt = Adam(lr=learningRate, decay=1e-5)
         model.compile(loss='categorical_crossentropy', optimizer=opt, metrics=['accuracy'])
-        best_accuracy_model = 0
-        for e in range(1):
-            print('Epoch', e + 1)
-            batches = 0
-            for x_batch, y_batch in datagen.flow(X_train, y_train, batch_size=32):
-                model.fit(x_batch, y_batch,
-                          validation_data=(X_test, y_test),
-                          shuffle='batch',  # Have to use shuffle='batch' or False with HDF5Matrix
-                          verbose=0, )
-                loss, acc = model.evaluate(X_test, y_test, verbose=0)
-                if acc > best_accuracy_model:
-                    best_accuracy_model = acc
-                batches += 1
-                if batches >= len(X_train) / 32:
-                    # we need to break the loop by hand because
-                    # the generator loops indefinitely
-                    break
-        if best_accuracy_model > bestAcc:
+
+        model.fit_generator(datagen.flow(X_train, y_train, batch_size=32),
+                            steps_per_epoch=len(X_train) / 32, epochs=5,
+                            validation_data=(X_test, y_test),
+                            verbose=0)
+
+        _, acc = model.evaluate(X_test, y_test, verbose=0)
+
+        if acc > bestAcc:
             bestlr = learningRate
             bestRegularizationTerm = regularization_term
-            bestAcc = best_accuracy_model
+            bestAcc = acc
+            np.save(PATH + 'Weights/best_param_calibration_net1.npy',
+                np.array([{'regularization': bestRegularizationTerm, 'lr': bestlr}]))
     print('best learning rate is ' + str(bestlr))
     print('best regularization term is ' + str(bestRegularizationTerm))
     print('best accuracy is: ' + str(bestAcc))
@@ -170,41 +161,32 @@ def train_calibr_net2():
         regularization_term = np.random.uniform(0.1, 0.0001, 1)
         print(str(i + 1) + ' - Regularization Term: ', regularization_term)
         # Create model
-        model = calibration_net_3(Input(shape=(X_train.shape[1], X_train.shape[2], 3)), N_CALIBRATION_TRANSFORMATIONS,
+        model = calibration_net_2(Input(shape=(X_train.shape[1], X_train.shape[2], 3)), N_CALIBRATION_TRANSFORMATIONS,
                                   regularization_term)
         # Compile model
-        model.compile(loss='categorical_crossentropy', optimizer='Adam', metrics=['accuracy'])
-        print(model.summary())
         opt = Adam(lr=learningRate, decay=1e-5)
         model.compile(loss='categorical_crossentropy', optimizer=opt, metrics=['accuracy'])
-        best_accuracy_model = 0
-        for e in range(5):
-            print('Epoch', e + 1)
-            batches = 0
-            for x_batch, y_batch in datagen.flow(X_train, y_train, batch_size=32):
-                model.fit(x_batch, y_batch,
-                          validation_data=(X_test, y_test),
-                          shuffle='batch',  # Have to use shuffle='batch' or False with HDF5Matrix
-                          verbose=0, )
-                loss, acc = model.evaluate(X_test, y_test, verbose=0)
-                if acc > best_accuracy_model:
-                    best_accuracy_model = acc
-                batches += 1
-                if batches >= len(X_train) / 32:
-                    # we need to break the loop by hand because
-                    # the generator loops indefinitely
-                    break
-        if best_accuracy_model > bestAcc:
+
+        model.fit_generator(datagen.flow(X_train, y_train, batch_size=32),
+                            steps_per_epoch=len(X_train) / 32, epochs=5,
+                            validation_data=(X_test, y_test),
+                            verbose=0)
+
+        _, acc = model.evaluate(X_test, y_test, verbose=0)
+
+        if acc > bestAcc:
             bestlr = learningRate
             bestRegularizationTerm = regularization_term
-            bestAcc = best_accuracy_model
+            bestAcc = acc
+            np.save(PATH + 'Weights/best_param_calibration_net2.npy',
+                np.array([{'regularization': bestRegularizationTerm, 'lr': bestlr}]))
     print('best learning rate is ' + str(bestlr))
     print('best regularization term is ' + str(bestRegularizationTerm))
     print('best accuracy is: ' + str(bestAcc))
 
     # Now, further train with the best value
     # Create model
-    model = calibration_net_1(Input(shape=(X_train.shape[1], X_train.shape[2], 3)), N_CALIBRATION_TRANSFORMATIONS,
+    model = calibration_net_2(Input(shape=(X_train.shape[1], X_train.shape[2], 3)), N_CALIBRATION_TRANSFORMATIONS,
                               bestRegularizationTerm)
     opt = Adam(lr=bestlr, decay=1e-5)
     model.compile(loss='categorical_crossentropy', optimizer=opt, metrics=['accuracy'])
@@ -276,38 +258,29 @@ def train_calibr_net3():
         model = calibration_net_3(Input(shape=(X_train.shape[1], X_train.shape[2], 3)), N_CALIBRATION_TRANSFORMATIONS,
                                   regularization_term)
         # Compile model
-        model.compile(loss='categorical_crossentropy', optimizer='Adam', metrics=['accuracy'])
-        print(model.summary())
         opt = Adam(lr=learningRate, decay=1e-5)
         model.compile(loss='categorical_crossentropy', optimizer=opt, metrics=['accuracy'])
-        best_accuracy_model = 0
-        for e in range(5):
-            print('Epoch', e + 1)
-            batches = 0
-            for x_batch, y_batch in datagen.flow(X_train, y_train, batch_size=32):
-                model.fit(x_batch, y_batch,
-                          validation_data=(X_test, y_test),
-                          shuffle='batch',  # Have to use shuffle='batch' or False with HDF5Matrix
-                          verbose=0, )
-                loss, acc = model.evaluate(X_test, y_test, verbose=0)
-                if acc > best_accuracy_model:
-                    best_accuracy_model = acc
-                batches += 1
-                if batches >= len(X_train) / 32:
-                    # we need to break the loop by hand because
-                    # the generator loops indefinitely
-                    break
-        if best_accuracy_model > bestAcc:
+
+        model.fit_generator(datagen.flow(X_train, y_train, batch_size=32),
+                            steps_per_epoch=len(X_train) / 32, epochs=5,
+                            validation_data=(X_test, y_test),
+                            verbose=0)
+
+        _, acc = model.evaluate(X_test, y_test, verbose=0)
+
+        if acc > bestAcc:
             bestlr = learningRate
             bestRegularizationTerm = regularization_term
-            bestAcc = best_accuracy_model
+            bestAcc = acc
+            np.save(PATH + 'Weights/best_param_calibration_net3.npy',
+                np.array([{'regularization': bestRegularizationTerm, 'lr': bestlr}]))
     print('best learning rate is ' + str(bestlr))
     print('best regularization term is ' + str(bestRegularizationTerm))
     print('best accuracy is: ' + str(bestAcc))
 
     # Now, further train with the best value
     # Create model
-    model = calibration_net_1(Input(shape=(X_train.shape[1], X_train.shape[2], 3)), N_CALIBRATION_TRANSFORMATIONS,
+    model = calibration_net_3(Input(shape=(X_train.shape[1], X_train.shape[2], 3)), N_CALIBRATION_TRANSFORMATIONS,
                               bestRegularizationTerm)
     opt = Adam(lr=bestlr, decay=1e-5)
     model.compile(loss='categorical_crossentropy', optimizer=opt, metrics=['accuracy'])
