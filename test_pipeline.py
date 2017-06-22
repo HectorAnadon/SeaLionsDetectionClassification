@@ -8,6 +8,7 @@ from PIL import Image
 import matplotlib.pyplot as plt
 from global_variables import *
 from predict_calibration_nets import *
+from NMS import *
 
 
 def test_net(image, image_name, imageDotted=None, disp=False):
@@ -35,7 +36,7 @@ def test_net(image, image_name, imageDotted=None, disp=False):
 	return_values.append(corners.shape[0])
 	#print("number of corners after net 1:", corners.shape[0])
 	#np.save(PATH + 'Results/corners_net1_calibration_' + image_name + '.npy',corners)
-	corners = non_max_suppression_slow(corners, OVERLAPPING_THRES, scores)
+	corners = non_max_suppression_fast(corners, OVERLAPPING_THRES, scores)
 	return_values.append(corners.shape[0])
 	#print("number of corners after NMS:", corners.shape[0])
 	#np.save(PATH + 'Results/corners_net1_' + image_name + '.npy',corners)
@@ -57,7 +58,7 @@ def test_net(image, image_name, imageDotted=None, disp=False):
 	return_values.append(corners.shape[0])
 	#print("number of corners after net 2:", corners.shape[0])
 	#np.save(PATH + 'Results/corners_net2_calibration_' + image_name + '.npy',corners)
-	corners = non_max_suppression_slow(corners, OVERLAPPING_THRES, scores)
+	corners = non_max_suppression_fast(corners, OVERLAPPING_THRES, scores)
 	return_values.append(corners.shape[0])
 	#print("number of corners after NMS:", corners.shape[0])
 	#np.save(PATH + 'Results/corners_net2_' + image_name + '.npy',corners)
@@ -80,7 +81,7 @@ def test_net(image, image_name, imageDotted=None, disp=False):
 	return_values.append(corners.shape[0])
 	#print("number of corners after net 3:", corners.shape[0])
 	#np.save(PATH + 'Results/corners_net3_calibration_' + image_name + '.npy',corners)
-	corners = non_max_suppression_slow(corners, OVERLAPPING_THRES, scores)
+	corners = non_max_suppression_fast(corners, OVERLAPPING_THRES, scores)
 	return_values.append(corners.shape[0])
 	#print("number of corners after NMS:", corners.shape[0])
 	np.save(PATH + 'Results/corners_net3_' + image_name + '.npy',corners)
