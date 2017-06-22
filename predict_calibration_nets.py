@@ -11,7 +11,8 @@ def predict_calib_net1(X_test):
 
     # Create model
     # TODO: load regularization
-    model = calibration_net_1(Input(shape=(X_test.shape[1], X_test.shape[2], 3)), N_CALIBRATION_TRANSFORMATIONS)
+    model = calibration_net_1(Input(shape=(X_test.shape[1], X_test.shape[2], 3)), N_CALIBRATION_TRANSFORMATIONS,
+        REGULARIZATION_CALIBRATION)
 
     # Load model
     model.load_weights(PATH + 'Weights/weights_calibration_net1.hdf5')
@@ -35,7 +36,8 @@ def predict_calib_net2(X_test):
 
     # Create model
     # TODO: load regularization
-    model = calibration_net_2(Input(shape=(X_test.shape[1], X_test.shape[2], 3)), N_CALIBRATION_TRANSFORMATIONS)
+    model = calibration_net_2(Input(shape=(X_test.shape[1], X_test.shape[2], 3)), N_CALIBRATION_TRANSFORMATIONS,
+        REGULARIZATION_CALIBRATION)
 
     # Load model
     model.load_weights(PATH + 'Weights/weights_calibration_net2.hdf5')
@@ -59,7 +61,8 @@ def predict_calib_net3(X_test):
 
     # Create model
     # TODO: load regularization
-    model = calibration_net_3(Input(shape=(X_test.shape[1], X_test.shape[2], 3)), N_CALIBRATION_TRANSFORMATIONS)
+    model = calibration_net_3(Input(shape=(X_test.shape[1], X_test.shape[2], 3)), N_CALIBRATION_TRANSFORMATIONS,
+        REGULARIZATION_CALIBRATION)
 
     # Load model
     model.load_weights(PATH + 'Weights/weights_calibration_net3.hdf5')
