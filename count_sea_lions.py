@@ -18,11 +18,22 @@ def count_sea_lions(image_name, image):
 
 
 def count_folder(path):
+	# Submission numpy array
+	num_test_files = 18636
+	submission = np.zeros((num_test_files, len(CLASSES) + 1), dtype=np.int)
+	submission[:,0] = np.array(range(num_test_files))
+	file_header = 'test_id,'+','.join(CLASSES)
+	# Count sea lions and update corresponding row in the array
 	file_names = os.listdir(PATH + path)
 	for image_name in file_names:
 		if image_name.endswith('.jpg'):
 			image = Image.open(PATH + path + image_name)
 			corners, prediction, counts = count_sea_lions(image_name, image)
+			row = np.array([counts[idx] for idx in range(len(CLASSES))], dtype=np.int)
+			submission[int(image_name[:-4]), 1:] = row
+	# Save to csv
+	np.savetxt(PATH+"Results/submission.csv", submission, fmt='%d', delimiter=',', newline='\n', 
+		header=file_header, comments='')
 
 
 
