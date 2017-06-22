@@ -84,7 +84,8 @@ def train_calibr_net1():
             bestlr = learningRate
             bestRegularizationTerm = regularization_term
             bestAcc = acc
-            # TODO: save learning rate and regularization
+            np.save(PATH + 'Weights/best_param_calibration_net1.npy',
+                np.array([{'regularization': bestRegularizationTerm, 'lr': bestlr}]))
     print('best learning rate is ' + str(bestlr))
     print('best regularization term is ' + str(bestRegularizationTerm))
     print('best accuracy is: ' + str(bestAcc))
@@ -177,7 +178,8 @@ def train_calibr_net2():
             bestlr = learningRate
             bestRegularizationTerm = regularization_term
             bestAcc = acc
-            # TODO: save learning rate and regularization
+            np.save(PATH + 'Weights/best_param_calibration_net2.npy',
+                np.array([{'regularization': bestRegularizationTerm, 'lr': bestlr}]))
     print('best learning rate is ' + str(bestlr))
     print('best regularization term is ' + str(bestRegularizationTerm))
     print('best accuracy is: ' + str(bestAcc))
@@ -270,7 +272,8 @@ def train_calibr_net3():
             bestlr = learningRate
             bestRegularizationTerm = regularization_term
             bestAcc = acc
-            # TODO: save learning rate and regularization
+            np.save(PATH + 'Weights/best_param_calibration_net3.npy',
+                np.array([{'regularization': bestRegularizationTerm, 'lr': bestlr}]))
     print('best learning rate is ' + str(bestlr))
     print('best regularization term is ' + str(bestRegularizationTerm))
     print('best accuracy is: ' + str(bestAcc))

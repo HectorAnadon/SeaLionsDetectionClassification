@@ -78,7 +78,8 @@ def train_binary_net1():
 		if acc > bestAcc:
 			bestlr = learningRate
 			bestAcc = acc
-			# TODO: save learning rate
+			np.save(PATH + 'Weights/best_param_binary_net1.npy',
+                np.array([{'lr': bestlr}]))
 	print('best learning rate is '+ str(bestlr))
 	print('best accuracy is: '+ str(bestAcc))
 
