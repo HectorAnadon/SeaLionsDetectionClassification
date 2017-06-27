@@ -7,7 +7,16 @@ from PIL import Image
 from predict_classification_net import predict_classification_net
 from usefulFunctions import extractCoordinates
 
-def count_sea_lions(image_name, image):
+def count_sea_lions(image_name, image, brief=None):
+	if (brief):
+		corners = np.load(PATH + 'Results/corners_net3_' + image_name + '.npy')
+		windows = getWindows(corners, image, 1)
+		prediction = predict_classification_net(windows, image_name)
+		counts = Counter(prediction) 
+		counts = np.array([counts[idx] for idx in range(len(CLASSES))], dtype=np.int)
+		np.save(PATH + 'Results/count_'+ image_name + '.npy', counts)
+		print('created counts for image ', image_name, counts)
+		return counts
 	corners = np.load(PATH + 'Results/corners_net3_' + image_name + '.npy')
 	windows = getWindows(corners, image, 1)
 	prediction = predict_classification_net(windows, image_name)
@@ -25,14 +34,29 @@ def count_folder(path):
 	file_header = 'test_id,'+','.join(CLASSES)
 	# Count sea lions and update corresponding row in the array
 	file_names = os.listdir(PATH + path)
+	c = 0
 	for image_name in file_names:
 		if image_name.endswith('.jpg'):
+			c += 1
 			image = Image.open(PATH + path + image_name)
-			corners, prediction, counts = count_sea_lions(image_name, image)
-			row = np.array([counts[idx] for idx in range(len(CLASSES))], dtype=np.int)
-			submission[int(image_name[:-4]), 1:] = row
-	# Save to csv
-	np.savetxt(PATH+"Results/submission.csv", submission, fmt='%d', delimiter=',', newline='\n', 
+			try: 
+				row = np.load(PATH + 'Results/count_'+ image_name + '.npy')
+				submission[int(image_name[:-4]), 1:] = row
+				print('loaded counts for image ', image_name, row)
+			except:
+				try:
+					counts = count_sea_lions(image_name, image, True)
+					row = np.array([counts[idx] for idx in range(len(CLASSES))], dtype=np.int)
+					submission[int(image_name[:-4]), 1:] = row
+				except:
+					print('Skipping image ', image_name)
+			if c%100 == 0:
+				# Save to csv (intermediary)
+				print("SAVE (c = ", c, ")")
+				np.savetxt(PATH+"Results/intermediary_submission.csv", submission, fmt='%d', 
+					delimiter=',', newline='\n', header=file_header, comments='')
+	# Save to csv (final)
+	np.savetxt(PATH+"Results/final_submission.csv", submission, fmt='%d', delimiter=',', newline='\n', 
 		header=file_header, comments='')
 
 
