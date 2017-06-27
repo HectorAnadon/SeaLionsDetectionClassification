@@ -60,6 +60,31 @@ def count_folder(path):
 		header=file_header, comments='')
 
 
+def create_unify_csv(path):
+	# Submission numpy array
+	start_file = 1
+	num_test_files = 18636
+	submission = np.zeros((num_test_files, len(CLASSES) + 1), dtype=np.int)
+	submission[:,0] = np.array(range(num_test_files))
+	file_header = 'test_id,'+','.join(CLASSES)
+
+	# Count sea lions and update corresponding row in the array
+	while(start_file <= num_test_files):
+		try: 
+			row = np.load(PATH + path + 'count_'+ str(start_file) + '.jpg.npy')
+			submission[start_file, 1:] = row
+			print('loaded counts for image ', start_file, row)
+		except:
+			print('empty', start_file)
+
+		start_file += 1
+
+
+	# Save to csv (final)
+	np.savetxt(PATH+"Results/final_submission.csv", submission, fmt='%d', delimiter=',', newline='\n', 
+		header=file_header, comments='')
+
+
 
 
 def evaluate_result(path, pathDotted, visualize=False):
@@ -164,7 +189,10 @@ if __name__ == '__main__':
 	if (len(sys.argv)==4):
 		evaluate_result(arg1, sys.argv[2], visualize=True)
 	elif (len(sys.argv)==3):
-		evaluate_result(arg1, sys.argv[2])
+		if (sys.argv[2] == 'csv'):
+			create_unify_csv(arg1)
+		else:
+			evaluate_result(arg1, sys.argv[2])
 	else:
 		count_folder(arg1)
 
