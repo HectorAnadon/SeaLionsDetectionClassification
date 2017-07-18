@@ -1,6 +1,13 @@
-The Data folder is just sample Data, the real Dataset is 95GB, the real data can be found https://www.kaggle.com/c/noaa-fisheries-steller-sea-lion-population-count/data
+## Sea Lion Population Count
 
-How to run the code:
+We implement the adaptation of a convolutional neural network (CNN) cascade originally designed for face detection for a different visual object detection task involving in counting and classifying sea lions. The cascade architecture built on CNNs is capable of combining increasingly more complex classifiers that operate on increasingly higher resolutions. This allows background regions of the image to be quickly rejected in the low resolution stage, while spending more computation on promising sea lion like regions during higher resolution stages. The cascade can be viewed as a sea lion-focusing mechanism which ensures that discarded regions are unlikely to contain sea lions. The cascade consists of alternating detection and calibration networks, so that the output of each calibration stage is used to adjust the detection window position for input to the subsequent stage, which ultimately leads to improved localization effectiveness.
+
+More inforation can be found in the [report](SeaLionsReport.pdf).
+
+
+The Data folder is just sample Data, the real Dataset is 95GB and can be found at https://www.kaggle.com/c/noaa-fisheries-steller-sea-lion-population-count/data
+
+## How to run the code:
 
 For making the dataset
 
