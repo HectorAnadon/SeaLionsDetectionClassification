@@ -9,7 +9,7 @@ More inforation can be found in the [report](SeaLionsReport.pdf).
 
 The Data folder is just sample Data, the real Dataset is 95GB and can be found at https://www.kaggle.com/c/noaa-fisheries-steller-sea-lion-population-count/data
 
-## How to run the code:
+## How to run the code: 
 
 For making the dataset
 
